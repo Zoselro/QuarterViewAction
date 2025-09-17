@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,10 +6,12 @@ public class Player : MonoBehaviour
 {
 
     [Header("Options")]
-    [SerializeField]
-    private float speed;
-    [SerializeField]
-    private float jumpPower;
+
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpPower;
+    [SerializeField] private GameObject[] weapons;
+    [SerializeField] private bool[] hasWeapons;
+
 
     [Header("Components")]
     [SerializeField]
@@ -25,12 +28,16 @@ public class Player : MonoBehaviour
     private bool isDodge;
     private bool keepMovingAfterDodge; // 회피를 시작 후 끝날 때 까지 플래그 유지
     private bool keepMovingAfterJump; // 점프가 시작 하고 끝날 때 까지 플래그 유지
+    
 
     private Vector3 rotation;
     private Vector3 rotation_value;
     private Vector3 dodgeRotation;
     private Vector3 dodgeMoveDir; // 회피동작이 끝날 때 까지 이동에 사용될 벡터
     private Vector3 jumpMoveDir; // 점프동작이 끝날 때 까지 이동에 사용될 벡터
+
+    private GameObject nearObject;
+    private GameObject equipWeapon;
 
     private void Awake()
     {
@@ -47,6 +54,7 @@ public class Player : MonoBehaviour
         Move();
     }
 
+    // 날개 있는 아이템 추가시 if문 해제.
     public void Move()
     {
         if (isDodge && keepMovingAfterDodge)
@@ -74,7 +82,7 @@ public class Player : MonoBehaviour
         else
         {
             Walking();
-        }
+        }        
     }
 
     public void Walking()
@@ -149,7 +157,60 @@ public class Player : MonoBehaviour
             Invoke("DodgeOut", 0.5f); // 회피가 끝났을 때 수행되는 함수.
         }
     }
-        
+
+    // 아이템을 획득 하는 키
+    public void Interaction(InputAction.CallbackContext context)
+    {
+        if (context.performed && nearObject != null && !isJump) // 점프 하고있는 상태일 때는 아이템 획득 불가.
+        {
+            if (nearObject.tag == "Weapon")
+            {
+                Item item = nearObject.GetComponent<Item>();
+                int weaponIndex = item.GetValue();
+                hasWeapons[weaponIndex] = true;
+
+                Destroy(nearObject);
+            }
+        }
+    }
+
+    public void SwapKey1(InputAction.CallbackContext context)
+    {
+        int weaponIndex = 0;
+        if(context.performed && !isJump && !isDodge)
+        {
+            // 만약에 이미 무기가 들려있다면, 이전무기 비활성화 이후 활성화
+            if(equipWeapon != null)
+                equipWeapon.SetActive(false);
+            equipWeapon = weapons[weaponIndex];
+            weapons[weaponIndex].SetActive(true);
+        }
+    }
+    public void SwapKey2(InputAction.CallbackContext context)
+    {
+        int weaponIndex = 1;
+        if (context.performed && !isJump && !isDodge)
+        {
+            // 만약에 이미 무기가 들려있다면, 이전무기 비활성화 이후 활성화
+            if (equipWeapon != null)
+                equipWeapon.SetActive(false);
+            equipWeapon = weapons[weaponIndex];
+            weapons[weaponIndex].SetActive(true);
+        }
+    }
+    public void SwapKey3(InputAction.CallbackContext context)
+    {
+        int weaponIndex = 2;
+        if (context.performed && !isJump && !isDodge)
+        {
+            // 만약에 이미 무기가 들려있다면, 이전무기 비활성화 이후 활성화
+            if (equipWeapon != null)
+                equipWeapon.SetActive(false);
+            equipWeapon = weapons[weaponIndex];
+            weapons[weaponIndex].SetActive(true);
+        }
+    }
+
     private void DodgeOut()
     {
         speed *= 0.5f;
@@ -160,10 +221,30 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Floor")
+        if (collision.gameObject.tag == "Floor")
         {
             isJump = false;
             animator.SetBool("IsJump", isJump);
         }
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.tag == "Weapon")
+        {
+            nearObject = other.gameObject;
+        }
+
+        Debug.Log(nearObject.name);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Weapon")
+        {
+            nearObject = null;
+        }
+    }
+
+
 }
