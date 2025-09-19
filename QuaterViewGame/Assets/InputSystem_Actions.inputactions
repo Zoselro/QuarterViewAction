@@ -139,15 +139,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Any Key",
-                    "type": "Button",
-                    "id": "14d8251a-b5d3-4d44-9459-c32276a0a682",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -599,17 +590,6 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SwapKey3",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "35ad55c9-693e-4333-bca4-bb989f5231a5",
-                    "path": "<Keyboard>/anyKey",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Any Key",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

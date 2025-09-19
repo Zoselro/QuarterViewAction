@@ -4,13 +4,27 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    [Header("GameObject")]
+    [SerializeField] private GameObject[] weapons;
+    [SerializeField] private GameObject[] grenades;
 
     [Header("Options")]
-
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
-    [SerializeField] private GameObject[] weapons;
+
     [SerializeField] private bool[] hasWeapons;
+
+    [Header("Item")]
+    [SerializeField] private int ammo;
+    [SerializeField] private int coin;
+    [SerializeField] private int health;
+    [SerializeField] private int hasGrenades;
+    
+    [Header("ItemOptions")]
+    [SerializeField] private int maxAmmo;
+    [SerializeField] private int maxCoin;
+    [SerializeField] private int maxHealth;
+    [SerializeField] private int maxHasGrenades;
 
 
     [Header("Components")]
@@ -26,6 +40,7 @@ public class Player : MonoBehaviour
     private bool isRun;
     private bool isJump;
     private bool isDodge;
+    private bool isSwap;
     private bool keepMovingAfterDodge; // 회피를 시작 후 끝날 때 까지 플래그 유지
     private bool keepMovingAfterJump; // 점프가 시작 하고 끝날 때 까지 플래그 유지
     
@@ -38,6 +53,7 @@ public class Player : MonoBehaviour
 
     private GameObject nearObject;
     private GameObject equipWeapon;
+    private int equipWeaponIndex = -1;
 
     private void Awake()
     {
@@ -51,6 +67,8 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        Debug.Log("hasGrenades : " + hasGrenades);
+        Debug.Log("grenades.Length : " + grenades.Length);
         Move();
     }
 
@@ -130,7 +148,7 @@ public class Player : MonoBehaviour
     // 스페이스바를 눌렀을 때 실행되는 점프 메서드
     public void Jumb(InputAction.CallbackContext context)
     {
-        if (context.performed && /*rotation == Vector3.zero &&*/ !isJump && !isDodge)
+        if (context.performed && /*rotation == Vector3.zero &&*/ !isJump && !isDodge && !isSwap)
         {
             rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
             isJump = true;
@@ -144,7 +162,7 @@ public class Player : MonoBehaviour
     // 컨트롤키를 눌렀을 때 실행되는 회피 메서드
     public void Dodge(InputAction.CallbackContext context)
     {
-        if (context.performed && rotation != Vector3.zero && !isJump && !isDodge)
+        if (context.performed && rotation != Vector3.zero && !isJump && !isDodge && !isSwap)
         {
             // 회피 시작 시 현재 입력 방향을 그대로 저장
             dodgeMoveDir = rotation;
@@ -174,41 +192,51 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void SwapKey1(InputAction.CallbackContext context)
+    public void SwapWeapon(int weaponIndex, InputAction.CallbackContext context)
     {
-        int weaponIndex = 0;
         if(context.performed && !isJump && !isDodge)
         {
             // 만약에 이미 무기가 들려있다면, 이전무기 비활성화 이후 활성화
-            if(equipWeapon != null)
+            if (equipWeapon != null)
                 equipWeapon.SetActive(false);
             equipWeapon = weapons[weaponIndex];
+            equipWeaponIndex = weaponIndex;
+
             weapons[weaponIndex].SetActive(true);
+
+            animator.SetTrigger("DoSwap");
+
+            isSwap = true;
+
+            Invoke("SwapOut", 0.4f); // Swap이 끝났을 때 수행되는 함수.
         }
+    }
+    // ---- Input System 바인딩용 ----
+    public void SwapKey0(InputAction.CallbackContext context)
+    {
+        int weaponIndex = 0;
+        if (!hasWeapons[weaponIndex] || equipWeaponIndex == weaponIndex)
+            return;
+        SwapWeapon(weaponIndex, context);
+    }
+    public void SwapKey1(InputAction.CallbackContext context)
+    {
+        int weaponIndex = 1;
+        if (!hasWeapons[weaponIndex] || equipWeaponIndex == weaponIndex)
+            return;
+        SwapWeapon(weaponIndex, context);
     }
     public void SwapKey2(InputAction.CallbackContext context)
     {
-        int weaponIndex = 1;
-        if (context.performed && !isJump && !isDodge)
-        {
-            // 만약에 이미 무기가 들려있다면, 이전무기 비활성화 이후 활성화
-            if (equipWeapon != null)
-                equipWeapon.SetActive(false);
-            equipWeapon = weapons[weaponIndex];
-            weapons[weaponIndex].SetActive(true);
-        }
-    }
-    public void SwapKey3(InputAction.CallbackContext context)
-    {
         int weaponIndex = 2;
-        if (context.performed && !isJump && !isDodge)
-        {
-            // 만약에 이미 무기가 들려있다면, 이전무기 비활성화 이후 활성화
-            if (equipWeapon != null)
-                equipWeapon.SetActive(false);
-            equipWeapon = weapons[weaponIndex];
-            weapons[weaponIndex].SetActive(true);
-        }
+        if (!hasWeapons[weaponIndex] || equipWeaponIndex == weaponIndex)
+            return;
+        SwapWeapon(weaponIndex, context);
+    }
+
+    private void SwapOut()
+    {
+        isSwap = false;
     }
 
     private void DodgeOut()
@@ -228,14 +256,45 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Item")
+        {
+            Item item = other.GetComponent<Item>();
+            switch (item.GetItemType())
+            {
+                case Item.Type.Ammo:
+                    ammo += item.GetValue();
+                    if(ammo > maxAmmo)
+                        ammo = maxAmmo;
+                    break;
+                case Item.Type.Coin:
+                    coin += item.GetValue();
+                    if(coin > maxCoin)
+                        coin = maxCoin;
+                    break;
+                case Item.Type.Heart:
+                    health += item.GetValue();
+                    if(health > maxHealth)
+                        health = maxHealth;
+                    break;
+                case Item.Type.Grenade:
+                    grenades[hasGrenades].SetActive(true);
+                    hasGrenades += item.GetValue();
+                    if(hasGrenades > maxHasGrenades)
+                        hasGrenades = maxHasGrenades;
+                    break;
+            }
+            Destroy(other.gameObject);
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if(other.tag == "Weapon")
         {
             nearObject = other.gameObject;
         }
-
-        Debug.Log(nearObject.name);
     }
 
     private void OnTriggerExit(Collider other)

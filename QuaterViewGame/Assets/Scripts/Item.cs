@@ -34,4 +34,9 @@ public class Item : MonoBehaviour
     {
         return value;
     }
+
+    public Type GetItemType()
+    {
+        return type;
+    }
 }
