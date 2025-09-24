@@ -15,5 +15,6 @@ public class Orbit : MonoBehaviour
         transform.RotateAround(target.position, Vector3.up, orbitSpeed * Time.deltaTime);
 
         offset = transform.position - target.position;
+        transform.LookAt(target);
     }
 }

@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
 
     private float velocity;
     private float baseSpeed; // 원래 속도 저장용
+    private float fireDelay; // 공격 딜레이
 
     private bool isWalk;
     private bool isRun;
@@ -43,16 +44,16 @@ public class Player : MonoBehaviour
     private bool isSwap;
     private bool keepMovingAfterDodge; // 회피를 시작 후 끝날 때 까지 플래그 유지
     private bool keepMovingAfterJump; // 점프가 시작 하고 끝날 때 까지 플래그 유지
-    
+    private bool isFireReady; // 근접 공격 준비
 
     private Vector3 rotation;
-    private Vector3 rotation_value;
+    private Vector3 rotation_value; // 행동 후 방향키 변경이 반영되지 않는 버그 수정을 위한 변수
     private Vector3 dodgeRotation;
     private Vector3 dodgeMoveDir; // 회피동작이 끝날 때 까지 이동에 사용될 벡터
     private Vector3 jumpMoveDir; // 점프동작이 끝날 때 까지 이동에 사용될 벡터
 
     private GameObject nearObject;
-    private GameObject equipWeapon;
+    private Weapon equipWeapon;
     private int equipWeaponIndex = -1;
 
     private void Awake()
@@ -62,24 +63,30 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        baseSpeed = speed;
+
     }
 
     void FixedUpdate()
     {
-        Debug.Log("hasGrenades : " + hasGrenades);
-        Debug.Log("grenades.Length : " + grenades.Length);
+        fireDelay += Time.deltaTime;
+        baseSpeed = speed;
         Move();
     }
 
     // 날개 있는 아이템 추가시 if문 해제.
     public void Move()
     {
+        // 공격 중에는 이동하지 않음
+        if (isFireReady && !isJump && !isDodge)
+        {
+            rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+            return;
+        }
+
         if (isDodge && keepMovingAfterDodge)
         {
             // 키보드를 떼도 dodgeMoveDir 로 이동
-            float moveSpeed = isDodge ? speed * Time.deltaTime
-                                      : baseSpeed * Time.deltaTime;
+            float moveSpeed = baseSpeed * Time.deltaTime;
             rb.linearVelocity = new Vector3(dodgeMoveDir.x * moveSpeed,
                                             rb.linearVelocity.y,
                                             dodgeMoveDir.y * moveSpeed);
@@ -88,13 +95,11 @@ public class Player : MonoBehaviour
         }
         else if (isJump && keepMovingAfterJump)
         {
-            // 키보드를 떼도 dodgeMoveDir 로 이동
-            float moveSpeed = isJump ? speed * Time.deltaTime
-                                      : baseSpeed * Time.deltaTime;
+            // 키보드를 떼도 jumpMoveDir 로 이동
+            float moveSpeed = baseSpeed * Time.deltaTime;
             rb.linearVelocity = new Vector3(jumpMoveDir.x * moveSpeed,
                                             rb.linearVelocity.y,
                                             jumpMoveDir.y * moveSpeed);
-
             transform.LookAt(transform.position + new Vector3(jumpMoveDir.x, 0f, jumpMoveDir.y));
         }
         else
@@ -105,7 +110,7 @@ public class Player : MonoBehaviour
 
     public void Walking()
     {
-        velocity = isWalk ? speed * 0.3f * Time.deltaTime : speed * Time.deltaTime;
+        velocity = isWalk ? baseSpeed * 0.3f * Time.deltaTime : baseSpeed * Time.deltaTime;
         rb.linearVelocity = new Vector3(rotation.x * velocity, rb.linearVelocity.y , rotation.y * velocity);
         transform.LookAt(transform.position + new Vector3(rotation.x, 0f, rotation.y));
     }
@@ -115,8 +120,12 @@ public class Player : MonoBehaviour
     {
         if (context.performed)
         {
+            //if (isFireReady && !isJump && !isDodge)
+            //    return;
+
             rotation = context.ReadValue<Vector2>().normalized;
             rotation_value = rotation;
+
             // 만약에 회피가 동작이 끝났다면, 방향 입력값 다시 주기.
             if (isDodge)
                 rotation = dodgeRotation;
@@ -162,7 +171,8 @@ public class Player : MonoBehaviour
     // 컨트롤키를 눌렀을 때 실행되는 회피 메서드
     public void Dodge(InputAction.CallbackContext context)
     {
-        if (context.performed && rotation != Vector3.zero && !isJump && !isDodge && !isSwap)
+        Debug.Log(isFireReady);
+        if (context.performed && rotation != Vector3.zero && !isJump && !isDodge && !isSwap && !isFireReady)
         {
             // 회피 시작 시 현재 입력 방향을 그대로 저장
             dodgeMoveDir = rotation;
@@ -198,8 +208,8 @@ public class Player : MonoBehaviour
         {
             // 만약에 이미 무기가 들려있다면, 이전무기 비활성화 이후 활성화
             if (equipWeapon != null)
-                equipWeapon.SetActive(false);
-            equipWeapon = weapons[weaponIndex];
+                equipWeapon.gameObject.SetActive(false);
+            equipWeapon = weapons[weaponIndex].GetComponent<Weapon>();
             equipWeaponIndex = weaponIndex;
 
             weapons[weaponIndex].SetActive(true);
@@ -233,6 +243,29 @@ public class Player : MonoBehaviour
             return;
         SwapWeapon(weaponIndex, context);
     }
+    public void Attack(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            StartCoroutine(AttackCoRouine());
+        }
+    }
+
+    private IEnumerator AttackCoRouine()
+    {
+        Debug.Log(equipWeapon);
+        if (equipWeapon == null)
+            yield break;
+        isFireReady = equipWeapon.GetRate() < fireDelay;
+        if (isFireReady && !isDodge && !isSwap)
+        {
+            equipWeapon.Use();
+            animator.SetTrigger(equipWeapon.GetWeaponType() == Weapon.Type.Melee ? "DoSwing" : "DoShot");
+            fireDelay = 0;
+            yield return new WaitForSeconds(equipWeapon.GetWaitTime());
+        }
+        isFireReady = false;
+    }
 
     private void SwapOut()
     {
@@ -246,6 +279,7 @@ public class Player : MonoBehaviour
         rotation = rotation_value;
         keepMovingAfterDodge = true;
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -279,10 +313,14 @@ public class Player : MonoBehaviour
                         health = maxHealth;
                     break;
                 case Item.Type.Grenade:
-                    grenades[hasGrenades].SetActive(true);
+                    /*grenades[hasGrenades].SetActive(true);
                     hasGrenades += item.GetValue();
                     if(hasGrenades > maxHasGrenades)
-                        hasGrenades = maxHasGrenades;
+                        hasGrenades = maxHasGrenades;*/
+                    if (hasGrenades == maxHasGrenades)
+                        return;
+                    grenades[hasGrenades].SetActive(true);
+                    hasGrenades += item.GetValue();
                     break;
             }
             Destroy(other.gameObject);
@@ -304,6 +342,4 @@ public class Player : MonoBehaviour
             nearObject = null;
         }
     }
-
-
 }
