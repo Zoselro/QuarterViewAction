@@ -15,6 +15,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float rate;
     [SerializeField] private float bulletSpeed;
     [SerializeField] private float caseRotation;
+    [SerializeField] private int maxAmmo; // 실제 최대 탄창 개수
 
     [Header("Components")]
     [SerializeField] private BoxCollider meleeArea;
@@ -28,6 +29,13 @@ public class Weapon : MonoBehaviour
     private float secondWaitTime = 0.3f;
     private float thirdWaitTime = 0.3f;
 
+    [SerializeField] private int curAmmo; // 현재 탄창의 개수
+    public int MaxAmmo => maxAmmo;
+    private void Start()
+    {
+        curAmmo = maxAmmo;
+    }
+
     public void Use()
     {
         if (type == Type.Melee)
@@ -35,8 +43,9 @@ public class Weapon : MonoBehaviour
             StopCoroutine("Swing");
             StartCoroutine("Swing");
         }
-        if (type == Type.Range)
+        if (type == Type.Range && curAmmo > 0)
         {
+            curAmmo--;
             StartCoroutine("Shot");
         }
     }
@@ -94,5 +103,18 @@ public class Weapon : MonoBehaviour
     public Type GetWeaponType()
     {
         return type;
+    }
+
+    public void SetCurAmmo(int reAmmo)
+    {
+        curAmmo = reAmmo;
+    }
+
+    public bool IsAmmoFull()
+    {
+        if (curAmmo == maxAmmo)
+            return true;
+        else
+            return false;
     }
 }

@@ -5515,6 +5515,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 61d03217-1a80-4fbe-a49b-c4c2f2f23bcb
     m_ActionName: 'Player/SwapKey3[/Keyboard/3]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 342432055}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: ReLoad
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 0ad828fc-aefa-4f0c-bc5c-70bc1ffefdc6
+    m_ActionName: 'Player/ReLoad[/Keyboard/r]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -5614,7 +5630,7 @@ MonoBehaviour:
   speed: 800
   jumpPower: 15
   hasWeapons: 000000
-  ammo: 0
+  ammo: 100
   coin: 0
   health: 100
   hasGrenades: 0
@@ -5624,6 +5640,15 @@ MonoBehaviour:
   maxHasGrenades: 4
   animator: {fileID: 0}
   rb: {fileID: 342432054}
+  moveAction:
+    m_Name: Move
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: eb09689e-bd3d-4972-bb6c-f579d5f818ff
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!4 &342432058 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5903297864969995812, guid: 8f5e135a19626f544908fc8f156144b9, type: 3}
@@ -6231,12 +6256,14 @@ MonoBehaviour:
   rate: 0.15
   bulletSpeed: 50
   caseRotation: 10
+  maxAmmo: 30
   meleeArea: {fileID: 0}
   trailEffect: {fileID: 0}
   bulletPos: {fileID: 10109155}
   bullet: {fileID: 937302662419411442, guid: 30f504b904c5faf41ad23ef23dd4901c, type: 3}
-  bulletCasePos: {fileID: 6076720800563330420, guid: 5e1d95834f8085041a3060c8e1a656e2, type: 3}
+  bulletCasePos: {fileID: 1401865718}
   bulletCase: {fileID: 3879962434694488613, guid: 5e1d95834f8085041a3060c8e1a656e2, type: 3}
+  curAmmo: 0
 --- !u!1 &579610796
 GameObject:
   m_ObjectHideFlags: 0
@@ -22801,12 +22828,14 @@ MonoBehaviour:
   rate: 0.5
   bulletSpeed: 0
   caseRotation: 0
+  maxAmmo: 0
   meleeArea: {fileID: 1648146519}
   trailEffect: {fileID: 499167554}
   bulletPos: {fileID: 0}
   bullet: {fileID: 0}
   bulletCasePos: {fileID: 0}
   bulletCase: {fileID: 0}
+  curAmmo: 0
 --- !u!65 &1648146519
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22994,12 +23023,14 @@ MonoBehaviour:
   rate: 0.4
   bulletSpeed: 50
   caseRotation: 10
+  maxAmmo: 7
   meleeArea: {fileID: 0}
   trailEffect: {fileID: 0}
-  bulletPos: {fileID: 2249918407981536625, guid: b5ded138bafc1c84f9a3492c62d72439, type: 3}
+  bulletPos: {fileID: 10109155}
   bullet: {fileID: 3897919637374218254, guid: b5ded138bafc1c84f9a3492c62d72439, type: 3}
-  bulletCasePos: {fileID: 6076720800563330420, guid: 5e1d95834f8085041a3060c8e1a656e2, type: 3}
+  bulletCasePos: {fileID: 521254211}
   bulletCase: {fileID: 3879962434694488613, guid: 5e1d95834f8085041a3060c8e1a656e2, type: 3}
+  curAmmo: 0
 --- !u!1001 &1993706674
 PrefabInstance:
   m_ObjectHideFlags: 0

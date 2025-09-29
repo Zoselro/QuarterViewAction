@@ -32,10 +32,13 @@ public class Player : MonoBehaviour
     private Animator animator;
     [SerializeField]
     private Rigidbody rb;
+    [SerializeField]
+    private InputAction moveAction;
 
     private float velocity;
     private float baseSpeed; // 원래 속도 저장용
     private float fireDelay; // 공격 딜레이
+    private string subMachineGunName;
 
     private bool isWalk;
     private bool isRun;
@@ -45,6 +48,8 @@ public class Player : MonoBehaviour
     private bool keepMovingAfterDodge; // 회피를 시작 후 끝날 때 까지 플래그 유지
     private bool keepMovingAfterJump; // 점프가 시작 하고 끝날 때 까지 플래그 유지
     private bool isFireReady; // 근접 공격 준비
+    private bool isHoldingAttack; // SubMachineGun일 경우, 꾹 눌렀을 때 계속 발사 되는 변수.
+    private bool isReload; // 장전을 할것인지?
 
     private Vector3 rotation;
     private Vector3 rotation_value; // 행동 후 방향키 변경이 반영되지 않는 버그 수정을 위한 변수
@@ -55,6 +60,8 @@ public class Player : MonoBehaviour
     private GameObject nearObject;
     private Weapon equipWeapon;
     private int equipWeaponIndex = -1;
+
+    private Coroutine fireLoopCo;
 
     private void Awake()
     {
@@ -68,9 +75,14 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+
         fireDelay += Time.deltaTime;
         baseSpeed = speed;
         Move();
+        if (Mouse.current.leftButton.isPressed && isHoldingAttack)
+        {
+            StartCoroutine(AttackCoRouine());
+        }
     }
 
     // 날개 있는 아이템 추가시 if문 해제.
@@ -171,7 +183,6 @@ public class Player : MonoBehaviour
     // 컨트롤키를 눌렀을 때 실행되는 회피 메서드
     public void Dodge(InputAction.CallbackContext context)
     {
-        Debug.Log(isFireReady);
         if (context.performed && rotation != Vector3.zero && !isJump && !isDodge && !isSwap && !isFireReady)
         {
             // 회피 시작 시 현재 입력 방향을 그대로 저장
@@ -242,18 +253,28 @@ public class Player : MonoBehaviour
         if (!hasWeapons[weaponIndex] || equipWeaponIndex == weaponIndex)
             return;
         SwapWeapon(weaponIndex, context);
+        subMachineGunName = weapons[weaponIndex].name;
     }
     public void Attack(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && equipWeapon.name != subMachineGunName)
         {
             StartCoroutine(AttackCoRouine());
+            isHoldingAttack = false;
+        }
+        // 만약에 SubMachineGun 이라면, 마우스를 꾹 눌렀을 때 계속 발사 되도록 구현하기.
+        else if(context.performed && equipWeapon.name == subMachineGunName)
+        {
+            isHoldingAttack = true;
+        }
+        else if (context.canceled)
+        {
+            isHoldingAttack = false;
         }
     }
 
     private IEnumerator AttackCoRouine()
     {
-        Debug.Log(equipWeapon);
         if (equipWeapon == null)
             yield break;
         isFireReady = equipWeapon.GetRate() < fireDelay;
@@ -265,6 +286,44 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(equipWeapon.GetWaitTime());
         }
         isFireReady = false;
+    }
+
+    // 총알을 재장전 하는 메서드.
+    public void ReLoad(InputAction.CallbackContext context)
+    {
+        if (context.performed && !isReload)
+        {
+            // 들린 무기가 없을 때
+            if (equipWeapon == null)
+            return;
+            // 근접 무기가 들려 있을 때
+            if (equipWeapon.GetWeaponType() == Weapon.Type.Melee)
+                return;
+            // 갖고 있는 총알이 하나도 없을 때
+            if (ammo == 0)
+                return;
+            // 무기의 탄창이 최대 개수 일 때
+            if (equipWeapon.IsAmmoFull())
+                return;
+
+            if(!isJump && !isDodge && !isSwap)
+            {
+                animator.SetTrigger("DoReload");
+                isReload = true;
+                Debug.Log("장전");
+                Invoke("ReLoadOut", 3f);
+            }
+        }
+    }
+
+    // 기능
+    private void ReLoadOut()
+    {
+        // 탄창 + 인벤토리 탄수 합산 대신 잔탄 값으로 덮어쓰는 로직 오류
+        int reAmmo = ammo < equipWeapon.MaxAmmo ? ammo : equipWeapon.MaxAmmo;
+        equipWeapon.SetCurAmmo(reAmmo);
+        ammo -= reAmmo;
+        isReload = false;
     }
 
     private void SwapOut()
