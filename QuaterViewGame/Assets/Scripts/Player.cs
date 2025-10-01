@@ -50,6 +50,7 @@ public class Player : MonoBehaviour
     private bool isFireReady; // 근접 공격 준비
     private bool isHoldingAttack; // SubMachineGun일 경우, 꾹 눌렀을 때 계속 발사 되는 변수.
     private bool isReload; // 장전을 할것인지?
+    private bool isAttack;
 
     private Vector3 rotation;
     private Vector3 rotation_value; // 행동 후 방향키 변경이 반영되지 않는 버그 수정을 위한 변수
@@ -61,7 +62,6 @@ public class Player : MonoBehaviour
     private Weapon equipWeapon;
     private int equipWeaponIndex = -1;
 
-    private Coroutine fireLoopCo;
 
     private void Awake()
     {
@@ -83,6 +83,7 @@ public class Player : MonoBehaviour
         {
             StartCoroutine(AttackCoRouine());
         }
+        UpdateMouseLook();
     }
 
     // 날개 있는 아이템 추가시 if문 해제.
@@ -127,6 +128,23 @@ public class Player : MonoBehaviour
         transform.LookAt(transform.position + new Vector3(rotation.x, 0f, rotation.y));
     }
 
+    public void UpdateMouseLook()
+    {
+        // 마우스를 찍은 방향으로 공격 할때 회전
+        if (Mouse.current.leftButton.isPressed && !isDodge)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit rayHit;
+            if(Physics.Raycast(ray, out rayHit, 100))
+            {
+                Vector3 nextVec = rayHit.point - transform.position;
+                nextVec.y = 0f;
+                transform.LookAt(transform.position + nextVec);
+            }
+        }
+    }
+
     // 방향키를 눌렀을 때 실행되는 메서드
     public void PlayerMove(InputAction.CallbackContext context)
     {
@@ -169,7 +187,7 @@ public class Player : MonoBehaviour
     // 스페이스바를 눌렀을 때 실행되는 점프 메서드
     public void Jumb(InputAction.CallbackContext context)
     {
-        if (context.performed && /*rotation == Vector3.zero &&*/ !isJump && !isDodge && !isSwap)
+        if (context.performed && /*rotation == Vector3.zero &&*/ !isJump && !isDodge && !isSwap && !isAttack)
         {
             rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
             isJump = true;
@@ -257,19 +275,22 @@ public class Player : MonoBehaviour
     }
     public void Attack(InputAction.CallbackContext context)
     {
-        if (context.performed && equipWeapon.name != subMachineGunName)
+        if (context.performed && equipWeapon.name != subMachineGunName && !isJump)
         {
             StartCoroutine(AttackCoRouine());
             isHoldingAttack = false;
+            isAttack = true;
         }
         // 만약에 SubMachineGun 이라면, 마우스를 꾹 눌렀을 때 계속 발사 되도록 구현하기.
-        else if(context.performed && equipWeapon.name == subMachineGunName)
+        else if(context.performed && equipWeapon.name == subMachineGunName && !isJump)
         {
             isHoldingAttack = true;
+            isAttack = true;
         }
         else if (context.canceled)
         {
             isHoldingAttack = false;
+            isAttack = false;
         }
     }
 
@@ -320,10 +341,36 @@ public class Player : MonoBehaviour
     private void ReLoadOut()
     {
         // 탄창 + 인벤토리 탄수 합산 대신 잔탄 값으로 덮어쓰는 로직 오류
-        int reAmmo = ammo < equipWeapon.MaxAmmo ? ammo : equipWeapon.MaxAmmo;
-        equipWeapon.SetCurAmmo(reAmmo);
-        ammo -= reAmmo;
-        isReload = false;
+        //int reAmmo = ammo < equipWeapon.MaxAmmo ? ammo : equipWeapon.MaxAmmo;
+        //equipWeapon.SetCurAmmo(reAmmo);
+        //ammo -= reAmmo;
+        //isReload = false;
+
+        int curAmmo = equipWeapon.CurAmmo;   // 현재 무기 탄창 수
+        int maxAmmo = equipWeapon.MaxAmmo;   // 무기 최대 탄창 수
+        int needAmmo = maxAmmo - curAmmo;    // 장전해야 할 탄약 수
+
+        // 이미 풀탄창이면 리턴
+        if (needAmmo <= 0)
+        {
+            equipWeapon.SetCurAmmo(maxAmmo);
+            isReload = false;
+            return;
+        }
+
+        // 플레이어가 가진 탄약이 부족할 경우
+        if (ammo < needAmmo)
+        {
+            equipWeapon.SetCurAmmo(curAmmo + ammo); // 남은 탄약만큼 채움
+            ammo = 0;
+        }
+        else
+        {
+            equipWeapon.SetCurAmmo(maxAmmo); // 풀탄창
+            ammo -= needAmmo;
+        }
+
+        isReload = false; // 장전 끝
     }
 
     private void SwapOut()

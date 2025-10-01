@@ -14,10 +14,13 @@ public class Item : MonoBehaviour
     [SerializeField] private Type type;
     [SerializeField] private int value;
     [SerializeField] private float speed;
-
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private SphereCollider sphereCollider;
     private void Awake()
     {
         speed = 20;
+        rb = GetComponent<Rigidbody>();
+        sphereCollider = GetComponent<SphereCollider>();
     }
 
     void Start()
@@ -28,6 +31,15 @@ public class Item : MonoBehaviour
     void Update()
     {
         transform.Rotate(Vector3.up * speed * Time.deltaTime);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Floor")
+        {
+            rb.isKinematic = true;
+            sphereCollider.enabled = false;
+        }
     }
 
     public int GetValue()

@@ -4885,6 +4885,7 @@ MonoBehaviour:
   type: 1
   value: 100
   speed: 0
+  rb: {fileID: 0}
 --- !u!54 &953890379042109097
 Rigidbody:
   m_ObjectHideFlags: 0

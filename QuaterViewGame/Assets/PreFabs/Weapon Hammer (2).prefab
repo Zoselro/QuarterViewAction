@@ -97,8 +97,8 @@ GameObject:
   - component: {fileID: 2050744655946681987}
   - component: {fileID: 3316509448410878045}
   - component: {fileID: 4588774836797162630}
-  - component: {fileID: 5749325693566240733}
   - component: {fileID: 305129801404400133}
+  - component: {fileID: 5749325693566240733}
   m_Layer: 0
   m_Name: Weapon Hammer (2)
   m_TagString: Weapon
@@ -137,8 +137,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  value: 2
+  value: 0
   speed: 0
+  rb: {fileID: 0}
+  sphereCollider: {fileID: 0}
 --- !u!54 &4588774836797162630
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -166,7 +168,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!135 &5749325693566240733
+--- !u!135 &305129801404400133
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,9 +187,9 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 1, z: 0}
---- !u!135 &305129801404400133
+  m_Radius: 4
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!135 &5749325693566240733
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -206,8 +208,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 4
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &5205007301922509474
 GameObject:
   m_ObjectHideFlags: 0

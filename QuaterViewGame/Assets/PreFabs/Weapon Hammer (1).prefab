@@ -137,8 +137,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  value: 1
+  value: 0
   speed: 0
+  rb: {fileID: 0}
+  sphereCollider: {fileID: 0}
 --- !u!54 &2547928684774345812
 Rigidbody:
   m_ObjectHideFlags: 0

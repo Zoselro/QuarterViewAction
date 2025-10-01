@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 205283980434549766}
   - component: {fileID: 6405488861684908623}
   - component: {fileID: 6730581851387482686}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BulletHandGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}

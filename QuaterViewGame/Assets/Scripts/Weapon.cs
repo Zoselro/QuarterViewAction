@@ -31,6 +31,7 @@ public class Weapon : MonoBehaviour
 
     [SerializeField] private int curAmmo; // 현재 탄창의 개수
     public int MaxAmmo => maxAmmo;
+    public int CurAmmo => curAmmo;
     private void Start()
     {
         curAmmo = maxAmmo;
@@ -69,10 +70,18 @@ public class Weapon : MonoBehaviour
     
     private IEnumerator Shot()
     {
-        // 1. 총알 발사
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit rayHit;
+        Vector3 shootDir = ray.direction;
+        if(Physics.Raycast(ray, out rayHit, 100))
+        {
+            shootDir = (rayHit.point - bulletPos.position).normalized;
+        }
+
+         // 1. 총알 발사
         GameObject instantBullet = Instantiate(bullet, bulletPos.position, bulletPos.rotation);
         Rigidbody bulletRigid = instantBullet.GetComponent<Rigidbody>();
-        bulletRigid.linearVelocity = bulletPos.forward * bulletSpeed;
+        bulletRigid.linearVelocity = shootDir * bulletSpeed;//bulletPos.forward * bulletSpeed;
 
         // 1프레임 쉬기
         yield return null;
