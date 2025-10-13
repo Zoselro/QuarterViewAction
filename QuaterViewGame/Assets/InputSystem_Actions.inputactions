@@ -148,6 +148,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GrenadeAttack",
+                    "type": "Button",
+                    "id": "9ee2f37d-ff43-4283-bb23-97d3e6c2b293",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SpwanEnemy",
+                    "type": "Button",
+                    "id": "70dc734c-26c3-41eb-b88f-b14867ba6c26",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -610,6 +628,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "ReLoad",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e12ab5b4-1989-4b19-a69c-83832c1ede23",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "GrenadeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd753910-8767-4a99-8f0b-49a60ec084e3",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SpwanEnemy",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

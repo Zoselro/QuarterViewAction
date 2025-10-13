@@ -24,7 +24,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private GameObject bullet;
     [SerializeField] private Transform bulletCasePos;
     [SerializeField] private GameObject bulletCase;
-
+    
     private float firstWaitTime = 0.1f;
     private float secondWaitTime = 0.3f;
     private float thirdWaitTime = 0.3f;
@@ -70,18 +70,18 @@ public class Weapon : MonoBehaviour
     
     private IEnumerator Shot()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit rayHit;
-        Vector3 shootDir = ray.direction;
-        if(Physics.Raycast(ray, out rayHit, 100))
-        {
-            shootDir = (rayHit.point - bulletPos.position).normalized;
-        }
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //RaycastHit rayHit;
+        //Vector3 shootDir = ray.direction;
+        //if(Physics.Raycast(ray, out rayHit, 100))
+        //{
+        //    shootDir = (rayHit.point - bulletPos.position).normalized;
+        //}
 
          // 1. 총알 발사
         GameObject instantBullet = Instantiate(bullet, bulletPos.position, bulletPos.rotation);
         Rigidbody bulletRigid = instantBullet.GetComponent<Rigidbody>();
-        bulletRigid.linearVelocity = shootDir * bulletSpeed;//bulletPos.forward * bulletSpeed;
+        bulletRigid.linearVelocity = bulletPos.forward * bulletSpeed; // shootDir * bulletSpeed;
 
         // 1프레임 쉬기
         yield return null;
@@ -117,6 +117,11 @@ public class Weapon : MonoBehaviour
     public void SetCurAmmo(int reAmmo)
     {
         curAmmo = reAmmo;
+    }
+
+    public int GetDamage()
+    {
+        return damage;
     }
 
     public bool IsAmmoFull()

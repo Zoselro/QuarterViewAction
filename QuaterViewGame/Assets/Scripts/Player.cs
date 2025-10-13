@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     [Header("GameObject")]
     [SerializeField] private GameObject[] weapons;
     [SerializeField] private GameObject[] grenades;
+    [SerializeField] private GameObject grenadeObj;
+    [SerializeField] private GameObject spawnEnemy;
 
     [Header("Options")]
     [SerializeField] private float speed;
@@ -36,8 +38,8 @@ public class Player : MonoBehaviour
     private InputAction moveAction;
 
     private float velocity;
-    private float baseSpeed; // ¿ø·¡ ¼Óµµ ÀúÀå¿ë
-    private float fireDelay; // °ø°İ µô·¹ÀÌ
+    private float baseSpeed; // ì›ë˜ ì†ë„ ì €ì¥ìš©
+    private float fireDelay; // ê³µê²© ë”œë ˆì´
     private string subMachineGunName;
 
     private bool isWalk;
@@ -45,37 +47,36 @@ public class Player : MonoBehaviour
     private bool isJump;
     private bool isDodge;
     private bool isSwap;
-    private bool keepMovingAfterDodge; // È¸ÇÇ¸¦ ½ÃÀÛ ÈÄ ³¡³¯ ¶§ ±îÁö ÇÃ·¡±× À¯Áö
-    private bool keepMovingAfterJump; // Á¡ÇÁ°¡ ½ÃÀÛ ÇÏ°í ³¡³¯ ¶§ ±îÁö ÇÃ·¡±× À¯Áö
-    private bool isFireReady; // ±ÙÁ¢ °ø°İ ÁØºñ
-    private bool isHoldingAttack; // SubMachineGunÀÏ °æ¿ì, ²Ú ´­·¶À» ¶§ °è¼Ó ¹ß»ç µÇ´Â º¯¼ö.
-    private bool isReload; // ÀåÀüÀ» ÇÒ°ÍÀÎÁö?
+    private bool keepMovingAfterDodge; // íšŒí”¼ë¥¼ ì‹œì‘ í›„ ëë‚  ë•Œ ê¹Œì§€ í”Œë˜ê·¸ ìœ ì§€
+    private bool keepMovingAfterJump; // ì í”„ê°€ ì‹œì‘ í•˜ê³  ëë‚  ë•Œ ê¹Œì§€ í”Œë˜ê·¸ ìœ ì§€
+    private bool isFireReady; // ê·¼ì ‘ ê³µê²© ì¤€ë¹„
+    private bool isHoldingAttack; // SubMachineGunì¼ ê²½ìš°, ê¾¹ ëˆŒë €ì„ ë•Œ ê³„ì† ë°œì‚¬ ë˜ëŠ” ë³€ìˆ˜.
+    private bool isReload; // ì¥ì „ì„ í• ê²ƒì¸ì§€?
     private bool isAttack;
+    private bool isBorder; // ë²½ì— ë¶€ë”›íˆê³  ìˆëŠ”ê°€?
 
     private Vector3 rotation;
-    private Vector3 rotation_value; // Çàµ¿ ÈÄ ¹æÇâÅ° º¯°æÀÌ ¹İ¿µµÇÁö ¾Ê´Â ¹ö±× ¼öÁ¤À» À§ÇÑ º¯¼ö
+    private Vector3 rotation_value; // í–‰ë™ í›„ ë°©í–¥í‚¤ ë³€ê²½ì´ ë°˜ì˜ë˜ì§€ ì•ŠëŠ” ë²„ê·¸ ìˆ˜ì •ì„ ìœ„í•œ ë³€ìˆ˜
     private Vector3 dodgeRotation;
-    private Vector3 dodgeMoveDir; // È¸ÇÇµ¿ÀÛÀÌ ³¡³¯ ¶§ ±îÁö ÀÌµ¿¿¡ »ç¿ëµÉ º¤ÅÍ
-    private Vector3 jumpMoveDir; // Á¡ÇÁµ¿ÀÛÀÌ ³¡³¯ ¶§ ±îÁö ÀÌµ¿¿¡ »ç¿ëµÉ º¤ÅÍ
+    private Vector3 dodgeMoveDir; // íšŒí”¼ë™ì‘ì´ ëë‚  ë•Œ ê¹Œì§€ ì´ë™ì— ì‚¬ìš©ë  ë²¡í„°
+    private Vector3 jumpMoveDir; // ì í”„ë™ì‘ì´ ëë‚  ë•Œ ê¹Œì§€ ì´ë™ì— ì‚¬ìš©ë  ë²¡í„°
 
     private GameObject nearObject;
     private Weapon equipWeapon;
     private int equipWeaponIndex = -1;
-
 
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
     }
 
-    void Start()
+    /*private void StopToEnemy()
     {
-
-    }
-
+        Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
+        isBorder = Physics.Raycast(transform.position, transform.forward, 3, LayerMask.GetMask("Enemy"));
+    }*/
     void FixedUpdate()
     {
-
         fireDelay += Time.deltaTime;
         baseSpeed = speed;
         Move();
@@ -83,14 +84,16 @@ public class Player : MonoBehaviour
         {
             StartCoroutine(AttackCoRouine());
         }
+
         UpdateMouseLook();
+        //StopToEnemy();
     }
 
-    // ³¯°³ ÀÖ´Â ¾ÆÀÌÅÛ Ãß°¡½Ã if¹® ÇØÁ¦.
+    // ë‚ ê°œ ìˆëŠ” ì•„ì´í…œ ì¶”ê°€ì‹œ ifë¬¸ í•´ì œ.
     public void Move()
     {
-        // °ø°İ Áß¿¡´Â ÀÌµ¿ÇÏÁö ¾ÊÀ½
-        if (isFireReady && !isJump && !isDodge)
+        // ê³µê²© ì¤‘ì—ëŠ” ì´ë™í•˜ì§€ ì•ŠìŒ
+        if ((isFireReady && !isJump && !isDodge))
         {
             rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
             return;
@@ -98,7 +101,7 @@ public class Player : MonoBehaviour
 
         if (isDodge && keepMovingAfterDodge)
         {
-            // Å°º¸µå¸¦ ¶¼µµ dodgeMoveDir ·Î ÀÌµ¿
+            // í‚¤ë³´ë“œë¥¼ ë–¼ë„ dodgeMoveDir ë¡œ ì´ë™
             float moveSpeed = baseSpeed * Time.deltaTime;
             rb.linearVelocity = new Vector3(dodgeMoveDir.x * moveSpeed,
                                             rb.linearVelocity.y,
@@ -108,7 +111,7 @@ public class Player : MonoBehaviour
         }
         else if (isJump && keepMovingAfterJump)
         {
-            // Å°º¸µå¸¦ ¶¼µµ jumpMoveDir ·Î ÀÌµ¿
+            // í‚¤ë³´ë“œë¥¼ ë–¼ë„ jumpMoveDir ë¡œ ì´ë™
             float moveSpeed = baseSpeed * Time.deltaTime;
             rb.linearVelocity = new Vector3(jumpMoveDir.x * moveSpeed,
                                             rb.linearVelocity.y,
@@ -130,7 +133,7 @@ public class Player : MonoBehaviour
 
     public void UpdateMouseLook()
     {
-        // ¸¶¿ì½º¸¦ ÂïÀº ¹æÇâÀ¸·Î °ø°İ ÇÒ¶§ È¸Àü
+        // ë§ˆìš°ìŠ¤ë¥¼ ì°ì€ ë°©í–¥ìœ¼ë¡œ ê³µê²© í• ë•Œ íšŒì „
         if (Mouse.current.leftButton.isPressed && !isDodge)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -145,7 +148,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    // ¹æÇâÅ°¸¦ ´­·¶À» ¶§ ½ÇÇàµÇ´Â ¸Ş¼­µå
+    // ë°©í–¥í‚¤ë¥¼ ëˆŒë €ì„ ë•Œ ì‹¤í–‰ë˜ëŠ” ë©”ì„œë“œ
     public void PlayerMove(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -156,7 +159,7 @@ public class Player : MonoBehaviour
             rotation = context.ReadValue<Vector2>().normalized;
             rotation_value = rotation;
 
-            // ¸¸¾à¿¡ È¸ÇÇ°¡ µ¿ÀÛÀÌ ³¡³µ´Ù¸é, ¹æÇâ ÀÔ·Â°ª ´Ù½Ã ÁÖ±â.
+            // ë§Œì•½ì— íšŒí”¼ê°€ ë™ì‘ì´ ëë‚¬ë‹¤ë©´, ë°©í–¥ ì…ë ¥ê°’ ë‹¤ì‹œ ì£¼ê¸°.
             if (isDodge)
                 rotation = dodgeRotation;
             isRun = true;
@@ -170,7 +173,7 @@ public class Player : MonoBehaviour
         animator.SetBool("IsRun", isRun);
     }
 
-    // ¿ŞÂÊ ½¬ÇÁÆ®Å°¸¦ ´­·¶À»¶§ ½ÇÇàµÇ´Â ¸Ş¼­µå
+    // ì™¼ìª½ ì‰¬í”„íŠ¸í‚¤ë¥¼ ëˆŒë €ì„ë•Œ ì‹¤í–‰ë˜ëŠ” ë©”ì„œë“œ
     public void PlayerWalk(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -184,7 +187,7 @@ public class Player : MonoBehaviour
         animator.SetBool("IsWalk", isWalk);
     }
 
-    // ½ºÆäÀÌ½º¹Ù¸¦ ´­·¶À» ¶§ ½ÇÇàµÇ´Â Á¡ÇÁ ¸Ş¼­µå
+    // ìŠ¤í˜ì´ìŠ¤ë°”ë¥¼ ëˆŒë €ì„ ë•Œ ì‹¤í–‰ë˜ëŠ” ì í”„ ë©”ì„œë“œ
     public void Jumb(InputAction.CallbackContext context)
     {
         if (context.performed && /*rotation == Vector3.zero &&*/ !isJump && !isDodge && !isSwap && !isAttack)
@@ -198,27 +201,27 @@ public class Player : MonoBehaviour
         }
     }
 
-    // ÄÁÆ®·ÑÅ°¸¦ ´­·¶À» ¶§ ½ÇÇàµÇ´Â È¸ÇÇ ¸Ş¼­µå
+    // ì»¨íŠ¸ë¡¤í‚¤ë¥¼ ëˆŒë €ì„ ë•Œ ì‹¤í–‰ë˜ëŠ” íšŒí”¼ ë©”ì„œë“œ
     public void Dodge(InputAction.CallbackContext context)
     {
         if (context.performed && rotation != Vector3.zero && !isJump && !isDodge && !isSwap && !isFireReady)
         {
-            // È¸ÇÇ ½ÃÀÛ ½Ã ÇöÀç ÀÔ·Â ¹æÇâÀ» ±×´ë·Î ÀúÀå
+            // íšŒí”¼ ì‹œì‘ ì‹œ í˜„ì¬ ì…ë ¥ ë°©í–¥ì„ ê·¸ëŒ€ë¡œ ì €ì¥
             dodgeMoveDir = rotation;
-            // ¸¸¾à¿¡, È¸ÇÇÁßÀÌ¶ó¸é, Áö±İ º¸´Â ¹æÇâ ±×´ë·Î Á÷Áø.
+            // ë§Œì•½ì—, íšŒí”¼ì¤‘ì´ë¼ë©´, ì§€ê¸ˆ ë³´ëŠ” ë°©í–¥ ê·¸ëŒ€ë¡œ ì§ì§„.
             dodgeRotation = rotation;
             speed *= 2;
             isDodge = true;
             animator.SetTrigger("DoDodge");
 
-            Invoke("DodgeOut", 0.5f); // È¸ÇÇ°¡ ³¡³µÀ» ¶§ ¼öÇàµÇ´Â ÇÔ¼ö.
+            Invoke("DodgeOut", 0.5f); // íšŒí”¼ê°€ ëë‚¬ì„ ë•Œ ìˆ˜í–‰ë˜ëŠ” í•¨ìˆ˜.
         }
     }
 
-    // ¾ÆÀÌÅÛÀ» È¹µæ ÇÏ´Â Å°
+    // ì•„ì´í…œì„ íšë“ í•˜ëŠ” í‚¤
     public void Interaction(InputAction.CallbackContext context)
     {
-        if (context.performed && nearObject != null && !isJump) // Á¡ÇÁ ÇÏ°íÀÖ´Â »óÅÂÀÏ ¶§´Â ¾ÆÀÌÅÛ È¹µæ ºÒ°¡.
+        if (context.performed && nearObject != null && !isJump) // ì í”„ í•˜ê³ ìˆëŠ” ìƒíƒœì¼ ë•ŒëŠ” ì•„ì´í…œ íšë“ ë¶ˆê°€.
         {
             if (nearObject.tag == "Weapon")
             {
@@ -235,7 +238,7 @@ public class Player : MonoBehaviour
     {
         if(context.performed && !isJump && !isDodge)
         {
-            // ¸¸¾à¿¡ ÀÌ¹Ì ¹«±â°¡ µé·ÁÀÖ´Ù¸é, ÀÌÀü¹«±â ºñÈ°¼ºÈ­ ÀÌÈÄ È°¼ºÈ­
+            // ë§Œì•½ì— ì´ë¯¸ ë¬´ê¸°ê°€ ë“¤ë ¤ìˆë‹¤ë©´, ì´ì „ë¬´ê¸° ë¹„í™œì„±í™” ì´í›„ í™œì„±í™”
             if (equipWeapon != null)
                 equipWeapon.gameObject.SetActive(false);
             equipWeapon = weapons[weaponIndex].GetComponent<Weapon>();
@@ -247,10 +250,10 @@ public class Player : MonoBehaviour
 
             isSwap = true;
 
-            Invoke("SwapOut", 0.4f); // SwapÀÌ ³¡³µÀ» ¶§ ¼öÇàµÇ´Â ÇÔ¼ö.
+            Invoke("SwapOut", 0.4f); // Swapì´ ëë‚¬ì„ ë•Œ ìˆ˜í–‰ë˜ëŠ” í•¨ìˆ˜.
         }
     }
-    // ---- Input System ¹ÙÀÎµù¿ë ----
+    // ---- Input System ë°”ì¸ë”©ìš© ----
     public void SwapKey0(InputAction.CallbackContext context)
     {
         int weaponIndex = 0;
@@ -281,8 +284,8 @@ public class Player : MonoBehaviour
             isHoldingAttack = false;
             isAttack = true;
         }
-        // ¸¸¾à¿¡ SubMachineGun ÀÌ¶ó¸é, ¸¶¿ì½º¸¦ ²Ú ´­·¶À» ¶§ °è¼Ó ¹ß»ç µÇµµ·Ï ±¸ÇöÇÏ±â.
-        else if(context.performed && equipWeapon.name == subMachineGunName && !isJump)
+        // ë§Œì•½ì— SubMachineGun ì´ë¼ë©´, ë§ˆìš°ìŠ¤ë¥¼ ê¾¹ ëˆŒë €ì„ ë•Œ ê³„ì† ë°œì‚¬ ë˜ë„ë¡ êµ¬í˜„í•˜ê¸°.
+        else if (context.performed && equipWeapon.name == subMachineGunName && !isJump)
         {
             isHoldingAttack = true;
             isAttack = true;
@@ -294,6 +297,32 @@ public class Player : MonoBehaviour
         }
     }
 
+    // ë‹¨ìœ„ë²¡í„°ì— ëŒ€í•´ì„œ ì œëŒ€ë¡œ ì´í•´ë¥¼ í•˜ê³ , ì í”„ ë˜ëŠ” í˜„ìƒ ìˆ˜ì •í•˜ê¸°
+    public void GrenadeAttack(InputAction.CallbackContext context)
+    {
+        if (context.performed && hasGrenades == 0)
+            return;
+        else if (context.performed && !isReload && !isSwap)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit rayHit;
+            if (Physics.Raycast(ray, out rayHit, 100))
+            {
+                Vector3 nextVec = rayHit.point - transform.position;
+                nextVec.y = 10f;
+
+                GameObject obj = Instantiate(grenadeObj, transform.position, transform.rotation);
+                Rigidbody rigidGrenade = obj.GetComponent<Rigidbody>();
+                rigidGrenade.AddForce(nextVec, ForceMode.Impulse);
+                rigidGrenade.AddTorque(Vector3.back * 10, ForceMode.Impulse);
+
+                hasGrenades--;
+                grenades[hasGrenades].SetActive(false);
+            }
+        }
+    }
+
     private IEnumerator AttackCoRouine()
     {
         if (equipWeapon == null)
@@ -301,29 +330,42 @@ public class Player : MonoBehaviour
         isFireReady = equipWeapon.GetRate() < fireDelay;
         if (isFireReady && !isDodge && !isSwap)
         {
+            yield return null;
+
             equipWeapon.Use();
-            animator.SetTrigger(equipWeapon.GetWeaponType() == Weapon.Type.Melee ? "DoSwing" : "DoShot");
+
+            string setWeapon = null;
+            if(equipWeapon.GetWeaponType() == Weapon.Type.Melee)
+            {
+                setWeapon = "DoSwing";
+            }
+            else if(equipWeapon.GetWeaponType() == Weapon.Type.Range && equipWeapon.CurAmmo > 0)
+            {
+                setWeapon = "DoShot";
+            }
+            animator.SetTrigger(setWeapon);
+            //animator.SetTrigger(equipWeapon.GetWeaponType() == Weapon.Type.Melee ? "DoSwing" : "DoShot");
             fireDelay = 0;
             yield return new WaitForSeconds(equipWeapon.GetWaitTime());
         }
         isFireReady = false;
     }
 
-    // ÃÑ¾ËÀ» ÀçÀåÀü ÇÏ´Â ¸Ş¼­µå.
+    // ì´ì•Œì„ ì¬ì¥ì „ í•˜ëŠ” ë©”ì„œë“œ.
     public void ReLoad(InputAction.CallbackContext context)
     {
         if (context.performed && !isReload)
         {
-            // µé¸° ¹«±â°¡ ¾øÀ» ¶§
+            // ë“¤ë¦° ë¬´ê¸°ê°€ ì—†ì„ ë•Œ
             if (equipWeapon == null)
             return;
-            // ±ÙÁ¢ ¹«±â°¡ µé·Á ÀÖÀ» ¶§
+            // ê·¼ì ‘ ë¬´ê¸°ê°€ ë“¤ë ¤ ìˆì„ ë•Œ
             if (equipWeapon.GetWeaponType() == Weapon.Type.Melee)
                 return;
-            // °®°í ÀÖ´Â ÃÑ¾ËÀÌ ÇÏ³ªµµ ¾øÀ» ¶§
+            // ê°–ê³  ìˆëŠ” ì´ì•Œì´ í•˜ë‚˜ë„ ì—†ì„ ë•Œ
             if (ammo == 0)
                 return;
-            // ¹«±âÀÇ ÅºÃ¢ÀÌ ÃÖ´ë °³¼ö ÀÏ ¶§
+            // ë¬´ê¸°ì˜ íƒ„ì°½ì´ ìµœëŒ€ ê°œìˆ˜ ì¼ ë•Œ
             if (equipWeapon.IsAmmoFull())
                 return;
 
@@ -331,26 +373,57 @@ public class Player : MonoBehaviour
             {
                 animator.SetTrigger("DoReload");
                 isReload = true;
-                Debug.Log("ÀåÀü");
+                Debug.Log("ì¥ì „");
                 Invoke("ReLoadOut", 3f);
             }
         }
     }
 
-    // ±â´É
+    // ê°œë°œì ëª¨ë“œ fí‚¤ ëˆŒë €ì„ ë•Œ ë°”ë¡œ ì•ì— Enemy ì†Œí™˜
+    public void SpawnEnemy(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            // 1ï¸. Rayë¥¼ í”Œë ˆì´ì–´ì˜ ì‹œì (ì •ë©´)ìœ¼ë¡œ ìœë‹¤
+            Ray ray = new Ray(transform.position, transform.forward);
+            RaycastHit hit;
+
+            // 2ï¸. ê±°ë¦¬ 5 ì´ë‚´ì— ë¬´ì–¸ê°€ê°€ ìˆìœ¼ë©´, ê±°ê¸° ë°”ë¡œ ì•ì— ìƒì„±
+            if (Physics.Raycast(ray, out hit, 5f))
+            {
+                // Rayì— ë§ì€ ì§€ì  ë°”ë¡œ ì•ì— ìŠ¤í°
+                Vector3 spawnPos = hit.point - transform.forward * 0.5f; // 0.5m ë’¤ìª½ (ê²¹ì¹˜ì§€ ì•Šê²Œ)
+                GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
+                Enemy enemy = obj.GetComponent<Enemy>();
+                if(enemy == null)
+                {
+                    Debug.Log("ì‹¤íŒ¨");
+                }
+                else
+                {
+                    Debug.Log("ì„±ê³µ");
+                }
+                enemy.Initialize(transform);
+                Debug.Log("ì  ìƒì„± ìœ„ì¹˜: " + spawnPos);
+            }
+            else
+            {
+                // 3ï¸. ì•„ë¬´ê²ƒë„ ì—†ìœ¼ë©´, í”Œë ˆì´ì–´ ì• ê±°ë¦¬ 5 ìœ„ì¹˜ì— ìƒì„±
+                Vector3 spawnPos = transform.position + transform.forward * 5f;
+                GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
+                Debug.Log("ì  ìƒì„± ìœ„ì¹˜: " + spawnPos);
+            }
+        }
+    }
+
+    // ê¸°ëŠ¥
     private void ReLoadOut()
     {
-        // ÅºÃ¢ + ÀÎº¥Åä¸® Åº¼ö ÇÕ»ê ´ë½Å ÀÜÅº °ªÀ¸·Î µ¤¾î¾²´Â ·ÎÁ÷ ¿À·ù
-        //int reAmmo = ammo < equipWeapon.MaxAmmo ? ammo : equipWeapon.MaxAmmo;
-        //equipWeapon.SetCurAmmo(reAmmo);
-        //ammo -= reAmmo;
-        //isReload = false;
+        int curAmmo = equipWeapon.CurAmmo;   // í˜„ì¬ ë¬´ê¸° íƒ„ì°½ ìˆ˜
+        int maxAmmo = equipWeapon.MaxAmmo;   // ë¬´ê¸° ìµœëŒ€ íƒ„ì°½ ìˆ˜
+        int needAmmo = maxAmmo - curAmmo;    // ì¥ì „í•´ì•¼ í•  íƒ„ì•½ ìˆ˜
 
-        int curAmmo = equipWeapon.CurAmmo;   // ÇöÀç ¹«±â ÅºÃ¢ ¼ö
-        int maxAmmo = equipWeapon.MaxAmmo;   // ¹«±â ÃÖ´ë ÅºÃ¢ ¼ö
-        int needAmmo = maxAmmo - curAmmo;    // ÀåÀüÇØ¾ß ÇÒ Åº¾à ¼ö
-
-        // ÀÌ¹Ì Ç®ÅºÃ¢ÀÌ¸é ¸®ÅÏ
+        // ì´ë¯¸ í’€íƒ„ì°½ì´ë©´ ë¦¬í„´
         if (needAmmo <= 0)
         {
             equipWeapon.SetCurAmmo(maxAmmo);
@@ -358,19 +431,19 @@ public class Player : MonoBehaviour
             return;
         }
 
-        // ÇÃ·¹ÀÌ¾î°¡ °¡Áø Åº¾àÀÌ ºÎÁ·ÇÒ °æ¿ì
+        // í”Œë ˆì´ì–´ê°€ ê°€ì§„ íƒ„ì•½ì´ ë¶€ì¡±í•  ê²½ìš°
         if (ammo < needAmmo)
         {
-            equipWeapon.SetCurAmmo(curAmmo + ammo); // ³²Àº Åº¾à¸¸Å­ Ã¤¿ò
+            equipWeapon.SetCurAmmo(curAmmo + ammo); // ë‚¨ì€ íƒ„ì•½ë§Œí¼ ì±„ì›€
             ammo = 0;
         }
         else
         {
-            equipWeapon.SetCurAmmo(maxAmmo); // Ç®ÅºÃ¢
+            equipWeapon.SetCurAmmo(maxAmmo); // í’€íƒ„ì°½
             ammo -= needAmmo;
         }
 
-        isReload = false; // ÀåÀü ³¡
+        isReload = false; // ì¥ì „ ë
     }
 
     private void SwapOut()
