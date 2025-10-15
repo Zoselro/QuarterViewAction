@@ -31,8 +31,6 @@ public class Player : MonoBehaviour
 
     [Header("Components")]
     [SerializeField]
-    private Animator animator;
-    [SerializeField]
     private Rigidbody rb;
     [SerializeField]
     private InputAction moveAction;
@@ -53,7 +51,8 @@ public class Player : MonoBehaviour
     private bool isHoldingAttack; // SubMachineGun일 경우, 꾹 눌렀을 때 계속 발사 되는 변수.
     private bool isReload; // 장전을 할것인지?
     private bool isAttack;
-    private bool isBorder; // 벽에 부딛히고 있는가?
+    private bool isDamage; // 플레이어가 몬스터에게 부딛혔을 때 잠깐의 무적타임을 주기 위한 변수.
+    //private bool isBorder; // 벽에 부딛히고 있는가?
 
     private Vector3 rotation;
     private Vector3 rotation_value; // 행동 후 방향키 변경이 반영되지 않는 버그 수정을 위한 변수
@@ -61,13 +60,17 @@ public class Player : MonoBehaviour
     private Vector3 dodgeMoveDir; // 회피동작이 끝날 때 까지 이동에 사용될 벡터
     private Vector3 jumpMoveDir; // 점프동작이 끝날 때 까지 이동에 사용될 벡터
 
+
+    private Animator animator;
     private GameObject nearObject;
     private Weapon equipWeapon;
     private int equipWeaponIndex = -1;
+    private MeshRenderer[] meshs;
 
     private void Awake()
     {
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponentInChildren<Animator>(); // 자식 오브젝트의 첫 번째 컴포넌트를 가져옴.
+        meshs = GetComponentsInChildren<MeshRenderer>(); // 자식 오브젝트의 컴포넌트들을 가져옴.
     }
 
     /*private void StopToEnemy()
@@ -278,6 +281,8 @@ public class Player : MonoBehaviour
     }
     public void Attack(InputAction.CallbackContext context)
     {
+        if (equipWeapon == null)
+            return;
         if (context.performed && equipWeapon.name != subMachineGunName && !isJump)
         {
             StartCoroutine(AttackCoRouine());
@@ -395,14 +400,6 @@ public class Player : MonoBehaviour
                 Vector3 spawnPos = hit.point - transform.forward * 0.5f; // 0.5m 뒤쪽 (겹치지 않게)
                 GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
                 Enemy enemy = obj.GetComponent<Enemy>();
-                if(enemy == null)
-                {
-                    Debug.Log("실패");
-                }
-                else
-                {
-                    Debug.Log("성공");
-                }
                 enemy.Initialize(transform);
                 Debug.Log("적 생성 위치: " + spawnPos);
             }
@@ -411,6 +408,8 @@ public class Player : MonoBehaviour
                 // 3️. 아무것도 없으면, 플레이어 앞 거리 5 위치에 생성
                 Vector3 spawnPos = transform.position + transform.forward * 5f;
                 GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
+                Enemy enemy = obj.GetComponent<Enemy>();
+                enemy.Initialize(transform);
                 Debug.Log("적 생성 위치: " + spawnPos);
             }
         }
@@ -504,6 +503,34 @@ public class Player : MonoBehaviour
             }
             Destroy(other.gameObject);
         }
+        else if(other.tag == "EnemyBullet")
+        {
+            if (!isDamage)
+            {
+                Bullet enemyBullet = other.GetComponent<Bullet>();
+                health -= enemyBullet.GetDamage();
+                StartCoroutine(OnDamage());
+            }
+        }
+    }
+
+    public IEnumerator OnDamage()
+    {
+        isDamage = true;
+        
+        foreach(MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.yellow;
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.white;
+        }
+
+        isDamage = false;
     }
 
     private void OnTriggerStay(Collider other)

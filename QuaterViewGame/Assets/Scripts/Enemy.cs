@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -40,12 +41,12 @@ public class Enemy : MonoBehaviour
     {
         isChase = true;
         animator.SetBool("isWalk", true);
+        rigid.isKinematic = false;
     }
 
     private void Update()
     {
         Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
-        //bool onWall = Physics.Raycast(transform.position + transform.up * 0.1f, -transform.up, checkDistance, LayerMask.GetMask("Floor"));
         if(isChase)
             nav.SetDestination(target.position);
     }
@@ -94,7 +95,7 @@ public class Enemy : MonoBehaviour
 
         mat.color = Color.red;
         yield return new WaitForSeconds(0.1f);
-
+        
         if(curHealth > 0)
         {
             mat.color = Color.white;
