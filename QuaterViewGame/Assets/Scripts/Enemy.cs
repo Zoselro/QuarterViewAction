@@ -8,15 +8,21 @@ public class Enemy : MonoBehaviour
     [Header("Options")]
     [SerializeField] private int maxHealth;
     [SerializeField] private int curHealth;
+    [SerializeField] private float spawnTime;
+    
+    [Header("Components")]
+    [SerializeField] private BoxCollider meleeArea;
 
     private Transform target; // 추적 할 오브젝트 
-    private bool isChase;
+    private bool isChase; // 추적하고 있는가?
+    private bool isAttack; // 공격을 하고 있는가?
     private Material mat;
     private BoxCollider boxCollider;
     private Rigidbody rigid;
     private NavMeshAgent nav;
     private float checkDistance = 1f; // 바닥 감지 거리 (필요시 조절)
     private Animator animator;
+    private float time = 0f;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -24,17 +30,68 @@ public class Enemy : MonoBehaviour
         mat = GetComponentInChildren<MeshRenderer>().material;
         nav = rigid.GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-
-        Invoke("ChaseStart", 2f);
+        Invoke("ChaseStart", spawnTime);
     }
     private void Start()
-    {   
+    {
+        boxCollider.enabled = false;
+
         curHealth = maxHealth;
+    }
+
+    public void Targetting()
+    {
+        float targetRadius = 1.5f;
+        float targetRange = 3f;
+
+        RaycastHit[] raycastHits =
+        Physics.SphereCastAll(transform.position,
+                                targetRadius, transform.forward, targetRange, LayerMask.GetMask("Player"));
+
+        // 공격중이 아닌데, 범위 안에 플레이어가 타겟팅이 되었을 경우
+        if (raycastHits.Length > 0 && !isAttack)
+        {
+            StartCoroutine(Attack());
+            Debug.Log("타겟 됨");
+        }
+        else
+        {
+            Debug.Log("타겟 안됨");
+        }
+    }
+
+    private IEnumerator Attack()
+    {
+        isChase = false;
+        isAttack = true;
+        animator.SetBool("isAttack", true);
+
+        yield return new WaitForSeconds(0.2f);
+        meleeArea.enabled = true;
+        rigid.isKinematic = true;
+
+        yield return new WaitForSeconds(1f);
+        meleeArea.enabled = false;
+
+        yield return new WaitForSeconds(1f);
+
+        rigid.isKinematic = false;
+        isChase = true;
+        isAttack = false;
+        animator.SetBool("isAttack", false);
     }
 
     private void FixedUpdate()
     {
+        time += Time.fixedDeltaTime;
+
+        if (spawnTime >= time)
+        {
+            Debug.Log("2초");
+            boxCollider.enabled = true;
+        }
         FreezeVelocity();
+        Targetting();
     }
 
     public void ChaseStart()
@@ -47,8 +104,11 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
-        if(isChase)
+        if (nav.enabled)
+        {
             nav.SetDestination(target.position);
+            nav.isStopped = !isChase;
+        }
     }
 
     public void FreezeVelocity()

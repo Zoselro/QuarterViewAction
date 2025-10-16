@@ -401,7 +401,6 @@ public class Player : MonoBehaviour
                 GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
                 Enemy enemy = obj.GetComponent<Enemy>();
                 enemy.Initialize(transform);
-                Debug.Log("적 생성 위치: " + spawnPos);
             }
             else
             {
@@ -410,7 +409,6 @@ public class Player : MonoBehaviour
                 GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
                 Enemy enemy = obj.GetComponent<Enemy>();
                 enemy.Initialize(transform);
-                Debug.Log("적 생성 위치: " + spawnPos);
             }
         }
     }
@@ -509,6 +507,10 @@ public class Player : MonoBehaviour
             {
                 Bullet enemyBullet = other.GetComponent<Bullet>();
                 health -= enemyBullet.GetDamage();
+                if(health <= 0)
+                {
+                    health = 0;
+                }
                 StartCoroutine(OnDamage());
             }
         }
