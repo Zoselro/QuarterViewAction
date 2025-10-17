@@ -5729,7 +5729,7 @@ MonoBehaviour:
   - {fileID: 1245506763}
   - {fileID: 1817591204}
   grenadeObj: {fileID: 5810246011196331014, guid: 726286dbd4f4fed4bb164996bd128a73, type: 3}
-  spawnEnemy: {fileID: 7345314892648330671, guid: 000ec64a75d27fc4cad71e27d25d6bd5, type: 3}
+  spawnEnemy: {fileID: 5462872193622197579, guid: 286ed8cad5309a14b8bfbd0f76c035ed, type: 3}
   speed: 800
   jumpPower: 15
   hasWeapons: 000000

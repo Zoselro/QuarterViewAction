@@ -50,10 +50,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 60
   curHealth: 60
-  mat: {fileID: 0}
-  rigid: {fileID: 6188501666452490629}
-  BoxCollider: {fileID: 2239449553573056551}
-  checkDistance: 0.1
+  spawnTime: 0
+  mainColider: {fileID: 0}
+  meleeArea: {fileID: 0}
 --- !u!33 &8451442689103051534
 MeshFilter:
   m_ObjectHideFlags: 0
