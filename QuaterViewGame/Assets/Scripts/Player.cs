@@ -511,12 +511,14 @@ public class Player : MonoBehaviour
                 {
                     health = 0;
                 }
-                StartCoroutine(OnDamage());
+                if (other.GetComponent<Rigidbody>() != null)
+                    Destroy(other.gameObject);
+                StartCoroutine(OnDamage(other));
             }
         }
     }
 
-    public IEnumerator OnDamage()
+    public IEnumerator OnDamage(Collider cdr)
     {
         isDamage = true;
         
@@ -524,6 +526,11 @@ public class Player : MonoBehaviour
         {
             mesh.material.color = Color.yellow;
         }
+
+        Vector3 reactVector = transform.position - cdr.transform.position;
+        reactVector = reactVector.normalized;
+        reactVector += Vector3.back;
+        rb.AddForce(reactVector * 5, ForceMode.Impulse);
 
         yield return new WaitForSeconds(1f);
 

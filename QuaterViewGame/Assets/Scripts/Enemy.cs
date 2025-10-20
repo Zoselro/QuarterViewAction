@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
     [Header("Components")]
     [SerializeField] private BoxCollider meleeArea;
     [SerializeField] private BoxCollider mainColider;
+    [SerializeField] private GameObject bullet;
 
     private Transform target; // 추적 할 오브젝트 
     private bool isChase; // 추적하고 있는가?
@@ -45,7 +46,6 @@ public class Enemy : MonoBehaviour
         mainColider.enabled = false;
 
         curHealth = maxHealth;
-        rigid.isKinematic = true;
     }
     private void FixedUpdate()
     {
@@ -53,11 +53,19 @@ public class Enemy : MonoBehaviour
         isTime = spawnTime <= time;
         if (isTime)
         {
-            Debug.Log("2초");
             mainColider.enabled = true;
         }
-        FreezeVelocity();
         Targetting();
+        FreezeVelocity();
+    }
+    private void Update()
+    {
+        Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
+        if (nav.enabled)
+        {
+            nav.SetDestination(target.position);
+            nav.isStopped = !isChase;
+        }
     }
 
     public void Targetting()
@@ -76,6 +84,8 @@ public class Enemy : MonoBehaviour
                 targetRange = 6f;
                 break;
             case Type.C:
+                targetRadius = 0.5f;
+                targetRange = 25f;
                 break;
         }
 
@@ -101,14 +111,13 @@ public class Enemy : MonoBehaviour
             case Type.A:
                 yield return new WaitForSeconds(0.2f);
                 meleeArea.enabled = true;
-                //rigid.isKinematic = true;
 
+                if (meleeArea == null)
+                    break;
+                
                 yield return new WaitForSeconds(1f);
                 meleeArea.enabled = false; // 공격 범위
-
                 yield return new WaitForSeconds(1f);
-
-                //rigid.isKinematic = false;
                 break;
             case Type.B:
                 // 돌격 구현
@@ -118,11 +127,20 @@ public class Enemy : MonoBehaviour
 
                 yield return new WaitForSeconds(0.5f);
                 rigid.linearVelocity = Vector3.zero;
+
                 meleeArea.enabled = false;
 
                 yield return new WaitForSeconds(2f);
                 break;
             case Type.C:
+                yield return new WaitForSeconds(0.5f);
+                if (curHealth <= 0)
+                    break;
+                GameObject instanceBullet = Instantiate(bullet, transform.position, transform.rotation);
+                Rigidbody rigidBullet = instanceBullet.GetComponent<Rigidbody>();
+                rigidBullet.linearVelocity = transform.forward * 20;
+                
+                yield return new WaitForSeconds(2f);
                 break;
         }
         isChase = true;
@@ -135,18 +153,8 @@ public class Enemy : MonoBehaviour
     {
         isChase = true;
         animator.SetBool("isWalk", true);
-        //rigid.isKinematic = false;
     }
 
-    private void Update()
-    {
-        Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
-        if (nav.enabled)
-        {
-            nav.SetDestination(target.position);
-            nav.isStopped = !isChase;
-        }
-    }
 
     public void FreezeVelocity()
     {
@@ -192,6 +200,7 @@ public class Enemy : MonoBehaviour
 
         mat.color = Color.red;
         yield return new WaitForSeconds(0.1f);
+        //rigid.constraints = RigidbodyConstraints.None;
         
         if(curHealth > 0)
         {
@@ -205,8 +214,6 @@ public class Enemy : MonoBehaviour
             isChase = false;
             nav.enabled = false;
             animator.SetTrigger("doDie");
-
-            rigid.isKinematic = false;
 
             if (isGrenade)
             {
