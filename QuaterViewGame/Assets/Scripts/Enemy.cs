@@ -21,24 +21,26 @@ public class Enemy : MonoBehaviour
     [SerializeField] private BoxCollider mainColider;
     [SerializeField] private GameObject bullet;
 
+    private MeshRenderer[] meshs;
     private Transform target; // 추적 할 오브젝트 
-    private bool isChase; // 추적하고 있는가?
-    private bool isAttack; // 공격을 하고 있는가?
-    private Material mat;
     private BoxCollider boxCollider;
     private Rigidbody rigid;
     private NavMeshAgent nav;
-    private float checkDistance = 1f; // 바닥 감지 거리 (필요시 조절)
     private Animator animator;
     private float time = 0f;
+
+    private bool isChase; // 추적하고 있는가?
+    private bool isAttack; // 공격을 하고 있는가?
     private bool isTime;
+    private bool isDie;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         boxCollider = GetComponent<BoxCollider>();
-        mat = GetComponentInChildren<MeshRenderer>().material;
         nav = rigid.GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        meshs = GetComponentsInChildren<MeshRenderer>();
+
         Invoke("ChaseStart", spawnTime);
     }
     private void Start()
@@ -109,6 +111,8 @@ public class Enemy : MonoBehaviour
         switch (enemyType)
         {
             case Type.A:
+                if (isDie)
+                    break;
                 yield return new WaitForSeconds(0.2f);
                 meleeArea.enabled = true;
 
@@ -120,6 +124,8 @@ public class Enemy : MonoBehaviour
                 yield return new WaitForSeconds(1f);
                 break;
             case Type.B:
+                if (isDie)
+                    break;
                 // 돌격 구현
                 yield return new WaitForSeconds(0.1f);
                 rigid.AddForce(transform.forward * 20, ForceMode.Impulse);
@@ -133,9 +139,9 @@ public class Enemy : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 break;
             case Type.C:
-                yield return new WaitForSeconds(0.5f);
-                if (curHealth <= 0)
+                if (isDie)
                     break;
+                yield return new WaitForSeconds(0.5f);
                 GameObject instanceBullet = Instantiate(bullet, transform.position, transform.rotation);
                 Rigidbody rigidBullet = instanceBullet.GetComponent<Rigidbody>();
                 rigidBullet.linearVelocity = transform.forward * 20;
@@ -162,6 +168,19 @@ public class Enemy : MonoBehaviour
         {
             rigid.linearVelocity = Vector3.zero;
             rigid.angularVelocity = Vector3.zero;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag != "Wall")
+        {
+            rigid.constraints = RigidbodyConstraints.FreezePositionX |
+                                RigidbodyConstraints.FreezePositionY |
+                                RigidbodyConstraints.FreezePositionZ |
+                                RigidbodyConstraints.FreezeRotationX |
+                                RigidbodyConstraints.FreezeRotationY |
+                                RigidbodyConstraints.FreezeRotationZ;
         }
     }
 
@@ -197,18 +216,28 @@ public class Enemy : MonoBehaviour
     IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
     {
         // 피격을 당했을 때 색변하기
+        foreach(MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.red;
+            //mat.color = Color.red;
+        }
 
-        mat.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         //rigid.constraints = RigidbodyConstraints.None;
         
         if(curHealth > 0)
         {
-            mat.color = Color.white;
+            foreach(MeshRenderer mesh in meshs)
+                mesh.material.color = Color.white;
         }
         else if(curHealth <= 0)
         {
-            mat.color = Color.gray;
+            isDie = true;
+            rigid.constraints = RigidbodyConstraints.FreezeRotationX |
+                                RigidbodyConstraints.FreezeRotationY |
+                                RigidbodyConstraints.FreezeRotationZ;
+            foreach (MeshRenderer mesh in meshs)
+                mesh.material.color = Color.gray;
             curHealth = 0;
             gameObject.layer = 12;
             isChase = false;

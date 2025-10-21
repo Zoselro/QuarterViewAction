@@ -521,8 +521,7 @@ public class Player : MonoBehaviour
     public IEnumerator OnDamage(Collider cdr)
     {
         isDamage = true;
-        
-        foreach(MeshRenderer mesh in meshs)
+        foreach (MeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.yellow;
         }
