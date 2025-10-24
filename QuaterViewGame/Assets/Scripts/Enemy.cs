@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
 {
     public enum Type
     {
-        A, B, C
+        A, B, C, D
     };
 
     [Header("Options")]
@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject bullet;
 
     private MeshRenderer[] meshs;
-    private Transform target; // 추적 할 오브젝트 
+    public Transform target; // 추적 할 오브젝트 
     private BoxCollider boxCollider;
     private Rigidbody rigid;
     private NavMeshAgent nav;
@@ -41,12 +41,12 @@ public class Enemy : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         meshs = GetComponentsInChildren<MeshRenderer>();
 
-        Invoke("ChaseStart", spawnTime);
+        if(enemyType != Type.D)
+            Invoke("ChaseStart", spawnTime);
     }
     private void Start()
     {
         mainColider.enabled = false;
-
         curHealth = maxHealth;
     }
     private void FixedUpdate()
@@ -62,8 +62,7 @@ public class Enemy : MonoBehaviour
     }
     private void Update()
     {
-        Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
-        if (nav.enabled)
+        if (nav.enabled && enemyType != Type.D)
         {
             nav.SetDestination(target.position);
             nav.isStopped = !isChase;
@@ -74,32 +73,35 @@ public class Enemy : MonoBehaviour
     {
         float targetRadius = 0f;
         float targetRange = 0f;
-
-        switch (enemyType)
+        if(enemyType != Type.D)
         {
-            case Type.A:
-                targetRadius = 1.5f;
-                targetRange = 3f;
-                break;
-            case Type.B:
-                targetRadius = 1f;
-                targetRange = 6f;
-                break;
-            case Type.C:
-                targetRadius = 0.5f;
-                targetRange = 25f;
-                break;
+            switch (enemyType)
+            {
+                case Type.A:
+                    targetRadius = 1.5f;
+                    targetRange = 3f;
+                    break;
+                case Type.B:
+                    targetRadius = 1f;
+                    targetRange = 6f;
+                    break;
+                case Type.C:
+                    targetRadius = 0.5f;
+                    targetRange = 25f;
+                    break;
+            }
+
+            RaycastHit[] raycastHits =
+            Physics.SphereCastAll(transform.position,
+                                    targetRadius, transform.forward, targetRange, LayerMask.GetMask("Player"));
+
+            // 공격중이 아닌데, 범위 안에 플레이어가 타겟팅이 되었을 경우
+            if (raycastHits.Length > 0 && !isAttack && isTime)
+            {
+                StartCoroutine(Attack());
+            }
         }
 
-        RaycastHit[] raycastHits =
-        Physics.SphereCastAll(transform.position,
-                                targetRadius, transform.forward, targetRange, LayerMask.GetMask("Player"));
-
-        // 공격중이 아닌데, 범위 안에 플레이어가 타겟팅이 되었을 경우
-        if (raycastHits.Length > 0 && !isAttack && isTime)
-        {
-            StartCoroutine(Attack());
-        }
     }
 
     private IEnumerator Attack()
@@ -259,7 +261,8 @@ public class Enemy : MonoBehaviour
                 reactVector += Vector3.up;
                 rigid.AddForce(reactVector * 5, ForceMode.Impulse);
             }
-            Destroy(gameObject, 4f);
+            if(enemyType != Type.D)
+                Destroy(gameObject, 4f);
         }
     }
 
