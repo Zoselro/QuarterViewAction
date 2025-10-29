@@ -15,4 +15,9 @@ public class BossMissile : Bullet
     {
         nav.SetDestination(target.position); 
     }
+
+    public void SetTarget(Transform target)
+    {
+        this.target = target;
+    }
 }

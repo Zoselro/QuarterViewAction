@@ -511,19 +511,26 @@ public class Player : MonoBehaviour
                 {
                     health = 0;
                 }
-                if (other.GetComponent<Rigidbody>() != null)
-                    Destroy(other.gameObject);
-                StartCoroutine(OnDamage(other));
+
+                bool isBossAtk = other.name == "Boss Melee Area";
+                StartCoroutine(OnDamage(other, isBossAtk));
             }
+            if (other.GetComponent<Rigidbody>() != null)
+                Destroy(other.gameObject);
         }
     }
 
-    public IEnumerator OnDamage(Collider cdr)
+    public IEnumerator OnDamage(Collider cdr , bool isBossAtk)
     {
         isDamage = true;
         foreach (MeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.yellow;
+        }
+
+        if (isBossAtk)
+        {
+            rb.AddForce(transform.forward * -25, ForceMode.Impulse);
         }
 
         Vector3 reactVector = transform.position - cdr.transform.position;
@@ -532,6 +539,9 @@ public class Player : MonoBehaviour
         rb.AddForce(reactVector * 5, ForceMode.Impulse);
 
         yield return new WaitForSeconds(1f);
+
+        if (isBossAtk)
+            rb.linearVelocity = Vector3.zero;
 
         foreach (MeshRenderer mesh in meshs)
         {

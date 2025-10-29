@@ -5760,7 +5760,7 @@ MonoBehaviour:
   - {fileID: 1245506763}
   - {fileID: 1817591204}
   grenadeObj: {fileID: 5810246011196331014, guid: 726286dbd4f4fed4bb164996bd128a73, type: 3}
-  spawnEnemy: {fileID: 1705050022}
+  spawnEnemy: {fileID: 4187638993179141335, guid: 587a003fcec18de48a9bc92a1f91761e, type: 3}
   speed: 800
   jumpPower: 15
   hasWeapons: 000000
@@ -6495,7 +6495,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9133255185617633366, guid: 83dab506297948d4d8d34c4fe12431ee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -32.33
+      value: -48.86
       objectReference: {fileID: 0}
     - target: {fileID: 9133255185617633366, guid: 83dab506297948d4d8d34c4fe12431ee, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7032,8 +7032,9 @@ GameObject:
   m_Component:
   - component: {fileID: 800526630}
   - component: {fileID: 800526631}
-  m_Layer: 11
-  m_Name: Melee Area
+  - component: {fileID: 800526632}
+  m_Layer: 14
+  m_Name: Boss Melee Area
   m_TagString: EnemyBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7075,6 +7076,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.5, y: 0.5, z: 3.5}
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &800526632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800526629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a86b5c05d93c7846b69b44dd750dde0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 25
+  isMelee: 1
 --- !u!1001 &820860195
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23404,6 +23419,63 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 2}
   m_Center: {x: 0, y: 2.5, z: 0}
+--- !u!1001 &1664957345
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5403182902084715882, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_Name
+      value: Boss Rock
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -82.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.8739853
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -27.57352
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701646478180542590, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
 --- !u!1 &1705050022 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7988094277207216310, guid: 83dab506297948d4d8d34c4fe12431ee, type: 3}
@@ -23507,6 +23579,7 @@ MonoBehaviour:
   missile: {fileID: 557206736643155993, guid: 9de1ff92eb7d9ec42b45e7680bbff610, type: 3}
   missilePortA: {fileID: 1757142798}
   missilePortB: {fileID: 151214627}
+  isLook: 1
 --- !u!1001 &1707000556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24130,3 +24203,4 @@ SceneRoots:
   - {fileID: 226183545}
   - {fileID: 979728175}
   - {fileID: 553739617}
+  - {fileID: 1664957345}

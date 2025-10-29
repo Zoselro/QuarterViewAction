@@ -17,22 +17,22 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float spawnTime;
 
     [Header("Components")]
-    [SerializeField] private BoxCollider meleeArea;
+    [SerializeField] protected BoxCollider meleeArea;
     [SerializeField] private BoxCollider mainColider;
-    [SerializeField] private GameObject bullet;
+    [SerializeField] protected GameObject bullet;
 
-    private MeshRenderer[] meshs;
+    protected MeshRenderer[] meshs;
     public Transform target; // 추적 할 오브젝트 
-    private BoxCollider boxCollider;
-    private Rigidbody rigid;
-    private NavMeshAgent nav;
-    private Animator animator;
-    private float time = 0f;
+    protected BoxCollider boxCollider;
+    protected Rigidbody rigid;
+    protected NavMeshAgent nav;
+    protected Animator animator;
+    protected float time = 0f;
 
     private bool isChase; // 추적하고 있는가?
     private bool isAttack; // 공격을 하고 있는가?
     private bool isTime;
-    private bool isDie;
+    protected bool isDead;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviour
     {
         float targetRadius = 0f;
         float targetRange = 0f;
-        if(enemyType != Type.D)
+        if(!isDead && enemyType != Type.D)
         {
             switch (enemyType)
             {
@@ -113,7 +113,7 @@ public class Enemy : MonoBehaviour
         switch (enemyType)
         {
             case Type.A:
-                if (isDie)
+                if (isDead)
                     break;
                 yield return new WaitForSeconds(0.2f);
                 meleeArea.enabled = true;
@@ -126,7 +126,7 @@ public class Enemy : MonoBehaviour
                 yield return new WaitForSeconds(1f);
                 break;
             case Type.B:
-                if (isDie)
+                if (isDead)
                     break;
                 // 돌격 구현
                 yield return new WaitForSeconds(0.1f);
@@ -141,7 +141,7 @@ public class Enemy : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 break;
             case Type.C:
-                if (isDie)
+                if (isDead)
                     break;
                 yield return new WaitForSeconds(0.5f);
                 GameObject instanceBullet = Instantiate(bullet, transform.position, transform.rotation);
@@ -234,7 +234,7 @@ public class Enemy : MonoBehaviour
         }
         else if(curHealth <= 0)
         {
-            isDie = true;
+            isDead = true;
             rigid.constraints = RigidbodyConstraints.FreezeRotationX |
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;

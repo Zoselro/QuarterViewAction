@@ -206,5 +206,5 @@ MonoBehaviour:
   damage: 40
   isMelee: 0
   speed: 20
-  rollingStartTime: 1.7
-  scaleUpTime: 2.2
+  rollingStartTime: 2
+  scaleUpTime: 1.5
