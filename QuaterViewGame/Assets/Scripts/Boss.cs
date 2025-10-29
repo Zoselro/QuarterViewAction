@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -30,16 +31,31 @@ public class Boss : Enemy
         nav.isStopped = true;
         DoActionTime();
 
-        Debug.Log("doShotTime : " + doShotTime);
-        Debug.Log("doBigShotTime : " + doBigShotTime);
-        Debug.Log("tauntTime : " + tauntTime);
-
         StartCoroutine(Think());
         transform.localScale = new Vector3(3f, 3f, 3f);
     }
 
+    private void Start()
+    {
+        mainColider.enabled = false;
+        curHealth = maxHealth;
+    }
+
     private void Update()
     {
+        time += Time.deltaTime;
+        isTime = spawnTime <= time;
+        if (isTime)
+        {
+            mainColider.enabled = true;
+        }
+        else
+        {
+            // spawnTime 동안 보스가 아무것도 안하게끔 하는 코드 작성하기
+            //StopAllCoroutines();
+            return;
+        }
+
         if (isDead)
         {
             StopAllCoroutines();
@@ -58,6 +74,12 @@ public class Boss : Enemy
         {
             nav.SetDestination(tauntVec);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        rigid.linearVelocity = Vector3.zero;
+        rigid.angularVelocity = Vector3.zero;
     }
 
     // 보스가 행동패턴을 결정해주는 코루틴
@@ -95,14 +117,17 @@ public class Boss : Enemy
             if (clip.name == "Shot")
             {
                 doShotTime = clip.length;
+                Debug.Log("doShotTime : " + doShotTime);
             }
             else if (clip.name == "BigShot")
             {
                 doBigShotTime = clip.length;
+                Debug.Log("doBigShotTime : " + doBigShotTime);
             }
             else if (clip.name == "Taunt")
             {
                 tauntTime = clip.length;
+                Debug.Log("tauntTime : " + tauntTime);
             }
         }
     }

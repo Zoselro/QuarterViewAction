@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
     private float baseSpeed; // 원래 속도 저장용
     private float fireDelay; // 공격 딜레이
     private string subMachineGunName;
+    private float m_MvDelay = 0.0f;
+
 
     private bool isWalk;
     private bool isRun;
@@ -95,6 +97,12 @@ public class Player : MonoBehaviour
     // 날개 있는 아이템 추가시 if문 해제.
     public void Move()
     {
+        if(0.0f < m_MvDelay)
+        {
+            m_MvDelay -= Time.deltaTime;
+            return;
+        }
+
         // 공격 중에는 이동하지 않음
         if ((isFireReady && !isJump && !isDodge))
         {
@@ -109,7 +117,6 @@ public class Player : MonoBehaviour
             rb.linearVelocity = new Vector3(dodgeMoveDir.x * moveSpeed,
                                             rb.linearVelocity.y,
                                             dodgeMoveDir.y * moveSpeed);
-
             transform.LookAt(transform.position + new Vector3(dodgeMoveDir.x, 0f, dodgeMoveDir.y));
         }
         else if (isJump && keepMovingAfterJump)
@@ -531,14 +538,14 @@ public class Player : MonoBehaviour
         if (isBossAtk)
         {
             rb.AddForce(transform.forward * -25, ForceMode.Impulse);
+            m_MvDelay = 0.5f;
         }
-
         Vector3 reactVector = transform.position - cdr.transform.position;
         reactVector = reactVector.normalized;
         reactVector += Vector3.back;
         rb.AddForce(reactVector * 5, ForceMode.Impulse);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         if (isBossAtk)
             rb.linearVelocity = Vector3.zero;
@@ -547,7 +554,6 @@ public class Player : MonoBehaviour
         {
             mesh.material.color = Color.white;
         }
-
         isDamage = false;
     }
 

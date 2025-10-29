@@ -11,27 +11,27 @@ public class Enemy : MonoBehaviour
     };
 
     [Header("Options")]
-    [SerializeField] private Type enemyType;
-    [SerializeField] private int maxHealth;
-    [SerializeField] private int curHealth;
-    [SerializeField] private float spawnTime;
+    [SerializeField] protected Type enemyType;
+    [SerializeField] protected int maxHealth;
+    [SerializeField] protected int curHealth;
+    [SerializeField] protected float spawnTime;
 
     [Header("Components")]
     [SerializeField] protected BoxCollider meleeArea;
-    [SerializeField] private BoxCollider mainColider;
+    [SerializeField] protected BoxCollider mainColider;
     [SerializeField] protected GameObject bullet;
+    [SerializeField] protected Transform target; // 추적 할 오브젝트 
 
     protected MeshRenderer[] meshs;
-    public Transform target; // 추적 할 오브젝트 
     protected BoxCollider boxCollider;
     protected Rigidbody rigid;
     protected NavMeshAgent nav;
     protected Animator animator;
     protected float time = 0f;
 
-    private bool isChase; // 추적하고 있는가?
-    private bool isAttack; // 공격을 하고 있는가?
-    private bool isTime;
+    protected bool isChase; // 추적하고 있는가?
+    protected bool isAttack; // 공격을 하고 있는가?
+    protected bool isTime;
     protected bool isDead;
     private void Awake()
     {
@@ -50,7 +50,7 @@ public class Enemy : MonoBehaviour
         curHealth = maxHealth;
     }
     private void FixedUpdate()
-    {
+    { 
         time += Time.fixedDeltaTime;
         isTime = spawnTime <= time;
         if (isTime)
@@ -173,19 +173,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.tag != "Wall")
-        {
-            rigid.constraints = RigidbodyConstraints.FreezePositionX |
-                                RigidbodyConstraints.FreezePositionY |
-                                RigidbodyConstraints.FreezePositionZ |
-                                RigidbodyConstraints.FreezeRotationX |
-                                RigidbodyConstraints.FreezeRotationY |
-                                RigidbodyConstraints.FreezeRotationZ;
-        }
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Melee")
@@ -225,7 +212,6 @@ public class Enemy : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.1f);
-        //rigid.constraints = RigidbodyConstraints.None;
         
         if(curHealth > 0)
         {
@@ -235,9 +221,11 @@ public class Enemy : MonoBehaviour
         else if(curHealth <= 0)
         {
             isDead = true;
+
             rigid.constraints = RigidbodyConstraints.FreezeRotationX |
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
+
             foreach (MeshRenderer mesh in meshs)
                 mesh.material.color = Color.gray;
             curHealth = 0;
@@ -261,7 +249,8 @@ public class Enemy : MonoBehaviour
                 reactVector += Vector3.up;
                 rigid.AddForce(reactVector * 5, ForceMode.Impulse);
             }
-            if(enemyType != Type.D)
+            rigid.freezeRotation = false;
+            if (enemyType != Type.D)
                 Destroy(gameObject, 4f);
         }
     }
