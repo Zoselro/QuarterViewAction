@@ -206,5 +206,7 @@ MonoBehaviour:
   damage: 40
   isMelee: 0
   speed: 20
-  rollingStartTime: 2
-  scaleUpTime: 1.5
+  rollingStartTime: 1
+  scaleUpTime: 0.5
+  player: {fileID: 0}
+  meshObj: {fileID: 0}
