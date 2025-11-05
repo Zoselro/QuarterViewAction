@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int ammo;
     [SerializeField] private int coin;
     [SerializeField] private int health;
+    [SerializeField] private int score;
     [SerializeField] private int hasGrenades;
     
     [Header("ItemOptions")]
@@ -71,11 +72,21 @@ public class Player : MonoBehaviour
     private MeshRenderer[] meshs;
 
     public int Coin => coin;
+    public int Score => score;
+    public int Health => health;
+    public int MaxHealth => maxHealth;
+    public Weapon EquipWeapon => equipWeapon;
+    public bool[] HasWeapons => hasWeapons;
+    public int HasGrenades => hasGrenades;
 
+
+    public int Ammo => ammo;
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>(); // 자식 오브젝트의 첫 번째 컴포넌트를 가져옴.
         meshs = GetComponentsInChildren<MeshRenderer>(); // 자식 오브젝트의 컴포넌트들을 가져옴.
+
+        PlayerPrefs.SetInt("MaxScore", 112500);
     }
 
     /*private void StopToEnemy()
