@@ -55,6 +55,7 @@ public class Player : MonoBehaviour
     private bool isAttack;
     private bool isDamage; // 플레이어가 몬스터에게 부딛혔을 때 잠깐의 무적타임을 주기 위한 변수.
     //private bool isBorder; // 벽에 부딛히고 있는가?
+    private bool isShop; // 상점을 열고 있는가?
 
     private Vector3 rotation;
     private Vector3 rotation_value; // 행동 후 방향키 변경이 반영되지 않는 버그 수정을 위한 변수
@@ -68,6 +69,8 @@ public class Player : MonoBehaviour
     private Weapon equipWeapon;
     private int equipWeaponIndex = -1;
     private MeshRenderer[] meshs;
+
+    public int Coin => coin;
 
     private void Awake()
     {
@@ -241,6 +244,12 @@ public class Player : MonoBehaviour
 
                 Destroy(nearObject);
             }
+            else if (nearObject.tag == "Shop")
+            {
+                Shop shop = nearObject.GetComponent<Shop>();
+                shop.Enter(this);
+                isShop = true;
+            }
         }
     }
 
@@ -290,14 +299,14 @@ public class Player : MonoBehaviour
     {
         if (equipWeapon == null)
             return;
-        if (context.performed && equipWeapon.name != subMachineGunName && !isJump)
+        if (context.performed && equipWeapon.name != subMachineGunName && !isJump && !isShop)
         {
             StartCoroutine(AttackCoRouine());
             isHoldingAttack = false;
             isAttack = true;
         }
         // 만약에 SubMachineGun 이라면, 마우스를 꾹 눌렀을 때 계속 발사 되도록 구현하기.
-        else if (context.performed && equipWeapon.name == subMachineGunName && !isJump)
+        else if (context.performed && equipWeapon.name == subMachineGunName && !isJump && !isShop)
         {
             isHoldingAttack = true;
             isAttack = true;
@@ -559,7 +568,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.tag == "Weapon")
+        if(other.tag == "Weapon" || other.tag == "Shop")
         {
             nearObject = other.gameObject;
         }
@@ -571,5 +580,17 @@ public class Player : MonoBehaviour
         {
             nearObject = null;
         }
+        else if (other.tag == "Shop")
+        {
+            Shop shop = nearObject.GetComponent<Shop>();
+            shop.Exit();
+            isShop = false;
+            nearObject = null;
+        }
+    }
+
+    public void SetCoin(int coin)
+    {
+        this.coin = coin;
     }
 }
