@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -603,5 +604,10 @@ public class Player : MonoBehaviour
     public void SetCoin(int coin)
     {
         this.coin = coin;
+    }
+
+    internal void SetScore(int score)
+    {
+        this.score = score;
     }
 }

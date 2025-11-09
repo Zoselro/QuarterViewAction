@@ -15,12 +15,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected int maxHealth;
     [SerializeField] protected int curHealth;
     [SerializeField] protected float spawnTime;
+    [SerializeField] protected int score;
 
     [Header("Components")]
     [SerializeField] protected BoxCollider meleeArea;
     [SerializeField] protected BoxCollider mainColider;
     [SerializeField] protected GameObject bullet;
     [SerializeField] protected Transform target; // 추적 할 오브젝트 
+    [SerializeField] protected GameObject[] coins;
+    [SerializeField] protected GameManager manager;
 
     protected MeshRenderer[] meshs;
     protected BoxCollider boxCollider;
@@ -33,6 +36,9 @@ public class Enemy : MonoBehaviour
     protected bool isAttack; // 공격을 하고 있는가?
     protected bool isTime;
     protected bool isDead;
+
+    public int CurHealth => curHealth;
+    public int MaxHealth => maxHealth;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -234,6 +240,25 @@ public class Enemy : MonoBehaviour
             nav.enabled = false;
             animator.SetTrigger("doDie");
 
+            Player player = target.GetComponent<Player>();
+            player.SetScore(player.Score + score);
+            int ranCoin = Random.Range(0, 3);
+            Instantiate(coins[ranCoin], transform.position, Quaternion.identity);
+
+            // 
+            switch (enemyType)
+            {
+                // 다른 방법 알아보기.
+                case Type.A:
+                    //manager.enemyCnt--;
+                    break;
+                case Type.B:
+                    break;
+                case Type.C:
+                    break;
+            }
+
+
             if (isGrenade)
             {
                 reactVector = reactVector.normalized;
@@ -250,8 +275,7 @@ public class Enemy : MonoBehaviour
                 rigid.AddForce(reactVector * 5, ForceMode.Impulse);
             }
             rigid.freezeRotation = false;
-            if (enemyType != Type.D)
-                Destroy(gameObject, 4f);
+            Destroy(gameObject, 4f);
         }
     }
 
