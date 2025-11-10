@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("■ GameObject")]
     [SerializeField] private GameObject menuCam; // 메뉴 카메라
     [SerializeField] private GameObject gameCam; // 게임 카메라
     [SerializeField] private Player player;
@@ -14,7 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject weaponShop;
     [SerializeField] private GameObject startZone;
 
-
+    [Header("■ Options")]
     [SerializeField] private int stage;
     [SerializeField] private float playTime;
     [SerializeField] private bool isBattle;
@@ -23,12 +25,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int enemyCntC;
     [SerializeField] private int enemyCntD;
 
+    [Header("■ 배열 및 리스트")]
     [SerializeField] private Transform[] enemyZones;
     [SerializeField] private GameObject[] enemies;
     [SerializeField] private List<int> enemyList;
 
+    [Header("■ GameObject")]
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject gamePanel;
+    [SerializeField] private GameObject overPanel;
     [SerializeField] private TextMeshProUGUI maxScoreText;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI stageText;
@@ -37,17 +42,29 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerAmmoText;
     [SerializeField] private TextMeshProUGUI playerCoinText;
 
+    [Header("■ WeaponImage")]
     [SerializeField] private Image weapon1Img;
     [SerializeField] private Image weapon2Img;
     [SerializeField] private Image weapon3Img;
     [SerializeField] private Image weaponRImg;
 
+    [Header("■ EnemyText")]
     [SerializeField] private TextMeshProUGUI enemyAText;
     [SerializeField] private TextMeshProUGUI enemyBText;
     [SerializeField] private TextMeshProUGUI enemyCText;
 
+    [Header("■ Boss UI")]
     [SerializeField] private RectTransform bossHealthGroup; // 보스 체력 UI를 표시하기 위한 변수
     [SerializeField] private RectTransform bossHealthBar;
+
+    [Header("■ Score UI")]
+    [SerializeField] private TextMeshProUGUI curScoreText;
+    [SerializeField] private TextMeshProUGUI bestScoreText;
+
+    public int EnemyCntA => enemyCntA;
+    public int EnemyCntB => enemyCntB;
+    public int EnemyCntC => enemyCntC;
+    public int EnemyCntD => enemyCntD;
 
     private void Awake()
     {
@@ -98,15 +115,15 @@ public class GameManager : MonoBehaviour
         if(stage % 5 == 0)
         {
             enemyCntD++;
-            GameObject instantEnemy = Instantiate(enemies[enemyList[3]], enemyZones[0].position, enemyZones[0].rotation);
+            GameObject instantEnemy = Instantiate(enemies[3], enemyZones[0].position, enemyZones[0].rotation);
             Enemy target = instantEnemy.GetComponent<Enemy>();
-            target.Initialize(player.transform);
+            target.Initialize(player.transform, this);
             boss = instantEnemy.GetComponent<Boss>();
         }
         else
         {
             for (int index = 0; index < stage; index++)
-            { 
+            {
                 int ran = Random.Range(0, 3);
                 enemyList.Add(ran);
                 switch (ran)
@@ -121,7 +138,6 @@ public class GameManager : MonoBehaviour
                         enemyCntC++;
                         break;
                 }
-                Debug.Log("ran : " + ran);
             }
 
             while(enemyList.Count > 0)
@@ -129,7 +145,7 @@ public class GameManager : MonoBehaviour
                 int ranZone = Random.Range(0, 4);
                 GameObject instantEnemy = Instantiate(enemies[enemyList[0]], enemyZones[ranZone].position, enemyZones[ranZone].rotation);
                 Enemy target = instantEnemy.GetComponent<Enemy>();
-                target.Initialize(player.transform);
+                target.Initialize(player.transform, this);
                 enemyList.RemoveAt(0);
                 yield return new WaitForSeconds(4f);
             }
@@ -138,7 +154,7 @@ public class GameManager : MonoBehaviour
         while (enemyCntA + enemyCntB + enemyCntC + enemyCntD > 0)
         {
             yield return null;
-        }
+         }
 
         yield return new WaitForSeconds(4f);
         StageEnd();
@@ -153,6 +169,25 @@ public class GameManager : MonoBehaviour
         gamePanel.SetActive(true);
 
         player.gameObject.SetActive(true);
+    }
+
+    public void GameOver()
+    {
+        gamePanel.SetActive(false);
+        overPanel.SetActive(true);
+        curScoreText.text = scoreText.text;
+
+        int maxScore = PlayerPrefs.GetInt("MaxScore");
+        if (player.Score > maxScore)
+        {
+            bestScoreText.gameObject.SetActive(true);
+            PlayerPrefs.SetInt("MaxScore", player.Score);
+        }
+    }
+
+    public void ReStart()
+    {
+        SceneManager.LoadScene(0);
     }
 
 
@@ -186,6 +221,11 @@ public class GameManager : MonoBehaviour
         weapon3Img.color = new Color(1, 1, 1, player.HasWeapons[2] ? 1 : 0);
         weaponRImg.color = new Color(1, 1, 1, (player.HasGrenades > 0) ? 1 : 0);
 
+        enemyCntA = enemyCntA <= 0 ? 0 : enemyCntA;
+        enemyCntB = enemyCntB <= 0 ? 0 : enemyCntB;
+        enemyCntC = enemyCntC <= 0 ? 0 : enemyCntC;
+        enemyCntD = enemyCntD <= 0 ? 0 : enemyCntD;
+
         // 몬스터 숫자 UI
         enemyAText.text = enemyCntA.ToString();
         enemyBText.text = enemyCntB.ToString();
@@ -194,6 +234,32 @@ public class GameManager : MonoBehaviour
 
         // 체력 바를 줄이기
         if(boss != null)
+        {
+            bossHealthGroup.gameObject.SetActive(true);
             bossHealthBar.localScale = new Vector3((float)boss.CurHealth / boss.MaxHealth, 1, 1);
+        }
+        else
+        {
+            bossHealthGroup.gameObject.SetActive(false);
+        }
+    }
+
+    public void DecreaseEnemyCount(Enemy.Type type, int enemyCnt)
+    {
+        switch (type)
+        {
+            case Enemy.Type.A:
+                enemyCntA = enemyCnt;
+                break;
+            case Enemy.Type.B:
+                enemyCntB = enemyCnt;
+                break;
+            case Enemy.Type.C:
+                enemyCntC = enemyCnt;
+                break;
+            case Enemy.Type.D:
+                enemyCntD = enemyCnt;
+                break;
+        }
     }
 }

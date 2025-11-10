@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Shop : MonoBehaviour
 {
+    [Header("■ GameObject")]
     [SerializeField] private RectTransform uiGroup;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject[] itemObj; // 프리팹을 저장할 아이템 오브젝트들

@@ -64,7 +64,8 @@ public class Enemy : MonoBehaviour
             mainColider.enabled = true;
         }
         Targetting();
-        FreezeVelocity();
+        if(!isDead)
+            FreezeVelocity();
     }
     private void Update()
     {
@@ -172,11 +173,11 @@ public class Enemy : MonoBehaviour
 
     public void FreezeVelocity()
     {
-        if (isChase)
-        {
+        //if (isChase)
+        //{
             rigid.linearVelocity = Vector3.zero;
             rigid.angularVelocity = Vector3.zero;
-        }
+        //}
     }
 
     private void OnTriggerEnter(Collider other)
@@ -245,16 +246,29 @@ public class Enemy : MonoBehaviour
             int ranCoin = Random.Range(0, 3);
             Instantiate(coins[ranCoin], transform.position, Quaternion.identity);
 
-            // 
             switch (enemyType)
             {
                 // 다른 방법 알아보기.
                 case Type.A:
-                    //manager.enemyCnt--;
+                    //manager.enemyCntA--;
+                    int enemyCntA = manager.EnemyCntA;
+                    Debug.Log("enemyCntA :" + enemyCntA);
+                    manager.DecreaseEnemyCount(Type.A, --enemyCntA);
                     break;
                 case Type.B:
+                    int enemyCntB = manager.EnemyCntB;
+                    Debug.Log("enemyCntB :" + enemyCntB);
+                    manager.DecreaseEnemyCount(Type.B, --enemyCntB);
                     break;
                 case Type.C:
+                    int enemyCntC = manager.EnemyCntC;
+                    Debug.Log("enemyCntC :" + enemyCntC);
+                    manager.DecreaseEnemyCount(Type.C, --enemyCntC);
+                    break;
+                case Type.D:
+                    int enemyCntD = manager.EnemyCntD;
+                    Debug.Log("enemyCntD :" + enemyCntD);
+                    manager.DecreaseEnemyCount(Type.D, --enemyCntD);
                     break;
             }
 
@@ -279,8 +293,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void Initialize(Transform target)
+    public void Initialize(Transform target, GameManager manager)
     {
         this.target = target;
+        this.manager = manager;
     }
 }

@@ -32,10 +32,9 @@ public class Player : MonoBehaviour
 
 
     [Header("Components")]
-    [SerializeField]
-    private Rigidbody rb;
-    [SerializeField]
-    private InputAction moveAction;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private InputAction moveAction;
+    [SerializeField] private GameManager manager;
 
     private float velocity;
     private float baseSpeed; // 원래 속도 저장용
@@ -58,6 +57,7 @@ public class Player : MonoBehaviour
     private bool isDamage; // 플레이어가 몬스터에게 부딛혔을 때 잠깐의 무적타임을 주기 위한 변수.
     //private bool isBorder; // 벽에 부딛히고 있는가?
     private bool isShop; // 상점을 열고 있는가?
+    private bool isDead;
 
     private Vector3 rotation;
     private Vector3 rotation_value; // 행동 후 방향키 변경이 반영되지 않는 버그 수정을 위한 변수
@@ -86,7 +86,7 @@ public class Player : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>(); // 자식 오브젝트의 첫 번째 컴포넌트를 가져옴.
         meshs = GetComponentsInChildren<MeshRenderer>(); // 자식 오브젝트의 컴포넌트들을 가져옴.
-
+        health = maxHealth;
         PlayerPrefs.SetInt("MaxScore", 112500);
     }
 
@@ -99,7 +99,14 @@ public class Player : MonoBehaviour
     {
         fireDelay += Time.deltaTime;
         baseSpeed = speed;
-        Move();
+        
+        if(!isDead)
+            Move();
+        else
+        {
+            rb.linearVelocity = Vector3.zero;
+        }
+
         if (Mouse.current.leftButton.isPressed && isHoldingAttack)
         {
             StartCoroutine(AttackCoRouine());
@@ -159,7 +166,7 @@ public class Player : MonoBehaviour
     public void UpdateMouseLook()
     {
         // 마우스를 찍은 방향으로 공격 할때 회전
-        if (Mouse.current.leftButton.isPressed && !isDodge)
+        if (Mouse.current.leftButton.isPressed && !isDodge && !isDead)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -176,7 +183,7 @@ public class Player : MonoBehaviour
     // 방향키를 눌렀을 때 실행되는 메서드
     public void PlayerMove(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && !isDead)
         {
             //if (isFireReady && !isJump && !isDodge)
             //    return;
@@ -201,6 +208,8 @@ public class Player : MonoBehaviour
     // 왼쪽 쉬프트키를 눌렀을때 실행되는 메서드
     public void PlayerWalk(InputAction.CallbackContext context)
     {
+        if (isDead)
+            return;
         if (context.performed)
         {
             isWalk = true;
@@ -215,7 +224,7 @@ public class Player : MonoBehaviour
     // 스페이스바를 눌렀을 때 실행되는 점프 메서드
     public void Jumb(InputAction.CallbackContext context)
     {
-        if (context.performed && /*rotation == Vector3.zero &&*/ !isJump && !isDodge && !isSwap && !isAttack)
+        if (context.performed && /*rotation == Vector3.zero &&*/ !isJump && !isDodge && !isSwap && !isAttack && !isDead)
         {
             rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
             isJump = true;
@@ -229,7 +238,7 @@ public class Player : MonoBehaviour
     // 컨트롤키를 눌렀을 때 실행되는 회피 메서드
     public void Dodge(InputAction.CallbackContext context)
     {
-        if (context.performed && rotation != Vector3.zero && !isJump && !isDodge && !isSwap && !isFireReady)
+        if (context.performed && rotation != Vector3.zero && !isJump && !isDodge && !isSwap && !isFireReady && !isDead)
         {
             // 회피 시작 시 현재 입력 방향을 그대로 저장
             dodgeMoveDir = rotation;
@@ -246,7 +255,7 @@ public class Player : MonoBehaviour
     // 아이템을 획득 하는 키
     public void Interaction(InputAction.CallbackContext context)
     {
-        if (context.performed && nearObject != null && !isJump) // 점프 하고있는 상태일 때는 아이템 획득 불가.
+        if (context.performed && nearObject != null && !isJump && !isDead) // 점프 하고있는 상태일 때는 아이템 획득 불가.
         {
             if (nearObject.tag == "Weapon")
             {
@@ -267,7 +276,7 @@ public class Player : MonoBehaviour
 
     public void SwapWeapon(int weaponIndex, InputAction.CallbackContext context)
     {
-        if(context.performed && !isJump && !isDodge)
+        if (context.performed && !isJump && !isDodge && !isDead)
         {
             // 만약에 이미 무기가 들려있다면, 이전무기 비활성화 이후 활성화
             if (equipWeapon != null)
@@ -311,14 +320,14 @@ public class Player : MonoBehaviour
     {
         if (equipWeapon == null)
             return;
-        if (context.performed && equipWeapon.name != subMachineGunName && !isJump && !isShop)
+        if (context.performed && equipWeapon.name != subMachineGunName && !isJump && !isShop && !isDead)
         {
             StartCoroutine(AttackCoRouine());
             isHoldingAttack = false;
             isAttack = true;
         }
         // 만약에 SubMachineGun 이라면, 마우스를 꾹 눌렀을 때 계속 발사 되도록 구현하기.
-        else if (context.performed && equipWeapon.name == subMachineGunName && !isJump && !isShop)
+        else if (context.performed && equipWeapon.name == subMachineGunName && !isJump && !isShop && !isDead)
         {
             isHoldingAttack = true;
             isAttack = true;
@@ -335,7 +344,7 @@ public class Player : MonoBehaviour
     {
         if (context.performed && hasGrenades == 0)
             return;
-        else if (context.performed && !isReload && !isSwap)
+        else if (context.performed && !isReload && !isSwap && !isDead)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -428,7 +437,7 @@ public class Player : MonoBehaviour
                 Vector3 spawnPos = hit.point - transform.forward * 0.5f; // 0.5m 뒤쪽 (겹치지 않게)
                 GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
                 Enemy enemy = obj.GetComponent<Enemy>();
-                enemy.Initialize(transform);
+                enemy.Initialize(transform, manager);
             }
             else
             {
@@ -436,7 +445,7 @@ public class Player : MonoBehaviour
                 Vector3 spawnPos = transform.position + transform.forward * 5f;
                 GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
                 Enemy enemy = obj.GetComponent<Enemy>();
-                enemy.Initialize(transform);
+                enemy.Initialize(transform, manager);
             }
         }
     }
@@ -566,6 +575,9 @@ public class Player : MonoBehaviour
         reactVector += Vector3.back;
         rb.AddForce(reactVector * 5, ForceMode.Impulse);
 
+        if (health <= 0 && !isDead)
+            onDie();
+
         yield return new WaitForSeconds(0.5f);
 
         if (isBossAtk)
@@ -576,6 +588,14 @@ public class Player : MonoBehaviour
             mesh.material.color = Color.white;
         }
         isDamage = false;
+
+    }
+
+    private void onDie()
+    {
+        animator.SetTrigger("doDie");
+        isDead = true;
+        manager.GameOver();
     }
 
     private void OnTriggerStay(Collider other)

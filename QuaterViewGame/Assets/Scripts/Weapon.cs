@@ -24,12 +24,12 @@ public class Weapon : MonoBehaviour
     [SerializeField] private GameObject bullet;
     [SerializeField] private Transform bulletCasePos;
     [SerializeField] private GameObject bulletCase;
+    [SerializeField] private int curAmmo; // 현재 탄창의 개수
     
     private float firstWaitTime = 0.1f;
     private float secondWaitTime = 0.3f;
     private float thirdWaitTime = 0.3f;
 
-    [SerializeField] private int curAmmo; // 현재 탄창의 개수
     public int MaxAmmo => maxAmmo;
     public int CurAmmo => curAmmo;
     private void Start()
