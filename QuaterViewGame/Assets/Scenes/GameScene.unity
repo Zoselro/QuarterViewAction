@@ -366,7 +366,7 @@ GameObject:
   - component: {fileID: 87460564}
   - component: {fileID: 87460565}
   m_Layer: 7
-  m_Name: GameObject
+  m_Name: JumpSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -399,7 +399,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -7330,6 +7330,7 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   manager: {fileID: 1225963967}
+  jumpSound: {fileID: 0}
 --- !u!4 &342432058 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5903297864969995812, guid: 8f5e135a19626f544908fc8f156144b9, type: 3}
@@ -68493,8 +68494,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d1b521262c93e44694215dfec9c8c5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  maxPoolSize: 10
 --- !u!4 &2140932088
 Transform:
   m_ObjectHideFlags: 0

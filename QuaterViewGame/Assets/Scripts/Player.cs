@@ -14,7 +14,6 @@ public class Player : MonoBehaviour
     [Header("Options")]
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
-
     [SerializeField] private bool[] hasWeapons;
 
     [Header("Item")]
@@ -35,6 +34,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private InputAction moveAction;
     [SerializeField] private GameManager manager;
+    [SerializeField] private AudioSource jumpSound;
 
     private float velocity;
     private float baseSpeed; // 원래 속도 저장용
@@ -232,6 +232,8 @@ public class Player : MonoBehaviour
             animator.SetTrigger("DoJump");
             keepMovingAfterJump = true;
             jumpMoveDir = rotation;
+
+            jumpSound.Play(); 
         }
     }
 
