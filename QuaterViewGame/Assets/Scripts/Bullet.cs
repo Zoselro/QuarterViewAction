@@ -11,8 +11,14 @@ public class Bullet : MonoBehaviour
     {
         if (!isRock && collision.gameObject.tag == "Floor")
         {
-            Destroy(gameObject, 3);
+            //Destroy(gameObject, 3);
+            Invoke("ReturnToPool", 3);
         }
+    }
+
+    private void ReturnToPool()
+    {
+        ObjectPool.ReturnBullet(this);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -25,7 +31,8 @@ public class Bullet : MonoBehaviour
         {
             if(other.gameObject.tag == "Wall")
             {
-                Destroy(gameObject);
+                //Destroy(gameObject);
+                ObjectPool.ReturnBullet(this);
                 return;
             }
             else if(other.gameObject.tag == "Floor")
@@ -34,7 +41,8 @@ public class Bullet : MonoBehaviour
                 {
                     return;
                 }
-                Destroy(gameObject);
+                //Destroy(gameObject);
+                ObjectPool.ReturnBullet(this);
             }
         }
     }

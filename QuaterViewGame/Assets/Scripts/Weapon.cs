@@ -78,8 +78,12 @@ public class Weapon : MonoBehaviour
         //    shootDir = (rayHit.point - bulletPos.position).normalized;
         //}
 
-         // 1. ÃÑ¾Ë ¹ß»ç
+        // 1. ÃÑ¾Ë ¹ß»ç
         GameObject instantBullet = Instantiate(bullet, bulletPos.position, bulletPos.rotation);
+        //Bullet instantBullet = ObjectPool.GetBullet();
+        instantBullet.transform.position = bulletPos.position;
+
+
         Rigidbody bulletRigid = instantBullet.GetComponent<Rigidbody>();
         bulletRigid.linearVelocity = bulletPos.forward * bulletSpeed; // shootDir * bulletSpeed;
 
@@ -88,6 +92,10 @@ public class Weapon : MonoBehaviour
 
         // 2. ÅºÇÇ ¹èÃâ
         GameObject instantCase = Instantiate(bulletCase, bulletCasePos.position, bulletCasePos.rotation);
+
+        //Bullet instantCase = ObjectPool.GetBullet();
+        instantCase.transform.position = bulletCasePos.position;
+        instantCase.transform.rotation = bulletCasePos.rotation;
         Rigidbody caseRigid = instantCase.GetComponent<Rigidbody>();
 
         Vector3 caseVec = bulletCasePos.forward * Random.Range(-3, -2) + Vector3.up * Random.Range(2, 3);
