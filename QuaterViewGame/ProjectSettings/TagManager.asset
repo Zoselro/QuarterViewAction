@@ -9,10 +9,12 @@ TagManager:
   - Item
   - Weapon
   - Melee
-  - Bullet
   - Enemy
   - EnemyBullet
   - Shop
+  - BulletSub
+  - BulletHand
+  - BulletCase
   layers:
   - Default
   - TransparentFX

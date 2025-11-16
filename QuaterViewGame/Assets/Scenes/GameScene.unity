@@ -13796,7 +13796,7 @@ MonoBehaviour:
   type: 1
   damage: 0
   rate: 0.15
-  bulletSpeed: 50
+  bulletSpeed: 70
   caseRotation: 10
   maxAmmo: 30
   meleeArea: {fileID: 0}
@@ -46787,7 +46787,7 @@ GameObject:
   - component: {fileID: 1168542563}
   - component: {fileID: 1168542564}
   m_Layer: 0
-  m_Name: ObjectPool
+  m_Name: BulletObjectPool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46820,8 +46820,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b7a597c2fe0c5145a76a436040611cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSubMachineGunPrefab: {fileID: 7877290959127339683, guid: 30f504b904c5faf41ad23ef23dd4901c, type: 3}
-  bulletCasePrefab: {fileID: 0}
+  bulletPrefab: {fileID: 7877290959127339683, guid: 30f504b904c5faf41ad23ef23dd4901c, type: 3}
+  bulletCasePrefab: {fileID: 511358052984785566, guid: 5e1d95834f8085041a3060c8e1a656e2, type: 3}
 --- !u!1 &1184987720
 GameObject:
   m_ObjectHideFlags: 0

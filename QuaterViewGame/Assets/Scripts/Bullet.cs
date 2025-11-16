@@ -4,22 +4,28 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private int damage;
     [SerializeField] private bool isMelee; // 근접으로 공격하는 몬스터인가?
+    [SerializeField] private bool isCase;
 
     protected bool isRock;
+    private bool _released;
+
+    private void OnEnable()
+    {
+        _released = false;
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (_released)
+            return;
+
         if (!isRock && collision.gameObject.tag == "Floor")
         {
             //Destroy(gameObject, 3);
-            Invoke("ReturnToPool", 3);
+            Invoke("ReleaseToPool", 3f);
         }
     }
 
-    private void ReturnToPool()
-    {
-        ObjectPool.ReturnBullet(this);
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -32,8 +38,7 @@ public class Bullet : MonoBehaviour
             if(other.gameObject.tag == "Wall")
             {
                 //Destroy(gameObject);
-                ObjectPool.ReturnBullet(this);
-                return;
+                ReleaseToPool();
             }
             else if(other.gameObject.tag == "Floor")
             {
@@ -42,7 +47,7 @@ public class Bullet : MonoBehaviour
                     return;
                 }
                 //Destroy(gameObject);
-                ObjectPool.ReturnBullet(this);
+                ReleaseToPool();
             }
         }
     }
@@ -50,5 +55,15 @@ public class Bullet : MonoBehaviour
     public int GetDamage()
     {
         return damage;
+    }
+    private void ReleaseToPool()
+    {
+        if (_released) return;
+        _released = true;
+
+        if (isCase)
+            BulletObjectPool.ReturnBulletCase(this);
+        else
+            BulletObjectPool.ReturnBullet(this);
     }
 }
