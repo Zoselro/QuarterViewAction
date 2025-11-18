@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6730581851387482686}
   m_Layer: 8
   m_Name: BulletHandGun
-  m_TagString: BulletHand
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -214,4 +214,3 @@ MonoBehaviour:
   damage: 20
   isMelee: 0
   isCase: 0
-  trailRenderer: {fileID: 7980278732565994784}

@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -50,6 +49,29 @@ public class Enemy : MonoBehaviour
         if(enemyType != Type.D)
             Invoke("ChaseStart", spawnTime);
     }
+
+    private void OnEnable()
+    {
+        foreach (MeshRenderer mesh in meshs)
+            mesh.material.color = Color.white;
+        gameObject.layer = 11;
+        isChase = false;
+        isAttack = false; // 공격을 하고 있는가?
+        isTime = false;
+        isDead = false;
+        nav.enabled = true;
+
+        rigid.constraints = RigidbodyConstraints.FreezePositionX |
+                    RigidbodyConstraints.FreezePositionY |
+                    RigidbodyConstraints.FreezePositionZ;
+
+        mainColider.enabled = false;
+        curHealth = maxHealth;
+
+        if (enemyType != Type.D)
+            Invoke("ChaseStart", spawnTime);
+    }
+
     private void Start()
     {
         mainColider.enabled = false;
@@ -193,10 +215,16 @@ public class Enemy : MonoBehaviour
         else if (other.tag == "Bullet")
         {
             Bullet bullet = other.GetComponent<Bullet>();
-            curHealth -= bullet.GetDamage();
-            Vector3 reactVector = transform.position - other.transform.position;
-            Destroy(other.gameObject);
-            StartCoroutine(OnDamage(reactVector, false));
+            //Destroy(other.gameObject);
+
+            if(bullet != null)
+            {
+                curHealth -= bullet.GetDamage();
+                Vector3 reactVector = transform.position - other.transform.position;
+                BulletObjectPool.ReturnBullet(bullet);
+                StartCoroutine(OnDamage(reactVector, false));
+            }
+
         }
     }
 
@@ -232,9 +260,10 @@ public class Enemy : MonoBehaviour
             rigid.constraints = RigidbodyConstraints.FreezeRotationX |
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
-
+            
             foreach (MeshRenderer mesh in meshs)
                 mesh.material.color = Color.gray;
+
             curHealth = 0;
             gameObject.layer = 12;
             isChase = false;
@@ -289,13 +318,25 @@ public class Enemy : MonoBehaviour
                 rigid.AddForce(reactVector * 5, ForceMode.Impulse);
             }
             rigid.freezeRotation = false;
-            Destroy(gameObject, 4f);
+
+            //Destroy(gameObject, 4f);
+            Invoke("DieAfterTime", 4f);
         }
+    }
+
+    private void DieAfterTime()
+    {
+        EnemyObjectPool.Instance.ReturnEnemy(this);
     }
 
     public void Initialize(Transform target, GameManager manager)
     {
         this.target = target;
         this.manager = manager;
+    }
+
+    public Type GetEnemyType()
+    {
+        return enemyType;
     }
 }

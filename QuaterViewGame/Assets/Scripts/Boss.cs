@@ -20,6 +20,25 @@ public class Boss : Enemy
     private float doBigShotTime;
     private float tauntTime;
 
+    private void OnEnable()
+    {
+        isChase = false;
+        isAttack = false;
+        isTime = false;
+        isDead = false;
+        nav.enabled = true;
+
+        foreach (MeshRenderer mesh in meshs)
+            mesh.material.color = Color.white;
+        gameObject.layer = 11;
+
+        StartCoroutine(Think());
+        
+        mainColider.enabled = false;
+        curHealth = maxHealth;
+        ResetBoss();
+    }
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -27,8 +46,10 @@ public class Boss : Enemy
         nav = rigid.GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
         meshs = GetComponentsInChildren<MeshRenderer>();
-
-        nav.isStopped = true;
+        
+        if(nav.isOnNavMesh)
+            nav.isStopped = true;
+        
         DoActionTime();
 
         StartCoroutine(Think());
@@ -39,6 +60,7 @@ public class Boss : Enemy
     {
         mainColider.enabled = false;
         curHealth = maxHealth;
+        ResetBoss();
     }
 
     private void Update()
@@ -191,6 +213,25 @@ public class Boss : Enemy
         isLook = true;
         nav.isStopped = true;
         boxCollider.enabled = true;
+        StartCoroutine(Think());
+    }
+
+    public void ResetBoss()
+    {
+        curHealth = maxHealth;
+        isDead = false;
+        time = 0;
+        isTime = false;
+
+        nav.enabled = true;
+        nav.isStopped = true;
+
+        mainColider.enabled = false;
+        meleeArea.enabled = false;
+
+        transform.localScale = new Vector3(3f, 3f, 3f);
+
+        StopAllCoroutines();
         StartCoroutine(Think());
     }
 }

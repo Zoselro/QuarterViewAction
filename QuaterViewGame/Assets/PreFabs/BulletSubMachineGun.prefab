@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -8143491162097656626}
   m_Layer: 8
   m_Name: BulletSubMachineGun
-  m_TagString: BulletSub
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -187,7 +187,6 @@ MonoBehaviour:
   damage: 7
   isMelee: 0
   isCase: 0
-  trailRenderer: {fileID: 5700748045338074836}
 --- !u!54 &-8143491162097656626
 Rigidbody:
   m_ObjectHideFlags: 0

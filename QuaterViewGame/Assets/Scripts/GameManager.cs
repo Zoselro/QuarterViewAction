@@ -66,6 +66,9 @@ public class GameManager : MonoBehaviour
     public int EnemyCntC => enemyCntC;
     public int EnemyCntD => enemyCntD;
 
+    private bool isSpawn;
+    private bool isBossSpawn;
+
     private void Awake()
     {
         enemyList = new List<int>();
@@ -115,7 +118,14 @@ public class GameManager : MonoBehaviour
         if(stage % 5 == 0)
         {
             enemyCntD++;
-            GameObject instantEnemy = Instantiate(enemies[3], enemyZones[0].position, enemyZones[0].rotation);
+            int ranzone = Random.Range(0, 4);
+            //GameObject instantEnemy = Instantiate(enemies[3], enemyZones[0].position, enemyZones[0].rotation);
+            Enemy instantEnemy = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.D);
+            //Boss instantEnemy = EnemyObjectPool.Instance.GetBoss();
+
+
+            instantEnemy.transform.position = enemyZones[ranzone].position;
+            instantEnemy.transform.rotation = enemyZones[ranzone].rotation;
             Enemy target = instantEnemy.GetComponent<Enemy>();
             target.Initialize(player.transform, this);
             boss = instantEnemy.GetComponent<Boss>();
@@ -143,7 +153,23 @@ public class GameManager : MonoBehaviour
             while(enemyList.Count > 0)
             {
                 int ranZone = Random.Range(0, 4);
-                GameObject instantEnemy = Instantiate(enemies[enemyList[0]], enemyZones[ranZone].position, enemyZones[ranZone].rotation);
+                //GameObject instantEnemy = Instantiate(enemies[enemyList[0]], enemyZones[ranZone].position, enemyZones[ranZone].rotation);
+                Enemy instantEnemy = null;
+                switch (enemyList[0])
+                {
+                    case 0:
+                        instantEnemy = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.A);
+                        break;
+                    case 1:
+                        instantEnemy = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.B);
+                        break;
+                    case 2:
+                        instantEnemy = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.C);
+                        break;
+                }
+                instantEnemy.transform.position = enemyZones[ranZone].position;
+                instantEnemy.transform.rotation = enemyZones[ranZone].rotation;
+
                 Enemy target = instantEnemy.GetComponent<Enemy>();
                 target.Initialize(player.transform, this);
                 enemyList.RemoveAt(0);
@@ -230,7 +256,6 @@ public class GameManager : MonoBehaviour
         enemyAText.text = enemyCntA.ToString();
         enemyBText.text = enemyCntB.ToString();
         enemyCText.text = enemyCntC.ToString();
-
 
         // 체력 바를 줄이기
         if(boss != null)
