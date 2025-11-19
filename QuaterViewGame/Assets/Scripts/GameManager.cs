@@ -258,7 +258,7 @@ public class GameManager : MonoBehaviour
         enemyCText.text = enemyCntC.ToString();
 
         // 체력 바를 줄이기
-        if(boss != null)
+        if (boss != null)
         {
             bossHealthGroup.gameObject.SetActive(true);
             bossHealthBar.localScale = new Vector3((float)boss.CurHealth / boss.MaxHealth, 1, 1);

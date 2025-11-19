@@ -20,24 +20,24 @@ public class Boss : Enemy
     private float doBigShotTime;
     private float tauntTime;
 
-    private void OnEnable()
-    {
-        isChase = false;
-        isAttack = false;
-        isTime = false;
-        isDead = false;
-        nav.enabled = true;
+    //private void OnEnable()
+    //{
+    //    isChase = false;
+    //    isAttack = false;
+    //    isTime = false;
+    //    isDead = false;
+    //    nav.enabled = true;
 
-        foreach (MeshRenderer mesh in meshs)
-            mesh.material.color = Color.white;
-        gameObject.layer = 11;
+    //    foreach (MeshRenderer mesh in meshs)
+    //        mesh.material.color = Color.white;
+    //    gameObject.layer = 11;
 
-        StartCoroutine(Think());
+    //    StartCoroutine(Think());
         
-        mainColider.enabled = false;
-        curHealth = maxHealth;
-        ResetBoss();
-    }
+    //    mainColider.enabled = false;
+    //    curHealth = maxHealth;
+    //    ResetBoss();
+    //}
 
     private void Awake()
     {
@@ -218,19 +218,12 @@ public class Boss : Enemy
 
     public void ResetBoss()
     {
-        curHealth = maxHealth;
-        isDead = false;
-        time = 0;
-        isTime = false;
-
-        nav.enabled = true;
-        nav.isStopped = true;
-
-        mainColider.enabled = false;
+        if (nav.isOnNavMesh)
+            nav.isStopped = true;
         meleeArea.enabled = false;
-
         transform.localScale = new Vector3(3f, 3f, 3f);
 
+        DoActionTime();
         StopAllCoroutines();
         StartCoroutine(Think());
     }

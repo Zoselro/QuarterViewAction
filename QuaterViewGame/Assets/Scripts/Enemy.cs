@@ -50,28 +50,6 @@ public class Enemy : MonoBehaviour
             Invoke("ChaseStart", spawnTime);
     }
 
-    private void OnEnable()
-    {
-        foreach (MeshRenderer mesh in meshs)
-            mesh.material.color = Color.white;
-        gameObject.layer = 11;
-        isChase = false;
-        isAttack = false; // 공격을 하고 있는가?
-        isTime = false;
-        isDead = false;
-        nav.enabled = true;
-
-        rigid.constraints = RigidbodyConstraints.FreezePositionX |
-                    RigidbodyConstraints.FreezePositionY |
-                    RigidbodyConstraints.FreezePositionZ;
-
-        mainColider.enabled = false;
-        curHealth = maxHealth;
-
-        if (enemyType != Type.D)
-            Invoke("ChaseStart", spawnTime);
-    }
-
     private void Start()
     {
         mainColider.enabled = false;
@@ -243,7 +221,6 @@ public class Enemy : MonoBehaviour
         foreach(MeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.red;
-            //mat.color = Color.red;
         }
 
         yield return new WaitForSeconds(0.1f);
@@ -339,4 +316,30 @@ public class Enemy : MonoBehaviour
     {
         return enemyType;
     }
+
+    public void ResetState()
+    {
+        time = 0;
+        curHealth = maxHealth;
+
+        foreach (MeshRenderer mesh in meshs)
+            mesh.material.color = Color.white;
+        
+        gameObject.layer = 11;
+        
+        isChase = false;
+        isAttack = false; // 공격을 하고 있는가?
+        isTime = false;
+        isDead = false;
+        nav.enabled = true;
+
+        rigid.constraints = RigidbodyConstraints.FreezePositionX |
+                    RigidbodyConstraints.FreezePositionY |
+                    RigidbodyConstraints.FreezePositionZ;
+
+        mainColider.enabled = false;
+
+        if (enemyType != Type.D)
+            Invoke("ChaseStart", spawnTime);
+    }   
 }

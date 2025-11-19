@@ -12,33 +12,11 @@ public class EnemyObjectPool : MonoBehaviour
     [SerializeField] private Enemy enemyDPrefab;
 
     private Dictionary<Enemy.Type, IObjectPool<Enemy>> enemyPools;
-    private IObjectPool<Boss> bossPool;
 
     private void Awake()
     {
         Instance = this;
         enemyPools = new Dictionary<Enemy.Type, IObjectPool<Enemy>>();
-
-        /*bossPool = new ObjectPool<Boss>(
-            createFunc: () =>
-            {
-                Enemy newObj = Instantiate(enemyDPrefab, transform);
-                newObj.gameObject.SetActive(false);
-                return (Boss)newObj;
-            },
-            actionOnGet: (b) =>
-            {
-                b.ResetBoss();
-                b.transform.SetParent(Instance.transform);
-                b.gameObject.SetActive(true);
-            },
-            actionOnRelease: (b) =>
-            {
-                b.transform.SetParent(Instance.transform);
-                b.gameObject.SetActive(false);
-            },
-            maxSize: 2
-        );*/
     }
 
     private void Start()
@@ -62,6 +40,12 @@ public class EnemyObjectPool : MonoBehaviour
             {
                 b.transform.SetParent(Instance.transform);
                 b.gameObject.SetActive(true);
+                b.ResetState();
+
+                if(b is Boss boss)
+                {
+                    boss.ResetBoss();
+                }
             },
             actionOnRelease: (b) =>
             {
@@ -80,15 +64,5 @@ public class EnemyObjectPool : MonoBehaviour
     public void ReturnEnemy(Enemy enemy)
     {
         enemyPools[enemy.GetEnemyType()].Release(enemy);
-    }
-
-    public Boss GetBoss()
-    {
-        return bossPool.Get();
-    }
-
-    public void ReturnBoss(Boss boss)
-    {
-        bossPool.Release(boss);
     }
 }
