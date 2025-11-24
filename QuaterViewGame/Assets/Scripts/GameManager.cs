@@ -74,6 +74,10 @@ public class GameManager : MonoBehaviour
         enemyList = new List<int>();
         maxScoreText.text = string.Format("{0:n0}", PlayerPrefs.GetInt("MaxScore"));
     }
+    private void Start()
+    {
+        bossHealthGroup.gameObject.SetActive(false);
+    }
 
     private void Update()
     {
@@ -257,8 +261,9 @@ public class GameManager : MonoBehaviour
         enemyBText.text = enemyCntB.ToString();
         enemyCText.text = enemyCntC.ToString();
 
-        // 체력 바를 줄이기
-        if (boss != null)
+        if (boss == null)
+            return;
+        else if (boss.IsHpBar == true)
         {
             bossHealthGroup.gameObject.SetActive(true);
             bossHealthBar.localScale = new Vector3((float)boss.CurHealth / boss.MaxHealth, 1, 1);
@@ -286,5 +291,10 @@ public class GameManager : MonoBehaviour
                 enemyCntD = enemyCnt;
                 break;
         }
+    }
+
+    public Boss GetBoss()
+    {
+        return boss;
     }
 }

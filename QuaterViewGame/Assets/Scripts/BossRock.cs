@@ -7,6 +7,7 @@ public class BossRock : Bullet
     [SerializeField] private float speed; // 오브젝트가 움직이는 속도
     [SerializeField] private float rollingStartTime; // speed만큼 움직이기 시작하는 시간
     [SerializeField] private float scaleUpTime; // 커지는데 걸리는 시간
+  
 
     private Rigidbody rigid;
     private float angularPower = 2f;
@@ -66,6 +67,11 @@ public class BossRock : Bullet
         if (meshObj != null)
         {
             meshObj.Rotate(Vector3.right * angularPower * 50f * Time.deltaTime);
+        }
+        Debug.Log(EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth);
+        if (EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth == 0)
+        {
+            Destroy(gameObject);
         }
     }
 }

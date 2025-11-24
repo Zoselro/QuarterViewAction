@@ -12,6 +12,7 @@ public class EnemyObjectPool : MonoBehaviour
     [SerializeField] private Enemy enemyDPrefab;
 
     private Dictionary<Enemy.Type, IObjectPool<Enemy>> enemyPools;
+    private Enemy enemy;
 
     private void Awake()
     {
@@ -45,12 +46,16 @@ public class EnemyObjectPool : MonoBehaviour
                 if(b is Boss boss)
                 {
                     boss.ResetBoss();
+                    boss.SetIsHpBar(true);
                 }
             },
             actionOnRelease: (b) =>
             {
                 b.transform.SetParent(Instance.transform);
                 b.gameObject.SetActive(false);
+
+                if (b is Boss boss)
+                    boss.SetIsHpBar(false);
             },
             maxSize: 5
         );
@@ -58,7 +63,13 @@ public class EnemyObjectPool : MonoBehaviour
 
     public Enemy GetEnemy(Enemy.Type type)
     {
-        return enemyPools[type].Get();
+        enemy = enemyPools[type].Get();
+        return enemy;
+    }
+
+    public Enemy GetEnemyType(Enemy.Type type)
+    {
+        return enemy;
     }
 
     public void ReturnEnemy(Enemy enemy)

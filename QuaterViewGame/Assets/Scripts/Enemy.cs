@@ -35,9 +35,11 @@ public class Enemy : MonoBehaviour
     protected bool isAttack; // 공격을 하고 있는가?
     protected bool isTime;
     protected bool isDead;
+    protected bool isHpBar;
 
     public int CurHealth => curHealth;
     public int MaxHealth => maxHealth;
+    public bool IsHpBar => isHpBar;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -258,22 +260,18 @@ public class Enemy : MonoBehaviour
                 case Type.A:
                     //manager.enemyCntA--;
                     int enemyCntA = manager.EnemyCntA;
-                    Debug.Log("enemyCntA :" + enemyCntA);
                     manager.DecreaseEnemyCount(Type.A, --enemyCntA);
                     break;
                 case Type.B:
                     int enemyCntB = manager.EnemyCntB;
-                    Debug.Log("enemyCntB :" + enemyCntB);
                     manager.DecreaseEnemyCount(Type.B, --enemyCntB);
                     break;
                 case Type.C:
                     int enemyCntC = manager.EnemyCntC;
-                    Debug.Log("enemyCntC :" + enemyCntC);
                     manager.DecreaseEnemyCount(Type.C, --enemyCntC);
                     break;
                 case Type.D:
                     int enemyCntD = manager.EnemyCntD;
-                    Debug.Log("enemyCntD :" + enemyCntD);
                     manager.DecreaseEnemyCount(Type.D, --enemyCntD);
                     break;
             }
@@ -310,6 +308,11 @@ public class Enemy : MonoBehaviour
     {
         this.target = target;
         this.manager = manager;
+    }
+
+    public void SetIsHpBar(bool isHpBar)
+    {
+        this.isHpBar = isHpBar;
     }
 
     public Type GetEnemyType()

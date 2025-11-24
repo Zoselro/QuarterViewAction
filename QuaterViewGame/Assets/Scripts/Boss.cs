@@ -20,24 +20,6 @@ public class Boss : Enemy
     private float doBigShotTime;
     private float tauntTime;
 
-    //private void OnEnable()
-    //{
-    //    isChase = false;
-    //    isAttack = false;
-    //    isTime = false;
-    //    isDead = false;
-    //    nav.enabled = true;
-
-    //    foreach (MeshRenderer mesh in meshs)
-    //        mesh.material.color = Color.white;
-    //    gameObject.layer = 11;
-
-    //    StartCoroutine(Think());
-        
-    //    mainColider.enabled = false;
-    //    curHealth = maxHealth;
-    //    ResetBoss();
-    //}
 
     private void Awake()
     {
@@ -139,17 +121,14 @@ public class Boss : Enemy
             if (clip.name == "Shot")
             {
                 doShotTime = clip.length;
-                Debug.Log("doShotTime : " + doShotTime);
             }
             else if (clip.name == "BigShot")
             {
                 doBigShotTime = clip.length;
-                Debug.Log("doBigShotTime : " + doBigShotTime);
             }
             else if (clip.name == "Taunt")
             {
                 tauntTime = clip.length;
-                Debug.Log("tauntTime : " + tauntTime);
             }
         }
     }
@@ -160,16 +139,25 @@ public class Boss : Enemy
         
         // 첫 번째 미사일 발사
         yield return new WaitForSeconds(0.2f);
-        GameObject instantMissileA = Instantiate(missile, missilePortA.position, missilePortA.rotation);
+        //GameObject instantMissileA = Instantiate(missile, missilePortA.position, missilePortA.rotation);
         // 미사일 스크립트 접근하여, 그 미사일이 플레이어를 추적할 수 있도록 하는 코드
-        BossMissile bossMissileA = instantMissileA.GetComponent<BossMissile>();
-        bossMissileA.SetTarget(target);
+        //BossMissile bossMissileA = instantMissileA.GetComponent<BossMissile>();
+        //bossMissileA.SetTarget(target);
+        BossMissile instantMissileA = EnemyBulletObejctPool.Instance.GetBossBulletPool();
+        instantMissileA.SetTarget(target);
+        instantMissileA.transform.position = missilePortA.position;
+        instantMissileA.transform.rotation = missilePortA.rotation;
 
         yield return new WaitForSeconds(0.3f);
-        GameObject instantMissileB = Instantiate(missile, missilePortB.position, missilePortB.rotation);
+        //GameObject instantMissileB = Instantiate(missile, missilePortB.position, missilePortB.rotation);
         // 미사일 스크립트 접근하여, 그 미사일이 플레이어를 추적할 수 있도록 하는 코드
-        BossMissile bossMissileB = instantMissileB.GetComponent<BossMissile>();
-        bossMissileB.SetTarget(target);
+        //BossMissile bossMissileB = instantMissileB.GetComponent<BossMissile>();
+        //bossMissileB.SetTarget(target);
+
+        BossMissile instantMissileB = EnemyBulletObejctPool.Instance.GetBossBulletPool();
+        instantMissileB.SetTarget(target);
+        instantMissileB.transform.position = missilePortB.position;
+        instantMissileB.transform.rotation = missilePortB.rotation;
 
         //yield return new WaitForSeconds(2.5f);
         yield return new WaitForSeconds(doShotTime - 0.5f);
@@ -183,10 +171,10 @@ public class Boss : Enemy
         isLook = false;
         animator.SetTrigger("doBigShot");
 
-        GameObject obj = Instantiate(bullet);
+        //GameObject obj = Instantiate(bullet);
+        BossRock obj = EnemyBulletObejctPool.Instance.GetBossRockPool();
         obj.transform.position = transform.position;
         obj.transform.rotation = transform.rotation;
-        //yield return new WaitForSeconds(3f);
         yield return new WaitForSeconds(doBigShotTime);
         isLook = true;
 
