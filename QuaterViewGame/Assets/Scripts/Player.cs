@@ -437,7 +437,9 @@ public class Player : MonoBehaviour
             {
                 // Ray에 맞은 지점 바로 앞에 스폰
                 Vector3 spawnPos = hit.point - transform.forward * 0.5f; // 0.5m 뒤쪽 (겹치지 않게)
-                GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
+                Enemy obj = EnemyObjectPool.Instance.GetEnemy(spawnEnemy.GetComponent<Enemy>().GetEnemyType());
+                obj.transform.position = spawnPos;
+                obj.transform.rotation = Quaternion.identity;
                 Enemy enemy = obj.GetComponent<Enemy>();
                 enemy.Initialize(transform, manager);
             }
@@ -445,7 +447,9 @@ public class Player : MonoBehaviour
             {
                 // 3️. 아무것도 없으면, 플레이어 앞 거리 5 위치에 생성
                 Vector3 spawnPos = transform.position + transform.forward * 5f;
-                GameObject obj = Instantiate(spawnEnemy, spawnPos, Quaternion.identity);
+                Enemy obj = EnemyObjectPool.Instance.GetEnemy(spawnEnemy.GetComponent<Enemy>().GetEnemyType());
+                obj.transform.position = spawnPos;
+                obj.transform.rotation = Quaternion.identity;
                 Enemy enemy = obj.GetComponent<Enemy>();
                 enemy.Initialize(transform, manager);
             }
@@ -528,10 +532,6 @@ public class Player : MonoBehaviour
                         health = maxHealth;
                     break;
                 case Item.Type.Grenade:
-                    /*grenades[hasGrenades].SetActive(true);
-                    hasGrenades += item.GetValue();
-                    if(hasGrenades > maxHasGrenades)
-                        hasGrenades = maxHasGrenades;*/
                     if (hasGrenades == maxHasGrenades)
                         return;
                     grenades[hasGrenades].SetActive(true);
@@ -540,22 +540,43 @@ public class Player : MonoBehaviour
             }
             Destroy(other.gameObject);
         }
-        else if(other.tag == "EnemyBullet")
+        OnHitByBullet(other);
+    }
+
+    public void OnHitByBullet(Collider other)
+    {
+        if(!other.CompareTag("Item") && !other.CompareTag("Shop"))
         {
             if (!isDamage)
             {
                 Bullet enemyBullet = other.GetComponent<Bullet>();
                 health -= enemyBullet.GetDamage();
-                if(health <= 0)
+                if (health <= 0)
                 {
                     health = 0;
                 }
-
                 bool isBossAtk = other.name == "Boss Melee Area";
                 StartCoroutine(OnDamage(other, isBossAtk));
             }
+
             if (other.GetComponent<Rigidbody>() != null)
-                Destroy(other.gameObject);
+            {
+                switch (other.tag)
+                {
+                    case "EnemyBullet":
+                        EnemyBulletObejctPool.Instance.ReturnEnemyCBulletPool(other.gameObject.GetComponent<Bullet>());
+                        break;
+                    case "BossRock":
+                        EnemyBulletObejctPool.Instance.ReturnBossRockPool(other.gameObject.GetComponent<BossRock>());
+                        break;
+                    case "BossMissile":
+                        EnemyBulletObejctPool.Instance.ReturnBossBulletPool(other.gameObject.GetComponent<BossMissile>());
+                        break;
+                    default:
+                        Debug.Log("null");
+                        break;
+                }
+            }
         }
     }
 

@@ -18,7 +18,7 @@ public class BossMissile : Bullet
         Debug.Log(EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth);
         if (EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth == 0)
         {
-            Destroy(gameObject);
+            EnemyBulletObejctPool.Instance.ReturnBossBulletPool(gameObject.GetComponent<BossMissile>());
         }
     }
 

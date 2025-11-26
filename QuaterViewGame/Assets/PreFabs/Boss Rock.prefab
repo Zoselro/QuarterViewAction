@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 3308417562539966946}
   m_Layer: 14
   m_Name: Boss Rock
-  m_TagString: EnemyBullet
+  m_TagString: BossRock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -205,6 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 40
   isMelee: 0
+  isCase: 0
   speed: 20
   rollingStartTime: 1
   scaleUpTime: 0.5

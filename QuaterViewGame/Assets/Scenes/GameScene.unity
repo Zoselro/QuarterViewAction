@@ -7344,9 +7344,9 @@ MonoBehaviour:
   speed: 800
   jumpPower: 15
   hasWeapons: 000000
-  ammo: 100
+  ammo: 10000
   coin: 99999
-  health: 10
+  health: 10000
   score: 0
   hasGrenades: 0
   maxAmmo: 999

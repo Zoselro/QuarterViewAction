@@ -139,20 +139,14 @@ public class Boss : Enemy
         
         // 첫 번째 미사일 발사
         yield return new WaitForSeconds(0.2f);
-        //GameObject instantMissileA = Instantiate(missile, missilePortA.position, missilePortA.rotation);
+
         // 미사일 스크립트 접근하여, 그 미사일이 플레이어를 추적할 수 있도록 하는 코드
-        //BossMissile bossMissileA = instantMissileA.GetComponent<BossMissile>();
-        //bossMissileA.SetTarget(target);
         BossMissile instantMissileA = EnemyBulletObejctPool.Instance.GetBossBulletPool();
         instantMissileA.SetTarget(target);
         instantMissileA.transform.position = missilePortA.position;
         instantMissileA.transform.rotation = missilePortA.rotation;
 
         yield return new WaitForSeconds(0.3f);
-        //GameObject instantMissileB = Instantiate(missile, missilePortB.position, missilePortB.rotation);
-        // 미사일 스크립트 접근하여, 그 미사일이 플레이어를 추적할 수 있도록 하는 코드
-        //BossMissile bossMissileB = instantMissileB.GetComponent<BossMissile>();
-        //bossMissileB.SetTarget(target);
 
         BossMissile instantMissileB = EnemyBulletObejctPool.Instance.GetBossBulletPool();
         instantMissileB.SetTarget(target);
@@ -171,7 +165,6 @@ public class Boss : Enemy
         isLook = false;
         animator.SetTrigger("doBigShot");
 
-        //GameObject obj = Instantiate(bullet);
         BossRock obj = EnemyBulletObejctPool.Instance.GetBossRockPool();
         obj.transform.position = transform.position;
         obj.transform.rotation = transform.rotation;

@@ -123,10 +123,7 @@ public class GameManager : MonoBehaviour
         {
             enemyCntD++;
             int ranzone = Random.Range(0, 4);
-            //GameObject instantEnemy = Instantiate(enemies[3], enemyZones[0].position, enemyZones[0].rotation);
             Enemy instantEnemy = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.D);
-            //Boss instantEnemy = EnemyObjectPool.Instance.GetBoss();
-
 
             instantEnemy.transform.position = enemyZones[ranzone].position;
             instantEnemy.transform.rotation = enemyZones[ranzone].rotation;
@@ -157,7 +154,6 @@ public class GameManager : MonoBehaviour
             while(enemyList.Count > 0)
             {
                 int ranZone = Random.Range(0, 4);
-                //GameObject instantEnemy = Instantiate(enemies[enemyList[0]], enemyZones[ranZone].position, enemyZones[ranZone].rotation);
                 Enemy instantEnemy = null;
                 switch (enemyList[0])
                 {

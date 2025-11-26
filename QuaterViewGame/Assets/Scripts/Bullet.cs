@@ -21,7 +21,6 @@ public class Bullet : MonoBehaviour
 
         if (!isRock && collision.gameObject.tag == "Floor")
         {
-            //Destroy(gameObject, 3);
             Invoke("ReleaseToPool", 3f);
         }
     }
@@ -29,15 +28,10 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        /*if (!isMelee && (other.gameObject.tag == "Wall" || other.gameObject.tag == "Floor"))
-        {
-            Destroy(gameObject);
-        }*/
         if (!isMelee)
         {
             if(other.gameObject.tag == "Wall")
             {
-                //Destroy(gameObject);
                 ReleaseToPool();
             }
             else if(other.gameObject.tag == "Floor")
@@ -46,7 +40,6 @@ public class Bullet : MonoBehaviour
                 {
                     return;
                 }
-                //Destroy(gameObject);
                 ReleaseToPool();
             }
         }

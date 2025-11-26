@@ -153,8 +153,10 @@ public class Enemy : MonoBehaviour
                 if (isDead)
                     break;
                 yield return new WaitForSeconds(0.5f);
-                GameObject instanceBullet = Instantiate(bullet, transform.position, transform.rotation);
-                Rigidbody rigidBullet = instanceBullet.GetComponent<Rigidbody>();
+                Bullet enemyCBullet = EnemyBulletObejctPool.Instance.GetEnemyCBulletPool();
+                enemyCBullet.transform.position = transform.position;
+                enemyCBullet.transform.rotation = transform.rotation;
+                Rigidbody rigidBullet = enemyCBullet.GetComponent<Rigidbody>();
                 rigidBullet.linearVelocity = transform.forward * 20;
                 
                 yield return new WaitForSeconds(2f);
@@ -195,7 +197,6 @@ public class Enemy : MonoBehaviour
         else if (other.tag == "Bullet")
         {
             Bullet bullet = other.GetComponent<Bullet>();
-            //Destroy(other.gameObject);
 
             if(bullet != null)
             {
@@ -294,7 +295,6 @@ public class Enemy : MonoBehaviour
             }
             rigid.freezeRotation = false;
 
-            //Destroy(gameObject, 4f);
             Invoke("DieAfterTime", 4f);
         }
     }

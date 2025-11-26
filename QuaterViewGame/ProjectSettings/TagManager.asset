@@ -15,6 +15,9 @@ TagManager:
   - BulletSub
   - BulletHand
   - BulletCase
+  - Bullet
+  - BossRock
+  - BossMissile
   layers:
   - Default
   - TransparentFX

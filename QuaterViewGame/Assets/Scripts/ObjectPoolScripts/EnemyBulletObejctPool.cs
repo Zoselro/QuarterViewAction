@@ -68,6 +68,7 @@ public class EnemyBulletObejctPool : MonoBehaviour
             {
                 b.transform.SetParent(Instance.transform);
                 b.gameObject.SetActive(true);
+                b.ReSetState();
             },
             actionOnRelease: (b) =>
             {
@@ -78,7 +79,7 @@ public class EnemyBulletObejctPool : MonoBehaviour
         );
     }
 
-    public void ReturnenemyCBulletPool(Bullet bullet)
+    public void ReturnEnemyCBulletPool(Bullet bullet)
     {
         Instance.enemyCBulletPool.Release(bullet);
     }
@@ -89,7 +90,7 @@ public class EnemyBulletObejctPool : MonoBehaviour
         return bullet;
     }
 
-    public void ReturnBossBullet(BossMissile bullet)
+    public void ReturnBossBulletPool(BossMissile bullet)
     {
         Instance.bossBulletPool.Release(bullet);
     }
@@ -100,7 +101,7 @@ public class EnemyBulletObejctPool : MonoBehaviour
         return bullet;
     }
 
-    public void ReturnBossRock(BossRock bossRock)
+    public void ReturnBossRockPool(BossRock bossRock)
     {
         Instance.bossRockPool.Release(bossRock);
     }

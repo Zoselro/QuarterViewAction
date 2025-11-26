@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 716790672521773708}
   m_Layer: 14
   m_Name: Missile Boss
-  m_TagString: EnemyBullet
+  m_TagString: BossMissile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 12
   isMelee: 0
+  isCase: 0
   target: {fileID: 0}
 --- !u!54 &1154763488664430874
 Rigidbody:

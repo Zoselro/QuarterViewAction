@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using System.Collections;
 using UnityEngine;
 
@@ -19,7 +20,6 @@ public class BossRock : Bullet
 
     private void Awake()
     {
-        isRock = true;
         rigid = GetComponent<Rigidbody>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         //자식 Mesh Object 자동 찾기 (없으면 수동 연결)
@@ -28,6 +28,12 @@ public class BossRock : Bullet
         //플레이어 바라보기
         if (player != null)
             transform.LookAt(player.position);
+        ReSetState();
+    }
+
+    public void ReSetState()
+    {
+        isRock = true;
         StartCoroutine(GainPowerTimer());
         StartCoroutine(GainPower()); // scaleUpTime 후 Scale이 점점 커지면서 회전하도록 설정.
         StartCoroutine(StartRolling()); // rollingStartTime 뒤에 움직이게 설정
@@ -71,7 +77,7 @@ public class BossRock : Bullet
         Debug.Log(EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth);
         if (EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth == 0)
         {
-            Destroy(gameObject);
+            EnemyBulletObejctPool.Instance.ReturnBossRockPool(gameObject.GetComponent<BossRock>());
         }
     }
 }
