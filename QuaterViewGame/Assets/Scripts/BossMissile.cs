@@ -15,7 +15,6 @@ public class BossMissile : Bullet
     private void Update()
     {
         nav.SetDestination(target.position);
-        Debug.Log(EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth);
         if (EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth == 0)
         {
             EnemyBulletObejctPool.Instance.ReturnBossBulletPool(gameObject.GetComponent<BossMissile>());

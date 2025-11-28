@@ -58,6 +58,7 @@ public class Player : MonoBehaviour
     //private bool isBorder; // 벽에 부딛히고 있는가?
     private bool isShop; // 상점을 열고 있는가?
     private bool isDead;
+    private bool isPickedUp;
 
     private Vector3 rotation;
     private Vector3 rotation_value; // 행동 후 방향키 변경이 반영되지 않는 버그 수정을 위한 변수
@@ -233,7 +234,7 @@ public class Player : MonoBehaviour
             keepMovingAfterJump = true;
             jumpMoveDir = rotation;
 
-            jumpSound.Play(); 
+            jumpSound.Play();
         }
     }
 
@@ -265,7 +266,9 @@ public class Player : MonoBehaviour
                 int weaponIndex = item.GetValue();
                 hasWeapons[weaponIndex] = true;
 
-                Destroy(nearObject);
+                WeaponObjectPool.ReturnItem(nearObject, weaponIndex);
+
+                nearObject = null;
             }
             else if (nearObject.tag == "Shop")
             {

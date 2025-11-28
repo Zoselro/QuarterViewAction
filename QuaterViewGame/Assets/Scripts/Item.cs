@@ -16,6 +16,7 @@ public class Item : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private SphereCollider sphereCollider;
+
     private void Awake()
     {
         speed = 20;

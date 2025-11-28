@@ -79,7 +79,6 @@ public class Weapon : MonoBehaviour
         //}
 
         // 1. √—æÀ πﬂªÁ
-        //GameObject instantBullet = Instantiate(bullet, bulletPos.position, bulletPos.rotation);
         Bullet instantBullet = BulletObjectPool.GetBullet();
 
         instantBullet.transform.position = bulletPos.position;
@@ -92,7 +91,6 @@ public class Weapon : MonoBehaviour
         yield return null;
 
         // 2. ≈∫«« πË√‚
-        //GameObject instantCase = Instantiate(bulletCase, bulletCasePos.position, bulletCasePos.rotation);
         Bullet instantCase = BulletObjectPool.GetBulletCase();
 
         instantCase.transform.position = bulletCasePos.position;

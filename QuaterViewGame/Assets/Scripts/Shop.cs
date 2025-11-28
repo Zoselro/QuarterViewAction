@@ -41,7 +41,9 @@ public class Shop : MonoBehaviour
         enterPlayer.SetCoin(enterPlayer.Coin - price);
         Vector3 ranVec = Vector3.right * Random.Range(-3, 3)
                             + Vector3.forward * Random.Range(-3, 3);
-        Instantiate(itemObj[index], itemPos[index].position + ranVec, itemPos[index].rotation);
+        GameObject item = WeaponObjectPool.GetItem(index);
+        item.transform.position = itemPos[index].position + ranVec;
+        item.transform.rotation = itemPos[index].rotation;
     }
 
     IEnumerator Talk()

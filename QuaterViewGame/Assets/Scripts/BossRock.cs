@@ -74,7 +74,6 @@ public class BossRock : Bullet
         {
             meshObj.Rotate(Vector3.right * angularPower * 50f * Time.deltaTime);
         }
-        Debug.Log(EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth);
         if (EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth == 0)
         {
             EnemyBulletObejctPool.Instance.ReturnBossRockPool(gameObject.GetComponent<BossRock>());
