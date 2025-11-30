@@ -37,6 +37,9 @@ public class Enemy : MonoBehaviour
     protected bool isDead;
     protected bool isHpBar;
 
+    private int ranCoin;
+    public int RanCoin => ranCoin;
+
     public int CurHealth => curHealth;
     public int MaxHealth => maxHealth;
     public bool IsHpBar => isHpBar;
@@ -252,8 +255,16 @@ public class Enemy : MonoBehaviour
 
             Player player = target.GetComponent<Player>();
             player.SetScore(player.Score + score);
-            int ranCoin = Random.Range(0, 3);
-            Instantiate(coins[ranCoin], transform.position, Quaternion.identity);
+            ranCoin = Random.Range(0, 3);
+            GameObject coin = ItemObjectPool.GetCoin(ranCoin);
+            coin.transform.position = transform.position;
+            coin.transform.rotation = Quaternion.identity;
+
+            Item coinItem = coin.GetComponent<Item>();
+            if(coinItem != null)
+            {
+                coinItem.SetCoinIndexPool(ranCoin);
+            }
 
             switch (enemyType)
             {

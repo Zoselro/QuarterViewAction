@@ -17,18 +17,15 @@ public class Item : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private SphereCollider sphereCollider;
 
+    private int coinPoolIndex;
+    public int CoinPoolIndex => coinPoolIndex;
+
     private void Awake()
     {
         speed = 20;
         rb = GetComponent<Rigidbody>();
         sphereCollider = GetComponent<SphereCollider>();
     }
-
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         transform.Rotate(Vector3.up * speed * Time.deltaTime);
@@ -51,5 +48,10 @@ public class Item : MonoBehaviour
     public Type GetItemType()
     {
         return type;
+    }
+
+    public void SetCoinIndexPool(int coinPoolIndex)
+    {
+        this.coinPoolIndex = coinPoolIndex;
     }
 }

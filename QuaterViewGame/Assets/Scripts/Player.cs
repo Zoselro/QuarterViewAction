@@ -266,7 +266,7 @@ public class Player : MonoBehaviour
                 int weaponIndex = item.GetValue();
                 hasWeapons[weaponIndex] = true;
 
-                WeaponObjectPool.ReturnItem(nearObject, weaponIndex);
+                ItemObjectPool.ReturnItem(nearObject, weaponIndex, true);
 
                 nearObject = null;
             }
@@ -344,7 +344,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    // 단위벡터에 대해서 제대로 이해를 하고, 점프 되는 현상 수정하기
     public void GrenadeAttack(InputAction.CallbackContext context)
     {
         if (context.performed && hasGrenades == 0)
@@ -359,11 +358,14 @@ public class Player : MonoBehaviour
                 Vector3 nextVec = rayHit.point - transform.position;
                 nextVec.y = 10f;
 
-                GameObject obj = Instantiate(grenadeObj, transform.position, transform.rotation);
+                //Grenade obj = Instantiate(grenadeObj, transform.position, transform.rotation);
+                GameObject obj = ThrowGrenadeObjectPool.GetThrowGrenade();
+                obj.transform.position = transform.position;
+                obj.transform.rotation = transform.rotation;
+
                 Rigidbody rigidGrenade = obj.GetComponent<Rigidbody>();
                 rigidGrenade.AddForce(nextVec, ForceMode.Impulse);
                 rigidGrenade.AddTorque(Vector3.back * 10, ForceMode.Impulse);
-
                 hasGrenades--;
                 grenades[hasGrenades].SetActive(false);
             }
@@ -517,31 +519,38 @@ public class Player : MonoBehaviour
         if(other.tag == "Item")
         {
             Item item = other.GetComponent<Item>();
+            int itemIndex = 0;
             switch (item.GetItemType())
             {
+                case Item.Type.Heart:
+                    itemIndex = 0;
+                    health += item.GetValue();
+                    if(health > maxHealth)
+                        health = maxHealth;
+                    break;
                 case Item.Type.Ammo:
                     ammo += item.GetValue();
-                    if(ammo > maxAmmo)
+                    itemIndex = 1;
+                    if (ammo > maxAmmo)
                         ammo = maxAmmo;
+                    break;
+                case Item.Type.Grenade:
+                    itemIndex = 2;
+                    if (hasGrenades == maxHasGrenades)
+                        return;
+                    grenades[hasGrenades].SetActive(true);
+                    hasGrenades += item.GetValue();
                     break;
                 case Item.Type.Coin:
                     coin += item.GetValue();
                     if(coin > maxCoin)
                         coin = maxCoin;
                     break;
-                case Item.Type.Heart:
-                    health += item.GetValue();
-                    if(health > maxHealth)
-                        health = maxHealth;
-                    break;
-                case Item.Type.Grenade:
-                    if (hasGrenades == maxHasGrenades)
-                        return;
-                    grenades[hasGrenades].SetActive(true);
-                    hasGrenades += item.GetValue();
-                    break;
             }
-            Destroy(other.gameObject);
+            if (item.GetItemType() == Item.Type.Coin)
+                ItemObjectPool.ReturnCoin(other.gameObject, item.CoinPoolIndex);
+            else
+                ItemObjectPool.ReturnItem(other.gameObject, itemIndex, false);
         }
         OnHitByBullet(other);
     }

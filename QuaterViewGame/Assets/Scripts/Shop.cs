@@ -15,6 +15,8 @@ public class Shop : MonoBehaviour
 
     private Player enterPlayer;
 
+    [SerializeField] private bool isWeaponShop;
+
     public void Enter(Player player)
     {
         enterPlayer = player;
@@ -41,9 +43,18 @@ public class Shop : MonoBehaviour
         enterPlayer.SetCoin(enterPlayer.Coin - price);
         Vector3 ranVec = Vector3.right * Random.Range(-3, 3)
                             + Vector3.forward * Random.Range(-3, 3);
-        GameObject item = WeaponObjectPool.GetItem(index);
-        item.transform.position = itemPos[index].position + ranVec;
-        item.transform.rotation = itemPos[index].rotation;
+        if (isWeaponShop)
+        {
+            GameObject item = ItemObjectPool.GetItem(index, true);
+            item.transform.position = itemPos[index].position + ranVec;
+            item.transform.rotation = itemPos[index].rotation;
+        }
+        else
+        {
+            GameObject item = ItemObjectPool.GetItem(index, false);
+            item.transform.position = itemPos[index].position + ranVec;
+            item.transform.rotation = itemPos[index].rotation;
+        }
     }
 
     IEnumerator Talk()

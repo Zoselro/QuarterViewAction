@@ -4972,6 +4972,7 @@ MonoBehaviour:
   value: 30
   speed: 0
   rb: {fileID: 0}
+  sphereCollider: {fileID: 0}
 --- !u!54 &80978388546883706
 Rigidbody:
   m_ObjectHideFlags: 0

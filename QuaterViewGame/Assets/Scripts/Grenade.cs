@@ -13,6 +13,12 @@ public class Grenade : MonoBehaviour
         StartCoroutine(Explosion());
     }
 
+    public void ReSetState()
+    {
+        StopAllCoroutines();
+        Invoke("Exception", 5f);
+    }
+
     IEnumerator Explosion()
     {
         yield return new WaitForSeconds(explosionTime);
@@ -32,6 +38,7 @@ public class Grenade : MonoBehaviour
             hitObj.transform.GetComponent<Enemy>().HitByGrenade(transform.position);
         }
 
-        Destroy(gameObject, 5f);
+        //Destroy(gameObject, 5f);
+        ThrowGrenadeObjectPool.ReleaseThrowGrenade(gameObject);
     }
 }
