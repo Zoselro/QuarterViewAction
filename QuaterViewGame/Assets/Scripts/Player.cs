@@ -234,7 +234,7 @@ public class Player : MonoBehaviour
             keepMovingAfterJump = true;
             jumpMoveDir = rotation;
 
-            jumpSound.Play();
+            //jumpSound.Play();
         }
     }
 
@@ -507,10 +507,33 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Floor")
+        //if(collision.contacts[0].normal.y < 0.8f)
+        //{
+        //    isJump = false;
+        //}
+
+        //else if (collision.gameObject.CompareTag("Floor"))
+        //{
+        //    isJump = false;
+        //    animator.SetBool("IsJump", isJump);
+        //}
+
+
+
+        foreach (ContactPoint contact in collision.contacts)
         {
-            isJump = false;
-            animator.SetBool("IsJump", isJump);
+            // contact.normal : 충돌한 표면의 수직 방향 벡터
+            // Vector3.up 과의 각도가 작다면(즉, 평평한 바닥이라면)
+            if (Vector3.Dot(contact.normal, Vector3.up) > 0.7f) // 약 45도 이내의 경사만 바닥으로 인정
+            {
+                isJump = false;
+                animator.SetBool("IsJump", false);
+                return; // 하나라도 바닥이면 종료
+            }
+            else
+            {
+                isJump = false;
+            }
         }
     }
 

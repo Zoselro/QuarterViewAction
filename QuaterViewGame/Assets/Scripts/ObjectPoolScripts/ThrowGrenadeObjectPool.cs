@@ -16,20 +16,20 @@ public class ThrowGrenadeObjectPool : MonoBehaviour
             createFunc: () =>
             {
                 GameObject newObj = Instantiate(throwGrenade);
+                newObj.SetActive(false);
                 return newObj;
             },
             actionOnGet : (g) =>
             {
-                Grenade grenade = g.GetComponent<Grenade>();
                 g.transform.SetParent(Instance.transform);
                 g.gameObject.SetActive(true);
+                g.GetComponent<Grenade>().ReSetState();
                 
-                grenade.ReSetState();
             },
-            actionOnRelease: (i) =>
+            actionOnRelease: (g) =>
             {
-                i.transform.SetParent(Instance.transform);
-                i.SetActive(false);
+                g.transform.SetParent(Instance.transform);
+                g.SetActive(false);
             },
             maxSize : 10
         );

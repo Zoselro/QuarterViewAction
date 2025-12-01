@@ -8,15 +8,20 @@ public class Grenade : MonoBehaviour
     [SerializeField] Rigidbody rigid;
     [SerializeField] private float explosionTime;
 
-    void Start()
-    {
-        StartCoroutine(Explosion());
-    }
-
     public void ReSetState()
     {
         StopAllCoroutines();
-        Invoke("Exception", 5f);
+
+        // 물리 상태 초기화 (안 해도 되지만 안전하게)
+        rigid.linearVelocity = Vector3.zero;
+        rigid.angularVelocity = Vector3.zero;
+
+        // 외형 상태 초기화
+        meshObj.SetActive(true);
+        effectObj.SetActive(false);
+
+        // 다시 타이머 시작
+        StartCoroutine(Explosion());
     }
 
     IEnumerator Explosion()
@@ -38,7 +43,12 @@ public class Grenade : MonoBehaviour
             hitObj.transform.GetComponent<Enemy>().HitByGrenade(transform.position);
         }
 
-        //Destroy(gameObject, 5f);
+        yield return new WaitForSeconds(5f);
+        ReturnToPool();
+    }
+
+    public void ReturnToPool()
+    {
         ThrowGrenadeObjectPool.ReleaseThrowGrenade(gameObject);
     }
 }
