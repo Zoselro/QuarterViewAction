@@ -137,9 +137,7 @@ MonoBehaviour:
   missile: {fileID: 557206736643155993, guid: 9de1ff92eb7d9ec42b45e7680bbff610, type: 3}
   missilePortA: {fileID: 4573220621093287608}
   missilePortB: {fileID: 7977958927529244792}
-  missilePercent: 50
-  rockShotPercent: 35
-  tauntPercent: 15
+  bossRock: {fileID: 3308417562539966946, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
   isLook: 1
 --- !u!54 &8688510505913418986
 Rigidbody:

@@ -211,3 +211,5 @@ MonoBehaviour:
   scaleUpTime: 0.5
   player: {fileID: 0}
   meshObj: {fileID: 0}
+  fallSpeed: 5
+  targetY: 20

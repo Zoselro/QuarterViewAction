@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,9 +8,6 @@ public class Boss : Enemy
     [SerializeField] GameObject missile;
     [SerializeField] Transform missilePortA;
     [SerializeField] Transform missilePortB;
-    [SerializeField] private float missilePercent;
-    [SerializeField] private float rockShotPercent;
-    [SerializeField] private float tauntPercent;
 
     [Header("Options")]
     [SerializeField] private bool isLook; // 플레이어를 바라보는 플래그 변수
@@ -19,10 +15,15 @@ public class Boss : Enemy
     private Vector3 lookVec; // 플레이어가 가는 방향을 미리 예측하는 벡터
     private Vector3 tauntVec; // 어디로 내려찍을 지 미리 에측하는 벡터
 
+    private bool doRockShot;
     private float doShotTime;
     private float doBigShotTime;
     private float tauntTime;
     private int cntMissile = 0;
+    public bool DoRockShot => doRockShot;
+
+    private BossRock bossRock;
+    public BossRock BossRock => bossRock;
 
     private void Awake()
     {
@@ -188,13 +189,13 @@ public class Boss : Enemy
         // 기 모을 때는 바라보기 중지
         isLook = false;
         animator.SetTrigger("doBigShot");
-
-        BossRock obj = EnemyBulletObejctPool.Instance.GetBossRockPool();
-        obj.transform.position = transform.position;
-        obj.transform.rotation = transform.rotation;
+        doRockShot = true;
+        bossRock = EnemyBulletObejctPool.Instance.GetBossRockPool();
+        
+        //obj.transform.position = transform.position;
+        //obj.transform.rotation = transform.rotation;
         yield return new WaitForSeconds(doBigShotTime);
         isLook = true;
-
         StartCoroutine(Think());
     }
 
@@ -226,8 +227,8 @@ public class Boss : Enemy
         if (nav.isOnNavMesh)
             nav.isStopped = true;
         meleeArea.enabled = false;
+        doRockShot = false;
         transform.localScale = new Vector3(3f, 3f, 3f);
-
         DoActionTime();
         StopAllCoroutines();
         StartCoroutine(Think());

@@ -48,11 +48,7 @@ public class SpawnTreeGenerator : MonoBehaviour
         float maxZ = topLeft.z;
 
         // 화면 내 랜덤 위치
-        Vector3 pos = new Vector3(
-            Random.Range(minX, maxX),
-            100f,
-            Random.Range(minZ, maxZ)
-        );
+        Vector3 pos = new Vector3(Random.Range(minX, maxX), 100f, Random.Range(minZ, maxZ));
 
         if (Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 300f))
         {

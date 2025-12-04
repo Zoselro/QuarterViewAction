@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
     public int EnemyCntC => enemyCntC;
     public int EnemyCntD => enemyCntD;
 
+    public Boss Boss => boss;
+
     private bool isSpawn;
     private bool isBossSpawn;
 

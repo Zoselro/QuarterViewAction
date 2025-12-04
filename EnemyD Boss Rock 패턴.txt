@@ -3,11 +3,20 @@
 1. Boss Rock은 Enemy D가 Boss Rock 패턴을 사용 할 때 
 
 2. Player 위에 Zone이 소환이 되고, 그 아래로 Boss Rock이 소환된다. 
+소환 되었을 때 Main Camera Rotation X 각도는 천천히 60으로 바꾼다.
 그 패턴 시전시간 동안 점점 Boss Rock이 커진다. 
 Player가 위치를 옮겨도 점점 커지는 Boss Rock은 따라다닌다.
 
 3. EnemyD가 시전시간이 끝났을 때 Player의 위치를 따라다니는걸 멈추고, 
+Main Camera X 각도는 바로 45로 바꾼 후
 Boss Rock이 Player에게 낙하를 한다.
 
+Boss Rock Zone이 생기는 기준은 Boss가 Rock 패턴을 사용을 했을 때, 생성이 된다.
+- 1. Player의 카메라 각도가 천천히 Camera의 rotationX가 60도로 바뀐 이후 Zone이 소환이 되고,
+  2. Boss Rock이 Zone에 생성
+- 3. Spawn Time이 끝나면 Player의 카메라 각도를 45도로 바로 바꾼 후 그대로 낙하.
+
 - 프레임 드랍 해결방안
-1. 카메라 범위 밖 120m에서 오브젝트가 0.5초마다 생성. 최대 개수
+1. Player가 이동을 할 때마다 전방 150m 범위에
+2. 랜덤 위치에 나무 오브젝트 자동 생성
+3. 카메라 시점에서 200m 멀어지면 오브젝트 집어넣기
