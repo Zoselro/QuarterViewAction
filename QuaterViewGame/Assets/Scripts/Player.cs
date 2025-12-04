@@ -91,11 +91,6 @@ public class Player : MonoBehaviour
         PlayerPrefs.SetInt("MaxScore", 112500);
     }
 
-    /*private void StopToEnemy()
-    {
-        Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
-        isBorder = Physics.Raycast(transform.position, transform.forward, 3, LayerMask.GetMask("Enemy"));
-    }*/
     void FixedUpdate()
     {
         fireDelay += Time.deltaTime;
@@ -114,7 +109,6 @@ public class Player : MonoBehaviour
         }
 
         UpdateMouseLook();
-        //StopToEnemy();
     }
 
     // 날개 있는 아이템 추가시 if문 해제.
