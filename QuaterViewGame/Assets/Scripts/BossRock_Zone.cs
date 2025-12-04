@@ -7,22 +7,15 @@ public class BossRock_Zone : MonoBehaviour
     [SerializeField] private GameManager gm;
 
     private float targetY;
-    private void Awake()
-    {
-    }
-
-    private void Start()
-    {
-    }
 
     void Update()
     {
-        Debug.Log("gm.Boss.DoRockShot : " + gm.Boss.DoRockShot);
-        if (gm.Boss.DoRockShot)
-        {
-            targetY = gm.Boss.BossRock.TarGetY;
-            gameObject.SetActive(true);
-            transform.position = targetObj.transform.position + new Vector3(0f, targetY, 0f);
-        }
+        //Debug.Log("gm.Boss.DoRockShot : " + gm.Boss.DoRockShot);
+        //if (gm.Boss.DoRockShot)
+        //{
+        //    targetY = gm.Boss.BossRock.TarGetY;
+        //    gameObject.SetActive(true);
+        //    transform.position = targetObj.transform.position + new Vector3(0f, targetY, 0f);
+        //}
     }
 }

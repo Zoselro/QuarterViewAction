@@ -184,3 +184,4 @@ MonoBehaviour:
   damage: 0
   isMelee: 0
   isCase: 1
+  isEnemyBullet: 1

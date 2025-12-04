@@ -15,12 +15,12 @@ public class Boss : Enemy
     private Vector3 lookVec; // 플레이어가 가는 방향을 미리 예측하는 벡터
     private Vector3 tauntVec; // 어디로 내려찍을 지 미리 에측하는 벡터
 
-    private bool doRockShot;
+    //private bool doRockShot;
     private float doShotTime;
     private float doBigShotTime;
     private float tauntTime;
     private int cntMissile = 0;
-    public bool DoRockShot => doRockShot;
+    //public bool DoRockShot => doRockShot;
 
     private BossRock bossRock;
     public BossRock BossRock => bossRock;
@@ -113,27 +113,17 @@ public class Boss : Enemy
         // 1.Missile 3번 발사 후 taunt 패턴 1회 발동
         // 2.Missile 6번 발사 후 Boss Rock 패턴 1회 발동
         // 이후 Missile 6번 발사 한 횟수 초기화.
-
         StartCoroutine(RockShot());
 
-        //if(cntMissile < 3)
-        //{
-        //    StartCoroutine(MissileShot());
-        //}
-        //else if(cntMissile == 3)
-        //{
+        //if(cntMissile == 3 || cntMissile == 6 || cntMissile == 9)
         //    StartCoroutine(Taunt());
-        //}
-        //else if(cntMissile < 7)
-        //{
-        //    StartCoroutine(MissileShot());
-        //}
-        //else
+        //else if( cntMissile == 12)
         //{
         //    StartCoroutine(RockShot());
         //    cntMissile = -1;
         //}
-
+        //else
+        //    StartCoroutine(MissileShot());
         //cntMissile++;
     }
 
@@ -188,10 +178,12 @@ public class Boss : Enemy
     {
         // 기 모을 때는 바라보기 중지
         isLook = false;
+        //doRockShot = true;
+        manager.StartRockFlow();
         animator.SetTrigger("doBigShot");
-        doRockShot = true;
+        yield return new WaitForSeconds(2f);
         bossRock = EnemyBulletObejctPool.Instance.GetBossRockPool();
-        
+        bossRock.SetGameManager(manager);
         //obj.transform.position = transform.position;
         //obj.transform.rotation = transform.rotation;
         yield return new WaitForSeconds(doBigShotTime);
@@ -227,7 +219,7 @@ public class Boss : Enemy
         if (nav.isOnNavMesh)
             nav.isStopped = true;
         meleeArea.enabled = false;
-        doRockShot = false;
+        //doRockShot = false;
         transform.localScale = new Vector3(3f, 3f, 3f);
         DoActionTime();
         StopAllCoroutines();

@@ -20,3 +20,9 @@ Boss Rock Zone이 생기는 기준은 Boss가 Rock 패턴을 사용을 했을 �
 1. Player가 이동을 할 때마다 전방 150m 범위에
 2. 랜덤 위치에 나무 오브젝트 자동 생성
 3. 카메라 시점에서 200m 멀어지면 오브젝트 집어넣기
+
+
+Boss	: “RockShot 시작됐다”라고 GameManager에 알림
+GameManager : Player 카메라 회전 → Zone 소환 → Rock 떨어짐 순서를 제어
+Player : 실제 RotateCameraXSmooth 실행
+

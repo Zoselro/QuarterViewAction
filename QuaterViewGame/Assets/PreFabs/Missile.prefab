@@ -196,6 +196,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 15
+  isMelee: 0
+  isCase: 0
+  isEnemyBullet: 1
 --- !u!1 &5036713388892641698
 GameObject:
   m_ObjectHideFlags: 0

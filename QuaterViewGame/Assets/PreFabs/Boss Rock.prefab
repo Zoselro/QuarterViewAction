@@ -206,9 +206,11 @@ MonoBehaviour:
   damage: 40
   isMelee: 0
   isCase: 0
+  isEnemyBullet: 1
   speed: 20
   rollingStartTime: 1
   scaleUpTime: 0.5
+  gm: {fileID: 0}
   player: {fileID: 0}
   meshObj: {fileID: 0}
   fallSpeed: 5

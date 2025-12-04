@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private int damage;
     [SerializeField] private bool isMelee; // 근접으로 공격하는 몬스터인가?
     [SerializeField] private bool isCase;
+    [SerializeField] private bool isEnemyBullet;
 
     protected bool isRock;
     private bool _released;
@@ -25,22 +26,17 @@ public class Bullet : MonoBehaviour
         }
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
+        if (_released) return;
         if (!isMelee)
         {
-            if(other.gameObject.tag == "Wall")
+            if (other.CompareTag("Wall") || other.CompareTag("Floor"))
             {
-                ReleaseToPool();
-            }
-            else if(other.gameObject.tag == "Floor")
-            {
-                if (isRock)
+                if (!isEnemyBullet)
                 {
-                    return;
+                    ReleaseToPool();
                 }
-                ReleaseToPool();
             }
         }
     }
@@ -58,5 +54,6 @@ public class Bullet : MonoBehaviour
             BulletObjectPool.ReturnBulletCase(this);
         else
             BulletObjectPool.ReturnBullet(this);
+
     }
 }

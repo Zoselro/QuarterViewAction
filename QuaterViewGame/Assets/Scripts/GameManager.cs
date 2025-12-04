@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int enemyCntB;
     [SerializeField] private int enemyCntC;
     [SerializeField] private int enemyCntD;
+    [SerializeField] private float duration = 1.5f;// BossRock 변화 시간
 
     [Header("■ 배열 및 리스트")]
     [SerializeField] private Transform[] enemyZones;
@@ -126,7 +127,7 @@ public class GameManager : MonoBehaviour
             enemyCntD++;
             int ranzone = Random.Range(0, 4);
             Enemy instantEnemy = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.D);
-
+            
             instantEnemy.transform.position = enemyZones[ranzone].position;
             instantEnemy.transform.rotation = enemyZones[ranzone].rotation;
             Enemy target = instantEnemy.GetComponent<Enemy>();
@@ -290,6 +291,49 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+
+    public void StartRockFlow()
+    {
+        StartCoroutine(RotateCameraXSmooth());
+    }
+
+    public void SetCameraX()
+    {
+        Transform cam = Camera.main.transform;
+        Vector3 rot = cam.eulerAngles;
+        rot.x = 60f;
+        cam.eulerAngles = rot;
+    }
+
+    IEnumerator RotateCameraXSmooth()
+    {
+        Transform cam = Camera.main.transform;
+        float startX = 60f;
+        float endX = 45f;
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            float t = elapsed / duration;
+
+            float currentX = Mathf.Lerp(startX, endX, t);
+
+            Vector3 rot = cam.eulerAngles;
+            rot.x = currentX;
+            cam.eulerAngles = rot;
+
+            yield return null;
+        }
+
+        // 마지막 값 정확하게 고정
+        Vector3 finalRot = cam.eulerAngles;
+        finalRot.x = endX;
+        cam.eulerAngles = finalRot;
+    }
+
 
     public Boss GetBoss()
     {

@@ -596,6 +596,7 @@ public class Player : MonoBehaviour
                         EnemyBulletObejctPool.Instance.ReturnEnemyCBulletPool(other.gameObject.GetComponent<Bullet>());
                         break;
                     case "BossRock":
+                        Debug.Log("실행 Player");
                         EnemyBulletObejctPool.Instance.ReturnBossRockPool(other.gameObject.GetComponent<BossRock>());
                         break;
                     case "BossMissile":
@@ -672,6 +673,9 @@ public class Player : MonoBehaviour
             nearObject = null;
         }
     }
+
+
+
 
     public void SetCoin(int coin)
     {

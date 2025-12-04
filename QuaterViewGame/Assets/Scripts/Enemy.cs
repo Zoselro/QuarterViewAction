@@ -43,6 +43,7 @@ public class Enemy : MonoBehaviour
     public int CurHealth => curHealth;
     public int MaxHealth => maxHealth;
     public bool IsHpBar => isHpBar;
+    public GameManager Manager => manager;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
