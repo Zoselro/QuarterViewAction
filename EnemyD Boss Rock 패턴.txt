@@ -1,0 +1,10 @@
+- Boss Rock 패턴 변경
+
+1. Boss Rock은 Enemy D가 Boss Rock 패턴을 사용 할 때 
+
+2. Player 위에 Zone이 소환이 되고, 그 아래로 Boss Rock이 소환된다. 
+그 패턴 시전시간 동안 점점 Boss Rock이 커진다. 
+Player가 위치를 옮겨도 점점 커지는 Boss Rock은 따라다닌다.
+
+3. EnemyD가 시전시간이 끝났을 때 Player의 위치를 따라다니는걸 멈추고, 
+Boss Rock이 Player에게 낙하를 한다.

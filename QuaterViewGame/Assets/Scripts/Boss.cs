@@ -9,6 +9,9 @@ public class Boss : Enemy
     [SerializeField] GameObject missile;
     [SerializeField] Transform missilePortA;
     [SerializeField] Transform missilePortB;
+    [SerializeField] private float missilePercent;
+    [SerializeField] private float rockShotPercent;
+    [SerializeField] private float tauntPercent;
 
     [Header("Options")]
     [SerializeField] private bool isLook; // 플레이어를 바라보는 플래그 변수
@@ -19,7 +22,7 @@ public class Boss : Enemy
     private float doShotTime;
     private float doBigShotTime;
     private float tauntTime;
-
+    private int cntMissile = 0;
 
     private void Awake()
     {
@@ -71,13 +74,26 @@ public class Boss : Enemy
             float h = Input.GetAxisRaw("Horizontal");
             float v = Input.GetAxisRaw("Vertical");
             lookVec = new Vector3(h, 0, v) * 5f;
-
             transform.LookAt(target.position + lookVec);
         }
         else
         {
             nav.SetDestination(tauntVec);
         }
+    }
+    private void LateUpdate()
+    {
+        Vector3 rot = transform.rotation.eulerAngles;
+
+        // Unity EulerAngles를 -180~180도로 변환
+        if (rot.x > 180f) rot.x -= 360f;
+
+        // X축이 -20보다 작으면 -20으로 고정
+        if (rot.x < -20f)
+            rot.x = -20f;
+
+        // 다시 Quaternion 변환하여 적용
+        transform.rotation = Quaternion.Euler(rot);
     }
 
     private void FixedUpdate()
@@ -91,25 +107,33 @@ public class Boss : Enemy
     {
         yield return new WaitForSeconds(0.1f);
 
-        int randomAction = Random.Range(0, 5);
+        // Boss Rock, Missile, taunt 패턴 나오는 방식
 
-        switch (randomAction)
-        {
-            // 미사일 발사 패턴
-            case 0:
-            case 1:
-                StartCoroutine(MissileShot());
-                break;
-            // 돌 굴러가는 패턴
-            case 2:
-            case 3:
-                StartCoroutine(RockShot());
-                break;
-            // 점프 공격 패턴
-            case 4:
-                StartCoroutine(Taunt());
-                break;
-        }
+        // 1.Missile 3번 발사 후 taunt 패턴 1회 발동
+        // 2.Missile 6번 발사 후 Boss Rock 패턴 1회 발동
+        // 이후 Missile 6번 발사 한 횟수 초기화.
+
+        StartCoroutine(RockShot());
+
+        //if(cntMissile < 3)
+        //{
+        //    StartCoroutine(MissileShot());
+        //}
+        //else if(cntMissile == 3)
+        //{
+        //    StartCoroutine(Taunt());
+        //}
+        //else if(cntMissile < 7)
+        //{
+        //    StartCoroutine(MissileShot());
+        //}
+        //else
+        //{
+        //    StartCoroutine(RockShot());
+        //    cntMissile = -1;
+        //}
+
+        //cntMissile++;
     }
 
     public void DoActionTime()
