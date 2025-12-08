@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject itemShop;
     [SerializeField] private GameObject weaponShop;
     [SerializeField] private GameObject startZone;
+    [SerializeField] private GameObject bossRockZone;
 
     [Header("бс Options")]
     [SerializeField] private int stage;
@@ -69,9 +70,6 @@ public class GameManager : MonoBehaviour
 
     public Boss Boss => boss;
 
-    private bool isSpawn;
-    private bool isBossSpawn;
-
     private void Awake()
     {
         enemyList = new List<int>();
@@ -105,7 +103,7 @@ public class GameManager : MonoBehaviour
 
     public void StageEnd()
     {
-        player.transform.position = new Vector3(-28, -6, -50);
+        player.transform.position = new Vector3(-28, -3, -50);
 
         itemShop.SetActive(true);
         weaponShop.SetActive(true);
@@ -338,5 +336,10 @@ public class GameManager : MonoBehaviour
     public Boss GetBoss()
     {
         return boss;
+    }
+
+    public GameObject GetBossRockZone()
+    {
+        return bossRockZone;
     }
 }

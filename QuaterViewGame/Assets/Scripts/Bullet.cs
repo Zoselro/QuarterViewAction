@@ -51,9 +51,13 @@ public class Bullet : MonoBehaviour
         _released = true;
 
         if (isCase)
+        {
             BulletObjectPool.ReturnBulletCase(this);
+        }
         else
+        {
             BulletObjectPool.ReturnBullet(this);
+        }
 
     }
 }

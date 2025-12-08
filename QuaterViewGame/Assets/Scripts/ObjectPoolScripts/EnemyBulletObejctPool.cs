@@ -68,12 +68,15 @@ public class EnemyBulletObejctPool : MonoBehaviour
             {
                 b.transform.SetParent(Instance.transform);
                 b.gameObject.SetActive(true);
+                b.SetIsSpawnBossRock(true);
                 b.ReSetState();
             },
             actionOnRelease: (b) =>
             {
                 b.transform.SetParent(Instance.transform);
                 b.gameObject.SetActive(false);
+                b.SetIsSpawnBossRock(false);
+                b.GetBossRockZone().gameObject.SetActive(false);
             },
             maxSize: 10
         );

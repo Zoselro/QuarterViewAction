@@ -26,3 +26,17 @@ Boss	: “RockShot 시작됐다”라고 GameManager에 알림
 GameManager : Player 카메라 회전 → Zone 소환 → Rock 떨어짐 순서를 제어
 Player : 실제 RotateCameraXSmooth 실행
 
+BossRock 으로부터 transform.position + targetY의 위치를 BossRockZone으로 가져온다.
+
+
+1. gameManager한테 BossRock의 위치를 알려줌
+2. GameManager는 Boss Rock Zone에게 Boss Rock이 소환이 되었다는걸 알려줌
+3. Gamemanager는 Boss Rock Zone에게 Boss Rock의 위치를 알려줌.
+
+
+GameManager는 Boss 객체를 알고있다.
+Boss 객체는 BossRock 객체를 알고있다.
+BossRock 객체는 GameManager 객체를 알고있다.
+
+ObjectPool을 사용 할 때, 한번 Release가 되었을 때, _returned가 true로 
+바뀌면서 두 번 Release를 하지 못하게 해야된다.

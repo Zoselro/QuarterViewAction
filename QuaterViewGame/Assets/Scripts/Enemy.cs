@@ -348,9 +348,7 @@ public class Enemy : MonoBehaviour
         isDead = false;
         nav.enabled = true;
 
-        rigid.constraints = RigidbodyConstraints.FreezePositionX |
-                    RigidbodyConstraints.FreezePositionY |
-                    RigidbodyConstraints.FreezePositionZ;
+        rigid.constraints = RigidbodyConstraints.FreezeAll;
 
         mainColider.enabled = false;
 
