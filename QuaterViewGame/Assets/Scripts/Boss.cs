@@ -15,12 +15,10 @@ public class Boss : Enemy
     private Vector3 lookVec; // 플레이어가 가는 방향을 미리 예측하는 벡터
     private Vector3 tauntVec; // 어디로 내려찍을 지 미리 에측하는 벡터
 
-    //private bool doRockShot;
     private float doShotTime;
     private float doBigShotTime;
     private float tauntTime;
     private int cntMissile = 0;
-    //public bool DoRockShot => doRockShot;
 
     private BossRock bossRock;
     public BossRock BossRock => bossRock;
@@ -119,16 +117,18 @@ public class Boss : Enemy
         // 2.Missile 6번 발사 후 Boss Rock 패턴 1회 발동
         // 이후 Missile 6번 발사 한 횟수 초기화.
 
-        //if (cntMissile == 3 || cntMissile == 6 || cntMissile == 9)
-        //    StartCoroutine(Taunt());
-        //else if (cntMissile == 12)
-        //{
-        //    StartCoroutine(RockShot());
-        //    cntMissile = -1;
-        //}
-        //else
-        //    StartCoroutine(MissileShot());
-        //cntMissile++;
+        //Invoke("RockShotTest", 7f);
+
+        if (cntMissile == 3 || cntMissile == 6 || cntMissile == 9)
+            StartCoroutine(Taunt());
+        else if (cntMissile == 12)
+        {
+            StartCoroutine(RockShot());
+            cntMissile = -1;
+        }
+        else
+            StartCoroutine(MissileShot());
+        cntMissile++;
     }
 
     public void DoActionTime()

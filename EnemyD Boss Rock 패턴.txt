@@ -38,5 +38,28 @@ GameManager는 Boss 객체를 알고있다.
 Boss 객체는 BossRock 객체를 알고있다.
 BossRock 객체는 GameManager 객체를 알고있다.
 
-ObjectPool을 사용 할 때, 한번 Release가 되었을 때, _returned가 true로 
-바뀌면서 두 번 Release를 하지 못하게 해야된다.
+
+스테이지가 높아지면 높아질 수록 강력한 몬스터가 나오게 된다.
+
+가중치로 몬스터 스폰 확률 설정
+
+1스테이지 가중치 Enemy A : 10 , B : 0, C : 0
+
+2스테이지 가중치 Enemy A : 9, B : 1, C : 0
+
+3스테이지 가중치 Enemy A : 8, B : 1.5, C : 0.5
+
+4스테이지 가중치 Enemy A : 7, B : 2, C : 1
+
+6스테이지 가중치 Enemy A : 6, B: 2.5, C L 1.5
+
+7스테이지 가중치 Enemy A : 5, B : 3, C : 2
+
+8스테이지 가중치 Enemy A : 4, B : 3.5, C : 2.5
+
+9스테이지 가중치 Enemy A : 3, B: 4, C L 3
+
+11 스테이지 이후부터는 9스테이지 기반의 가중치로 쭈욱 가져간다.
+
+5 스테이지 마다 더욱더 강력한 보스가 소환이 된다.
+

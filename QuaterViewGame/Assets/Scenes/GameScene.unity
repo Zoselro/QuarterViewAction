@@ -32171,7 +32171,7 @@ GameObject:
   - component: {fileID: 706599450}
   m_Layer: 0
   m_Name: Start Zone
-  m_TagString: Shop
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60712,7 +60712,7 @@ MonoBehaviour:
   weaponShop: {fileID: 450794905}
   startZone: {fileID: 706599449}
   bossRockZone: {fileID: 1747536442}
-  stage: 5
+  stage: 1
   playTime: 0
   isBattle: 0
   enemyCntA: 0

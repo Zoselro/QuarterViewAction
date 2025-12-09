@@ -25,13 +25,13 @@ public class BossRock : Bullet
     [SerializeField] private float fallSpeed;
     [SerializeField] private float targetY;
 
-    public bool _Returned => _returned;
     public GameManager Gm => gm;
     public float TarGetY => targetY;
 
     private void OnEnable()
     {
-        _returned = false;
+        //_returned = false;
+        //Debug.Log("_returned : " + _returned);
     }
     public void ReturnToPoolOnce()
     {
@@ -59,7 +59,7 @@ public class BossRock : Bullet
 
     public void ReSetState()
     {
-        _returned = true;
+        //_returned = false;
         transform.position = player.position + new Vector3(0f, targetY, 0f);
         isRock = true;
         isFall = false;
@@ -94,7 +94,9 @@ public class BossRock : Bullet
         }
         else
         {
-            transform.position += Vector3.down * fallSpeed * Time.deltaTime;
+            var v = rigid.linearVelocity;
+            v.y = Mathf.Max(v.y, -20f); // 최대 낙하 속도 10 제한
+            rigid.linearVelocity = v;
         }
 
         //자식 Mesh만 계속 회전 (시각 효과)
@@ -105,8 +107,8 @@ public class BossRock : Bullet
 
         if (EnemyObjectPool.Instance.GetEnemyType(Enemy.Type.D).CurHealth == 0)
         {
-            //EnemyBulletObejctPool.Instance.ReturnBossRockPool(gameObject.GetComponent<BossRock>());
-            ReturnToPoolOnce();
+            EnemyBulletObejctPool.Instance.ReturnBossRockPool(gameObject.GetComponent<BossRock>());
+            //ReturnToPoolOnce();
             return;
         }
 
@@ -132,8 +134,8 @@ public class BossRock : Bullet
         if (other.CompareTag("Floor"))
         {
             Debug.Log("실행 BossRock");
-            //EnemyBulletObejctPool.Instance.ReturnBossRockPool(gameObject.GetComponent<BossRock>());
-            ReturnToPoolOnce();
+            EnemyBulletObejctPool.Instance.ReturnBossRockPool(gameObject.GetComponent<BossRock>());
+            //ReturnToPoolOnce();
         }
     }
 

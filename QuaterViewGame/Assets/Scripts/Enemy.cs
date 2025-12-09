@@ -240,7 +240,7 @@ public class Enemy : MonoBehaviour
         else if(curHealth <= 0)
         {
             isDead = true;
-
+            manager.SetCameraX();
             rigid.constraints = RigidbodyConstraints.FreezeRotationX |
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
