@@ -117,7 +117,7 @@ public class Boss : Enemy
         // 2.Missile 6번 발사 후 Boss Rock 패턴 1회 발동
         // 이후 Missile 6번 발사 한 횟수 초기화.
 
-        //Invoke("RockShotTest", 7f);
+        //Invoke("RockShotTest", 1f);
 
         if (cntMissile == 3 || cntMissile == 6 || cntMissile == 9)
             StartCoroutine(Taunt());

@@ -11,6 +11,8 @@ public class BossRock : Bullet
     [SerializeField] private float scaleUpTime; // 커지는데 걸리는 시간
     [SerializeField] private GameManager gm;
     [SerializeField] private GameObject bossRockZone;
+    [SerializeField] private float bossRockFallDelay = 3f;
+
 
     private Rigidbody rigid;
     private float angularPower = 2f;
@@ -49,21 +51,25 @@ public class BossRock : Bullet
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
         realSpawnTime = spawnTime;
         //자식 Mesh Object 자동 찾기 (없으면 수동 연결)
         if (meshObj == null && transform.childCount > 0)
             meshObj = transform.GetChild(0);
-        ReSetState();
     }
 
     public void ReSetState()
     {
-        //_returned = false;
         transform.position = player.position + new Vector3(0f, targetY, 0f);
         isRock = true;
         isFall = false;
         realSpawnTime = 0f;
+        if (rigid != null)
+            rigid.linearVelocity = Vector3.zero;
+
+        if (player != null)
+            transform.position = player.position + new Vector3(0f, targetY, 0f);
+
+        StopAllCoroutines();
         StartCoroutine(GainPowerTimer());
     }
 
@@ -86,7 +92,6 @@ public class BossRock : Bullet
     {
         if(bossRockZone != null)
             StartBossRockZone();
-
         if (!isFall)
         {
             if (player != null)
@@ -115,7 +120,7 @@ public class BossRock : Bullet
         realSpawnTime += Time.deltaTime;
 
         // 5초 시점에 카메라 회전 알림
-        if (realSpawnTime >= 5f)
+        if (realSpawnTime >= bossRockFallDelay - 2f)
         {
             if (gm != null)
             {
@@ -123,7 +128,7 @@ public class BossRock : Bullet
             }
         }
 
-        if (realSpawnTime >= 7f)
+        if (realSpawnTime >= bossRockFallDelay)
         {
             isFall = true;
         }
@@ -157,5 +162,10 @@ public class BossRock : Bullet
     public GameObject GetBossRockZone()
     {
         return bossRockZone;
+    }
+
+    public void SetPlayer(Transform player)
+    {
+        this.player = player;
     }
 }

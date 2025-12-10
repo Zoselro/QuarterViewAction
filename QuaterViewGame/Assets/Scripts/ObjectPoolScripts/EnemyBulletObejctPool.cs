@@ -12,6 +12,7 @@ public class EnemyBulletObejctPool : MonoBehaviour
     [SerializeField] private Bullet enemyCBulletPrefab;
     [SerializeField] private BossMissile bossBulletPrefab;
     [SerializeField] private BossRock bossRockPrefab;
+    [SerializeField] private GameManager gm;
 
     private void Awake()
     {
@@ -69,6 +70,7 @@ public class EnemyBulletObejctPool : MonoBehaviour
                 b.transform.SetParent(Instance.transform);
                 b.gameObject.SetActive(true);
                 b.SetIsSpawnBossRock(true);
+                b.SetPlayer(gm.GetPlayer().GetComponent<Transform>());
                 b.ReSetState();
             },
             actionOnRelease: (b) =>

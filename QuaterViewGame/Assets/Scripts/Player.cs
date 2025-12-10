@@ -574,7 +574,7 @@ public class Player : MonoBehaviour
 
     public void OnHitByBullet(Collider other)
     {
-        if(!other.CompareTag("Item") && !other.CompareTag("Shop") && !other.CompareTag("Weapon"))
+        if(!other.CompareTag("Item") && !other.CompareTag("Shop") && !other.CompareTag("Weapon") && !other.CompareTag("Untagged"))
         {
             if (!isDamage)
             {

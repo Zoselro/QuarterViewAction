@@ -60712,14 +60712,14 @@ MonoBehaviour:
   weaponShop: {fileID: 450794905}
   startZone: {fileID: 706599449}
   bossRockZone: {fileID: 1747536442}
-  stage: 1
+  stage: 19
   playTime: 0
   isBattle: 0
   enemyCntA: 0
   enemyCntB: 0
   enemyCntC: 0
   enemyCntD: 0
-  duration: 1.5
+  bossRockDuration: 1.5
   enemyZones:
   - {fileID: 679031963}
   - {fileID: 1124548561}
@@ -85035,7 +85035,7 @@ GameObject:
   - component: {fileID: 1747536449}
   m_Layer: 0
   m_Name: RockZone
-  m_TagString: Shop
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -93840,6 +93840,7 @@ MonoBehaviour:
   enemyCBulletPrefab: {fileID: 7326247470323706493, guid: c5d3aeec163ee654b9465faa05c47c04, type: 3}
   bossBulletPrefab: {fileID: 7992329658874988958, guid: 9de1ff92eb7d9ec42b45e7680bbff610, type: 3}
   bossRockPrefab: {fileID: 3308417562539966946, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
+  gm: {fileID: 1225963967}
 --- !u!4 &1910364155 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 429508, guid: 9c74caa742791864f9c678287121e6c9, type: 3}

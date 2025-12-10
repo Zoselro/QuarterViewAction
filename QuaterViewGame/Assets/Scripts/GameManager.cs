@@ -25,7 +25,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int enemyCntB;
     [SerializeField] private int enemyCntC;
     [SerializeField] private int enemyCntD;
-    [SerializeField] private float duration = 1.5f;// BossRock 변화 시간
+    [SerializeField] private float bossRockDuration = 1.5f;// BossRock 변화 시간
+
 
     [Header("■ 배열 및 리스트")]
     [SerializeField] private Transform[] enemyZones;
@@ -118,6 +119,40 @@ public class GameManager : MonoBehaviour
         isBattle = false;
     }
 
+    // Enemy A, B C 에 대한 1~9스테이지까지 가중치
+    private (float a, float b, float c) GetWeights(int stage)
+    {
+        // 보스 스테이지는 여기로 오면 안 되게 설계 권장
+        if (stage % 5 == 0)
+            return (0f, 0f, 0f);
+
+        // 11 이후부터 9 스테이지 기반 유지
+        if (stage >= 11) stage = 9;
+
+        // 보스(5의 배수)를 제외한 "일반 스테이지 순번"
+        int n = stage - stage / 5;
+
+        float a = 11f - n;                 // 10,9,8,7,6,5,4,3...
+        float b = (n == 1) ? 0f : 0.5f * n;  // 0,1,1.5,2,2.5...
+        float c = (n <= 2) ? 0f : 0.5f * (n - 2); // 0,0,0.5,1,1.5...
+
+        return (a, b, c);
+    }
+
+    // 가중치 기반 랜덤으로 뽑기
+    private int GetWeightedEnemyIndex(int stage)
+    {
+        var (a, b, c) = GetWeights(stage);
+        float total = a + b + c;
+        if (total <= 0f) return 0;
+
+        float roll = Random.Range(0f, total);
+
+        if (roll < a) return 0;
+        if (roll < a + b) return 1;
+        return 2;
+    }
+
     private IEnumerator InBattle()
     {
         if(stage % 5 == 0)
@@ -136,7 +171,9 @@ public class GameManager : MonoBehaviour
         {
             for (int index = 0; index < stage; index++)
             {
-                int ran = Random.Range(0, 3);
+                //int ran = Random.Range(0, 3);
+                int ran = GetWeightedEnemyIndex(stage);
+
                 enemyList.Add(ran);
                 switch (ran)
                 {
@@ -152,7 +189,7 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            while(enemyList.Count > 0)
+            while (enemyList.Count > 0)
             {
                 int ranZone = Random.Range(0, 4);
                 Enemy instantEnemy = null;
@@ -311,11 +348,11 @@ public class GameManager : MonoBehaviour
 
         float elapsed = 0f;
 
-        while (elapsed < duration)
+        while (elapsed < bossRockDuration)
         {
             elapsed += Time.deltaTime;
 
-            float t = elapsed / duration;
+            float t = elapsed / bossRockDuration;
 
             float currentX = Mathf.Lerp(startX, endX, t);
 
@@ -341,5 +378,10 @@ public class GameManager : MonoBehaviour
     public GameObject GetBossRockZone()
     {
         return bossRockZone;
+    }
+
+    public Player GetPlayer()
+    {
+        return player;
     }
 }
