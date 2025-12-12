@@ -11789,7 +11789,7 @@ MonoBehaviour:
   - {fileID: 1245506763}
   - {fileID: 1817591204}
   grenadeObj: {fileID: 5810246011196331014, guid: 726286dbd4f4fed4bb164996bd128a73, type: 3}
-  spawnEnemy: {fileID: 3169284315974583014, guid: 5bfdc813db282434b8bed24de9210960, type: 3}
+  spawnEnemy: {fileID: 3646055529555697047, guid: 1496e4be0d048ba4587ea9dc458f3ea7, type: 3}
   speed: 800
   jumpPower: 15
   hasWeapons: 000000
@@ -54683,6 +54683,7 @@ MonoBehaviour:
   enemyBPrefab: {fileID: 8388164762460307038, guid: 10295017715e21948a12c26f7120b2f0, type: 3}
   enemyCPrefab: {fileID: 4421364977557264470, guid: 587a003fcec18de48a9bc92a1f91761e, type: 3}
   enemyDPrefab: {fileID: 4390931762606418597, guid: 5bfdc813db282434b8bed24de9210960, type: 3}
+  boombMonsterPrefab: {fileID: 7134625792477468937, guid: 1496e4be0d048ba4587ea9dc458f3ea7, type: 3}
 --- !u!1001 &1136084815
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60730,6 +60731,7 @@ MonoBehaviour:
   - {fileID: 2561724148229407210, guid: 10295017715e21948a12c26f7120b2f0, type: 3}
   - {fileID: 4187638993179141335, guid: 587a003fcec18de48a9bc92a1f91761e, type: 3}
   - {fileID: 3169284315974583014, guid: 5bfdc813db282434b8bed24de9210960, type: 3}
+  - {fileID: 3646055529555697047, guid: 1496e4be0d048ba4587ea9dc458f3ea7, type: 3}
   enemyList: 
   menuPanel: {fileID: 511689320}
   gamePanel: {fileID: 1186449750}

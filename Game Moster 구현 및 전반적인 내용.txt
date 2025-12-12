@@ -63,7 +63,10 @@ BossRock 객체는 GameManager 객체를 알고있다.
 
 5 스테이지 마다 더욱더 강력한 보스가 소환이 된다.
 
+- Boomb Monster 구현
 
-5 스테이지 마다 Boss의 외형색과 공격하는 패턴주기와 입히는 데미지 및 hp 변경
+1. Nav Mesh Agent로 Player를 Walk 모션을 하며, 추격한다.
+2. 공격 범위에 닿으면, attack모션을 시전한다.
+3. 공격에 맞으면 damage모션을 시전한다.
+4. hp <= 0 이 되면 Die 모션을 시전한다.
 
-1. 

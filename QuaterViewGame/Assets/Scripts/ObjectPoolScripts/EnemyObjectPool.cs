@@ -10,6 +10,7 @@ public class EnemyObjectPool : MonoBehaviour
     [SerializeField] private Enemy enemyBPrefab;
     [SerializeField] private Enemy enemyCPrefab;
     [SerializeField] private Enemy enemyDPrefab;
+    [SerializeField] private BoombMonster boombMonsterPrefab;
 
     private Dictionary<Enemy.Type, IObjectPool<Enemy>> enemyPools;
     private Enemy enemy;
@@ -26,6 +27,7 @@ public class EnemyObjectPool : MonoBehaviour
         enemyPools.Add(Enemy.Type.B, CreatePool(enemyBPrefab));
         enemyPools.Add(Enemy.Type.C, CreatePool(enemyCPrefab));
         enemyPools.Add(Enemy.Type.D, CreatePool(enemyDPrefab));
+        enemyPools.Add(Enemy.Type.BoombMonster, CreatePool(boombMonsterPrefab));
     }
 
     private IObjectPool<Enemy> CreatePool(Enemy prefab)
@@ -41,7 +43,10 @@ public class EnemyObjectPool : MonoBehaviour
             {
                 b.transform.SetParent(Instance.transform);
                 b.gameObject.SetActive(true);
-                b.ResetState();
+                if (b is BoombMonster boombMonster)
+                    boombMonster.ResetState();
+                else
+                    b.ResetState();
 
                 if(b is Boss boss)
                 {

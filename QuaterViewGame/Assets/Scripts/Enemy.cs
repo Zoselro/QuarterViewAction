@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
     public enum Type
     {
-        A, B, C, D
+        A, B, C, D, BoombMonster, FireBallMonster
     };
 
     [Header("Options")]
@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
     protected bool isDead;
     protected bool isHpBar;
 
-    private int ranCoin;
+    protected int ranCoin;
     public int RanCoin => ranCoin;
 
     public int CurHealth => curHealth;
@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void Targetting()
+    protected virtual void Targetting()
     {
         float targetRadius = 0f;
         float targetRange = 0f;
@@ -117,7 +117,7 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private IEnumerator Attack()
+    protected virtual IEnumerator Attack()
     {
         isChase = false;
         isAttack = true;
@@ -222,7 +222,7 @@ public class Enemy : MonoBehaviour
 
 
     // 피격시 이벤트 함수
-    IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
+    protected virtual IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
     {
         // 피격을 당했을 때 색변하기
         foreach(MeshRenderer mesh in meshs)
@@ -231,7 +231,7 @@ public class Enemy : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.1f);
-        
+
         if(curHealth > 0)
         {
             foreach(MeshRenderer mesh in meshs)
@@ -332,7 +332,7 @@ public class Enemy : MonoBehaviour
         return enemyType;
     }
 
-    public void ResetState()
+    public virtual void ResetState()
     {
         time = 0;
         curHealth = maxHealth;
