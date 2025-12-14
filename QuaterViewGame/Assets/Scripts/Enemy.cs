@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
     protected Animator animator;
     protected float time = 0f;
 
-    protected bool isChase; // 추적하고 있는가?
+    [SerializeField] protected bool isChase; // 추적하고 있는가?
     protected bool isAttack; // 공격을 하고 있는가?
     protected bool isTime;
     protected bool isDead;

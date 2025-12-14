@@ -6,6 +6,8 @@ public class BoombMonster : Enemy
 {
     [SerializeField] private float targetRange;
     [SerializeField] private float targetRadius;
+    [SerializeField] private int damage;
+
 
     private SkinnedMeshRenderer[] SkinnedMeshRenderers;
 
@@ -50,6 +52,22 @@ public class BoombMonster : Enemy
         }
     }
 
+    IEnumerator Explosion()
+    {
+        // 오브젝트 주위에 있는 "Player" 레이어를 가진 오브젝트를 가져오는 메서드
+        // Physics.SphereCastAll([내 위치], [범위], [방향], [레이어를 쏘는 길이], [가져올 레이어])
+        RaycastHit[] raycastHits =
+            Physics.SphereCastAll(transform.position,
+                                    15, Vector3.up, 0f, LayerMask.GetMask("Player"));
+
+        foreach (RaycastHit hitObj in raycastHits)
+        {
+            Debug.Log(hitObj.transform.gameObject.GetComponent<Player>());
+            hitObj.transform.gameObject.GetComponent<Player>().OnHitDamage(damage);
+        }
+
+        yield return null;
+    }
 
     protected override IEnumerator Attack()
     {
@@ -57,13 +75,16 @@ public class BoombMonster : Enemy
         isAttack = true;
         animator.SetBool("isAttack", true);
 
+        StartCoroutine(Explosion());
+        
         if (isDead)
         {
             yield break;
         }
-        Debug.Log("Attack 실행1");
+
+
+
         yield return new WaitForSeconds(2.2f);
-        Debug.Log("Attack 실행2");
 
         isChase = true;
         isAttack = false;
@@ -106,11 +127,10 @@ public class BoombMonster : Enemy
         else if (curHealth <= 0)
         {
             isDead = true;
-            manager.SetCameraX();
+            //manager.SetCameraX();
             rigid.constraints = RigidbodyConstraints.FreezeRotationX |
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
-
             foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
                 mesh.material.color = Color.gray;
 
@@ -178,7 +198,6 @@ public class BoombMonster : Enemy
         rigid.constraints = RigidbodyConstraints.FreezeAll;
 
         mainColider.enabled = false;
-
         if (enemyType != Type.D)
             Invoke("ChaseStart", spawnTime);
     }

@@ -572,6 +572,7 @@ public class Player : MonoBehaviour
         OnHitByBullet(other);
     }
 
+
     public void OnHitByBullet(Collider other)
     {
         if(!other.CompareTag("Item") && !other.CompareTag("Shop") && !other.CompareTag("Weapon") && !other.CompareTag("Untagged"))
@@ -608,6 +609,30 @@ public class Player : MonoBehaviour
                 }
             }
         }
+    }
+    public IEnumerator OnHitDamage(int damage)
+    {
+        isDamage = true;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.yellow;
+        }
+
+        health -= damage;
+
+        if (health <= 0 && !isDead)
+        {
+            health = 0;
+            onDie();
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.white;
+        }
+        isDamage = false;
     }
 
     public IEnumerator OnDamage(Collider cdr , bool isBossAtk)

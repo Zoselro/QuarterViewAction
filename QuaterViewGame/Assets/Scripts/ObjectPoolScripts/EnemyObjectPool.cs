@@ -44,7 +44,9 @@ public class EnemyObjectPool : MonoBehaviour
                 b.transform.SetParent(Instance.transform);
                 b.gameObject.SetActive(true);
                 if (b is BoombMonster boombMonster)
+                {
                     boombMonster.ResetState();
+                }
                 else
                     b.ResetState();
 
@@ -57,6 +59,7 @@ public class EnemyObjectPool : MonoBehaviour
             actionOnRelease: (b) =>
             {
                 b.transform.SetParent(Instance.transform);
+                //b.transform.position = Instance.transform.position;
                 b.gameObject.SetActive(false);
 
                 if (b is Boss boss)

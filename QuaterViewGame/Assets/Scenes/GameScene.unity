@@ -60713,7 +60713,7 @@ MonoBehaviour:
   weaponShop: {fileID: 450794905}
   startZone: {fileID: 706599449}
   bossRockZone: {fileID: 1747536442}
-  stage: 19
+  stage: 1
   playTime: 0
   isBattle: 0
   enemyCntA: 0
@@ -84593,7 +84593,7 @@ GameObject:
   - component: {fileID: 1734885176}
   - component: {fileID: 1734885175}
   - component: {fileID: 1734885174}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Terrain (1)
   m_TagString: Floor
   m_Icon: {fileID: 0}
