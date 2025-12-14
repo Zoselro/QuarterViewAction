@@ -111,7 +111,7 @@ public class BoombMonster : Enemy
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
 
-            foreach (MeshRenderer mesh in meshs)
+            foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
                 mesh.material.color = Color.gray;
 
             curHealth = 0;
