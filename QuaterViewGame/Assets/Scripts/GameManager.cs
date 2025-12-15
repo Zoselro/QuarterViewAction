@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int enemyCntB;
     [SerializeField] private int enemyCntC;
     [SerializeField] private int enemyCntD;
+    [SerializeField] private int boombEnemyCnt;
+    [SerializeField] private int fireBallMonsterCnt;
     [SerializeField] private float bossRockDuration = 1.5f;// BossRock 변화 시간
 
 
@@ -55,6 +57,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI enemyAText;
     [SerializeField] private TextMeshProUGUI enemyBText;
     [SerializeField] private TextMeshProUGUI enemyCText;
+    [SerializeField] private TextMeshProUGUI boombEnemyText;
+    [SerializeField] private TextMeshProUGUI fireBallMonsterText;
 
     [Header("■ Boss UI")]
     [SerializeField] private RectTransform bossHealthGroup; // 보스 체력 UI를 표시하기 위한 변수
@@ -68,6 +72,10 @@ public class GameManager : MonoBehaviour
     public int EnemyCntB => enemyCntB;
     public int EnemyCntC => enemyCntC;
     public int EnemyCntD => enemyCntD;
+
+    public int FireBallMonsterCnt => fireBallMonsterCnt;
+
+    public int BoombEnemyCnt => boombEnemyCnt;
 
     public Boss Boss => boss;
 
@@ -153,6 +161,36 @@ public class GameManager : MonoBehaviour
         return 2;
     }
 
+    private IEnumerator SpawnBoombEnemy(int stage)
+    {
+        int boombCount = GetBoombSpawnCount(stage);
+
+        for (int i = 0; i < boombCount; i++)
+        {
+            int ranZone = Random.Range(0, 4);
+
+            Enemy boomb = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster);
+
+            boomb.transform.position = enemyZones[ranZone].position;
+            boomb.transform.rotation = enemyZones[ranZone].rotation;
+
+            boomb.Initialize(player.transform, this);
+
+            boombEnemyCnt++;
+            yield return new WaitForSeconds(4f); // 한꺼번에 겹쳐 나오면 보기 안 좋아서(선택)
+        }
+    }
+
+    private int GetBoombSpawnCount(int stage)
+    {
+        if (stage <= 4) return 1;        // 1~4
+        if (stage <= 9) return 2;        // 6~9 (5는 위에서 제외됨)
+        if (stage <= 14) return 3;       // 11~14 (15는 보스라 제외됨)
+        if (stage <= 20) return 4;       // 16~20
+
+        return 4; // 그 이후도 4마리 유지
+    }
+
     private IEnumerator InBattle()
     {
         if(stage % 5 == 0)
@@ -212,10 +250,19 @@ public class GameManager : MonoBehaviour
                 target.Initialize(player.transform, this);
                 enemyList.RemoveAt(0);
                 yield return new WaitForSeconds(4f);
+
+                int boombCount = GetBoombSpawnCount(stage);
+                for (int i = 0; i < boombCount; i++)
+                {
+                    enemyList.Add(3); // boomb
+                    boombEnemyCnt++;
+                }
+                SpawnBoombEnemy(stage);
+                enemyList.RemoveAt(0);
             }
         }
 
-        while (enemyCntA + enemyCntB + enemyCntC + enemyCntD > 0)
+        while (enemyCntA + enemyCntB + enemyCntC + enemyCntD + boombEnemyCnt + fireBallMonsterCnt > 0)
         {
             yield return null;
          }
@@ -288,12 +335,16 @@ public class GameManager : MonoBehaviour
         enemyCntA = enemyCntA <= 0 ? 0 : enemyCntA;
         enemyCntB = enemyCntB <= 0 ? 0 : enemyCntB;
         enemyCntC = enemyCntC <= 0 ? 0 : enemyCntC;
+        fireBallMonsterCnt = fireBallMonsterCnt <= 0 ? 0 : fireBallMonsterCnt;
+        boombEnemyCnt = boombEnemyCnt <= 0 ? 0 : boombEnemyCnt;
         enemyCntD = enemyCntD <= 0 ? 0 : enemyCntD;
 
         // 몬스터 숫자 UI
         enemyAText.text = enemyCntA.ToString();
         enemyBText.text = enemyCntB.ToString();
         enemyCText.text = enemyCntC.ToString();
+        boombEnemyText.text = boombEnemyCnt.ToString();
+        fireBallMonsterText.text = fireBallMonsterCnt.ToString();
 
         if (boss == null)
             return;
@@ -323,6 +374,12 @@ public class GameManager : MonoBehaviour
                 break;
             case Enemy.Type.D:
                 enemyCntD = enemyCnt;
+                break;
+            case Enemy.Type.BoombMonster:
+                boombEnemyCnt = enemyCnt;
+                break;
+            case Enemy.Type.FireBallMonster:
+                fireBallMonsterCnt = enemyCnt;
                 break;
         }
     }

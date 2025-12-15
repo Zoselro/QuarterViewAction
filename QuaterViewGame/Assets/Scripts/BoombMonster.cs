@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,8 +9,13 @@ public class BoombMonster : Enemy
     [SerializeField] private float targetRadius;
     [SerializeField] private int damage;
 
-
     private SkinnedMeshRenderer[] SkinnedMeshRenderers;
+
+    private float attackTime;
+    private float damageHitTime;
+    private float idleTime;
+    private float walkTime;
+    private float dieTime;
 
     private void Awake()
     {
@@ -20,6 +26,41 @@ public class BoombMonster : Enemy
         SkinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
         if (enemyType != Type.D)
             Invoke("ChaseStart", spawnTime);
+
+        AnimationGetTime(animator.runtimeAnimatorController.animationClips);
+    }
+
+    private void AnimationGetTime(AnimationClip[] clips)
+    {
+        foreach (AnimationClip clip in clips)
+        {
+            switch (clip.name)
+            {
+                case "mon00_attack01":
+                    attackTime = clip.length;
+                    Debug.Log("attackTime : " + attackTime);
+                    break;
+                case "mon00_damage":
+                    damageHitTime = clip.length;
+                    Debug.Log("damageHitTime : " + damageHitTime);
+                    break;
+                case "mon00_idle":
+                    idleTime = clip.length;
+                    Debug.Log("idleTime : " + idleTime);
+                    break;
+                case "mon00_walk":
+                    walkTime = clip.length;
+                    Debug.Log("walkTime : " + walkTime);
+                    break;
+                case "mon00_Die":
+                    dieTime = clip.length;
+                    Debug.Log("dieTime : " + dieTime);
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 
     private void Start()
@@ -56,14 +97,16 @@ public class BoombMonster : Enemy
     {
         // 오브젝트 주위에 있는 "Player" 레이어를 가진 오브젝트를 가져오는 메서드
         // Physics.SphereCastAll([내 위치], [범위], [방향], [레이어를 쏘는 길이], [가져올 레이어])
+        
+        yield return new WaitForSeconds(attackTime - 0.5f);
+
         RaycastHit[] raycastHits =
-            Physics.SphereCastAll(transform.position,
-                                    15, Vector3.up, 0f, LayerMask.GetMask("Player"));
+                Physics.SphereCastAll(transform.position,
+                targetRadius, transform.forward, targetRange, LayerMask.GetMask("Player"));
 
         foreach (RaycastHit hitObj in raycastHits)
         {
-            Debug.Log(hitObj.transform.gameObject.GetComponent<Player>());
-            hitObj.transform.gameObject.GetComponent<Player>().OnHitDamage(damage);
+            StartCoroutine(hitObj.transform.gameObject.GetComponent<Player>().OnHitDamage(damage));
         }
 
         yield return null;
@@ -81,8 +124,6 @@ public class BoombMonster : Enemy
         {
             yield break;
         }
-
-
 
         yield return new WaitForSeconds(2.2f);
 
@@ -107,22 +148,11 @@ public class BoombMonster : Enemy
 
     protected override IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
     {
-        foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
-        {
-            foreach(Material material in mesh.materials)
-            {
-                material.color = Color.red;
-            }
-            //mesh.material.color = Color.red;
-        }
-
         yield return new WaitForSeconds(0.1f);
 
         if (curHealth > 0)
         {
             animator.SetTrigger("doDamage");
-            foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
-                mesh.material.color = Color.white;
         }
         else if (curHealth <= 0)
         {
@@ -131,8 +161,6 @@ public class BoombMonster : Enemy
             rigid.constraints = RigidbodyConstraints.FreezeRotationX |
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
-            foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
-                mesh.material.color = Color.gray;
 
             curHealth = 0;
             gameObject.layer = 12;

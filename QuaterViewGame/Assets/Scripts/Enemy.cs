@@ -287,6 +287,10 @@ public class Enemy : MonoBehaviour
                     int enemyCntD = manager.EnemyCntD;
                     manager.DecreaseEnemyCount(Type.D, --enemyCntD);
                     break;
+                case Type.BoombMonster:
+                    int boombEnemyCnt = manager.BoombEnemyCnt;
+                    manager.DecreaseEnemyCount(Type.BoombMonster, --boombEnemyCnt);
+                    break;
             }
 
 

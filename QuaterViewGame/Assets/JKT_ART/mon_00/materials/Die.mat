@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mon_body02
+  m_Name: Die
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_Parent: {fileID: 2100000, guid: 13f443b8419c4cc4193d9e20fbb26d6b, type: 2}
+  m_Parent: {fileID: 2100000, guid: d518ba9a60cfd6346bbc34a85d47db08, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _NORMALMAP
@@ -36,6 +36,6 @@ Material:
     m_Floats:
     - _Glossiness: 0.468
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
