@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour
         return (a, b, c);
     }
 
-    // 가중치 기반 랜덤으로 뽑기
+    // Enemy A, B C 에 대한 가중치 기반 랜덤으로 뽑기
     private int GetWeightedEnemyIndex(int stage)
     {
         var (a, b, c) = GetWeights(stage);
@@ -161,10 +161,10 @@ public class GameManager : MonoBehaviour
         return 2;
     }
 
+    // BoombEnemy 스폰
     private IEnumerator SpawnBoombEnemy(int stage)
     {
         int boombCount = GetBoombSpawnCount(stage);
-
         for (int i = 0; i < boombCount; i++)
         {
             int ranZone = Random.Range(0, 4);
@@ -181,6 +181,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // BoombEnemy 스폰 규칙
     private int GetBoombSpawnCount(int stage)
     {
         if (stage <= 4) return 1;        // 1~4
@@ -250,16 +251,15 @@ public class GameManager : MonoBehaviour
                 target.Initialize(player.transform, this);
                 enemyList.RemoveAt(0);
                 yield return new WaitForSeconds(4f);
-
-                int boombCount = GetBoombSpawnCount(stage);
-                for (int i = 0; i < boombCount; i++)
-                {
-                    enemyList.Add(3); // boomb
-                    boombEnemyCnt++;
-                }
-                SpawnBoombEnemy(stage);
-                enemyList.RemoveAt(0);
             }
+
+            int boombCount = GetBoombSpawnCount(stage);
+            for (int i = 0; i < boombCount; i++)
+            {
+                enemyList.Add(3);
+            }
+            StartCoroutine(SpawnBoombEnemy(stage));
+            enemyList.RemoveAt(0);
         }
 
         while (enemyCntA + enemyCntB + enemyCntC + enemyCntD + boombEnemyCnt + fireBallMonsterCnt > 0)

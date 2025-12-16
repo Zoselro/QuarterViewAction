@@ -9,7 +9,7 @@ public class BoombMonster : Enemy
     [SerializeField] private float targetRadius;
     [SerializeField] private int damage;
 
-    private SkinnedMeshRenderer[] SkinnedMeshRenderers;
+    protected SkinnedMeshRenderer[] SkinnedMeshRenderers;
 
     private float attackTime;
     private float damageHitTime;
@@ -30,7 +30,7 @@ public class BoombMonster : Enemy
         AnimationGetTime(animator.runtimeAnimatorController.animationClips);
     }
 
-    private void AnimationGetTime(AnimationClip[] clips)
+    public virtual void AnimationGetTime(AnimationClip[] clips)
     {
         foreach (AnimationClip clip in clips)
         {
@@ -38,29 +38,23 @@ public class BoombMonster : Enemy
             {
                 case "mon00_attack01":
                     attackTime = clip.length;
-                    Debug.Log("attackTime : " + attackTime);
                     break;
                 case "mon00_damage":
                     damageHitTime = clip.length;
-                    Debug.Log("damageHitTime : " + damageHitTime);
                     break;
                 case "mon00_idle":
                     idleTime = clip.length;
-                    Debug.Log("idleTime : " + idleTime);
                     break;
                 case "mon00_walk":
                     walkTime = clip.length;
-                    Debug.Log("walkTime : " + walkTime);
                     break;
                 case "mon00_Die":
                     dieTime = clip.length;
-                    Debug.Log("dieTime : " + dieTime);
                     break;
                 default:
                     break;
             }
         }
-
     }
 
     private void Start()

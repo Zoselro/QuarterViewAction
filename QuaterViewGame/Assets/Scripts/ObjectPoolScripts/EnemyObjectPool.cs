@@ -11,6 +11,7 @@ public class EnemyObjectPool : MonoBehaviour
     [SerializeField] private Enemy enemyCPrefab;
     [SerializeField] private Enemy enemyDPrefab;
     [SerializeField] private BoombMonster boombMonsterPrefab;
+    [SerializeField] private FireBallMonster fireBallMonsterPrefab;
 
     private Dictionary<Enemy.Type, IObjectPool<Enemy>> enemyPools;
     private Enemy enemy;
@@ -28,6 +29,7 @@ public class EnemyObjectPool : MonoBehaviour
         enemyPools.Add(Enemy.Type.C, CreatePool(enemyCPrefab));
         enemyPools.Add(Enemy.Type.D, CreatePool(enemyDPrefab));
         enemyPools.Add(Enemy.Type.BoombMonster, CreatePool(boombMonsterPrefab));
+        enemyPools.Add(Enemy.Type.FireBallMonster, CreatePool(fireBallMonsterPrefab));
     }
 
     private IObjectPool<Enemy> CreatePool(Enemy prefab)

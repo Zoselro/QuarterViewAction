@@ -209,6 +209,8 @@ MonoBehaviour:
   - {fileID: 5795305175494328753, guid: 11c80bbbfa0698a4481d835db100c952, type: 3}
   - {fileID: 5225982540270854888, guid: 9d0f5f365038db043899479c7c4b2c01, type: 3}
   - {fileID: 7897827402310005433, guid: 7361896cc227dd54e9d4622f30ac8ae9, type: 3}
+  manager: {fileID: 0}
+  isChase: 0
 --- !u!54 &4595580433053987325
 Rigidbody:
   m_ObjectHideFlags: 0

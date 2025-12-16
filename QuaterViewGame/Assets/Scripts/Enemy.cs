@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Components")]
     [SerializeField] protected BoxCollider meleeArea;
-    [SerializeField] protected BoxCollider mainColider;
+    [SerializeField] protected Collider mainColider;
     [SerializeField] protected GameObject bullet;
     [SerializeField] protected Transform target; // 추적 할 오브젝트 
     [SerializeField] protected GameObject[] coins;
