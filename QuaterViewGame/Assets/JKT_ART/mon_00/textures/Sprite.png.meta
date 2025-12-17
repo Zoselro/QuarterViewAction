@@ -1,12 +1,5 @@
 fileFormatVersion: 2
-guid: 606206690e51d5d44b6704348cb7363b
-AssetOrigin:
-  serializedVersion: 1
-  productId: 101433
-  packageName: Stone Monster
-  packageVersion: 1.0
-  assetPath: Assets/amusedART/StoneMonster/Texture/StoneMonster.png
-  uploadId: 203309
+guid: c7a64469a7651614fa0f372aaab783a6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -46,7 +39,7 @@ TextureImporter:
     mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: 1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -70,9 +63,9 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform

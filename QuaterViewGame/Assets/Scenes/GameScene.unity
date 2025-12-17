@@ -2569,7 +2569,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1edd545fe3e8d0f458a679414f885c51, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c7a64469a7651614fa0f372aaab783a6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11864,7 +11864,7 @@ MonoBehaviour:
   - {fileID: 1245506763}
   - {fileID: 1817591204}
   grenadeObj: {fileID: 5810246011196331014, guid: 726286dbd4f4fed4bb164996bd128a73, type: 3}
-  spawnEnemy: {fileID: 8684450197547595694, guid: f505182b0b350c040aab6d82614aa066, type: 3}
+  spawnEnemy: {fileID: 8615911124490457724, guid: f505182b0b350c040aab6d82614aa066, type: 3}
   speed: 800
   jumpPower: 15
   hasWeapons: 000000
@@ -18290,7 +18290,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1edd545fe3e8d0f458a679414f885c51, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 606206690e51d5d44b6704348cb7363b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -54838,7 +54838,7 @@ MonoBehaviour:
   enemyCPrefab: {fileID: 4421364977557264470, guid: 587a003fcec18de48a9bc92a1f91761e, type: 3}
   enemyDPrefab: {fileID: 4390931762606418597, guid: 5bfdc813db282434b8bed24de9210960, type: 3}
   boombMonsterPrefab: {fileID: 7134625792477468937, guid: 1496e4be0d048ba4587ea9dc458f3ea7, type: 3}
-  fireBallMonsterPrefab: {fileID: 6959020227747848025, guid: f505182b0b350c040aab6d82614aa066, type: 3}
+  fireBallMonsterPrefab: {fileID: 5625431582537577332, guid: f505182b0b350c040aab6d82614aa066, type: 3}
 --- !u!1001 &1136084815
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61004,7 +61004,7 @@ MonoBehaviour:
   weaponShop: {fileID: 450794905}
   startZone: {fileID: 706599449}
   bossRockZone: {fileID: 1747536442}
-  stage: 6
+  stage: 3
   playTime: 0
   isBattle: 0
   enemyCntA: 0

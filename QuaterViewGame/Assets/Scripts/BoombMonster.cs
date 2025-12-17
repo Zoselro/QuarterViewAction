@@ -7,15 +7,15 @@ public class BoombMonster : Enemy
 {
     [SerializeField] private float targetRange;
     [SerializeField] private float targetRadius;
-    [SerializeField] private int damage;
+    [SerializeField] protected int damage;
 
     protected SkinnedMeshRenderer[] SkinnedMeshRenderers;
 
-    private float attackTime;
-    private float damageHitTime;
-    private float idleTime;
-    private float walkTime;
-    private float dieTime;
+    protected float attackTime;
+    protected float damageHitTime;
+    protected float idleTime;
+    protected float walkTime;
+    protected float dieTime;
 
     private void Awake()
     {
@@ -192,13 +192,10 @@ public class BoombMonster : Enemy
             }
             rigid.freezeRotation = false;
 
+            int boombEnemyCnt = manager.BoombEnemyCnt;
+            manager.DecreaseEnemyCount(Type.BoombMonster, --boombEnemyCnt);
             Invoke("DieAfterTime", 4f);
         }
-    }
-
-    private void DieAfterTime()
-    {
-        EnemyObjectPool.Instance.ReturnEnemy(this);
     }
 
     public override void ResetState()

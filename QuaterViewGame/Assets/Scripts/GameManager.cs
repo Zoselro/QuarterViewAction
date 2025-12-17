@@ -162,21 +162,22 @@ public class GameManager : MonoBehaviour
     }
 
     // BoombEnemy 스폰
-    private IEnumerator SpawnBoombEnemy(int stage)
+    private IEnumerator SpawnSpecialEnemy(int stage, int count, Enemy enemy)
     {
-        int boombCount = GetBoombSpawnCount(stage);
-        for (int i = 0; i < boombCount; i++)
+        for (int i = 0; i < count; i++)
         {
             int ranZone = Random.Range(0, 4);
 
-            Enemy boomb = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster);
+            enemy.transform.position = enemyZones[ranZone].position;
+            enemy.transform.rotation = enemyZones[ranZone].rotation;
 
-            boomb.transform.position = enemyZones[ranZone].position;
-            boomb.transform.rotation = enemyZones[ranZone].rotation;
+            enemy.Initialize(player.transform, this);
 
-            boomb.Initialize(player.transform, this);
+            if (enemy.GetEnemyType() == Enemy.Type.BoombMonster)
+                boombEnemyCnt++;
+            else if (enemy.GetEnemyType() == Enemy.Type.FireBallMonster)
+                fireBallMonsterCnt++;
 
-            boombEnemyCnt++;
             yield return new WaitForSeconds(4f); // 한꺼번에 겹쳐 나오면 보기 안 좋아서(선택)
         }
     }
@@ -190,6 +191,29 @@ public class GameManager : MonoBehaviour
         if (stage <= 20) return 4;       // 16~20
 
         return 4; // 그 이후도 4마리 유지
+    }
+
+    // FireBallEnemy 스폰 규칙
+
+    private int GetFireBallSpawnCount(int stage)
+    {
+        // FireBallEnemy는 3,6,9 스테이지에서는 1마리씩
+        // 12, 18 스테이지에서는 2마리씩 스폰이 된다.
+        // 단, 15스테이지는 보스 스테이지 이므로, 스폰이 되면 안된다.
+
+        if (stage < 10)
+        {
+            if (stage % 3 == 0)
+                return 1;
+        }
+        else if (stage < 20)
+        {
+            if (stage == 15 || stage == 10)
+                return 0;
+            if (stage % 3 == 0)
+                return 2;
+        }
+        return 0;
     }
 
     private IEnumerator InBattle()
@@ -258,7 +282,15 @@ public class GameManager : MonoBehaviour
             {
                 enemyList.Add(3);
             }
-            StartCoroutine(SpawnBoombEnemy(stage));
+            StartCoroutine(SpawnSpecialEnemy(stage, GetBoombSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster)));
+            enemyList.RemoveAt(0);
+
+            int fireCount = GetFireBallSpawnCount(stage);
+            for (int i = 0; i < fireCount; i++)
+            {
+                enemyList.Add(4);
+            }
+            StartCoroutine(SpawnSpecialEnemy(stage, GetFireBallSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster)));
             enemyList.RemoveAt(0);
         }
 

@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected int score;
 
     [Header("Components")]
-    [SerializeField] protected BoxCollider meleeArea;
+    [SerializeField] protected Collider meleeArea;
     [SerializeField] protected Collider mainColider;
     [SerializeField] protected GameObject bullet;
     [SerializeField] protected Transform target; // 추적 할 오브젝트 
@@ -102,6 +102,10 @@ public class Enemy : MonoBehaviour
                     targetRadius = 0.5f;
                     targetRange = 25f;
                     break;
+                case Type.FireBallMonster:
+                    targetRadius = 1.5f;
+                    targetRange = 3f;
+                    break;
             }
 
             RaycastHit[] raycastHits =
@@ -114,7 +118,6 @@ public class Enemy : MonoBehaviour
                 StartCoroutine(Attack());
             }
         }
-
     }
 
     protected virtual IEnumerator Attack()
@@ -266,7 +269,6 @@ public class Enemy : MonoBehaviour
             {
                 coinItem.SetCoinIndexPool(ranCoin);
             }
-
             switch (enemyType)
             {
                 // 다른 방법 알아보기.
@@ -286,10 +288,6 @@ public class Enemy : MonoBehaviour
                 case Type.D:
                     int enemyCntD = manager.EnemyCntD;
                     manager.DecreaseEnemyCount(Type.D, --enemyCntD);
-                    break;
-                case Type.BoombMonster:
-                    int boombEnemyCnt = manager.BoombEnemyCnt;
-                    manager.DecreaseEnemyCount(Type.BoombMonster, --boombEnemyCnt);
                     break;
             }
 
