@@ -193,6 +193,17 @@ public class GameManager : MonoBehaviour
         return 4; // 그 이후도 4마리 유지
     }
 
+    private void SpawnEnemy(int cnt, Enemy enemy)
+    {
+        cnt = GetFireBallSpawnCount(stage);
+        for (int i = 0; i < cnt; i++)
+        {
+            enemyList.Add(4);
+        }
+        StartCoroutine(SpawnSpecialEnemy(stage, cnt, enemy));
+        enemyList.RemoveAt(0);
+    }
+
     // FireBallEnemy 스폰 규칙
 
     private int GetFireBallSpawnCount(int stage)
@@ -277,21 +288,23 @@ public class GameManager : MonoBehaviour
                 yield return new WaitForSeconds(4f);
             }
 
-            int boombCount = GetBoombSpawnCount(stage);
-            for (int i = 0; i < boombCount; i++)
-            {
-                enemyList.Add(3);
-            }
-            StartCoroutine(SpawnSpecialEnemy(stage, GetBoombSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster)));
-            enemyList.RemoveAt(0);
+            //int boombCount = GetBoombSpawnCount(stage);
+            //for (int i = 0; i < boombCount; i++)
+            //{
+            //    enemyList.Add(3);
+            //}
+            //StartCoroutine(SpawnSpecialEnemy(stage, boombCount, EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster)));
+            //enemyList.RemoveAt(0);
 
-            int fireCount = GetFireBallSpawnCount(stage);
-            for (int i = 0; i < fireCount; i++)
-            {
-                enemyList.Add(4);
-            }
-            StartCoroutine(SpawnSpecialEnemy(stage, GetFireBallSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster)));
-            enemyList.RemoveAt(0);
+            SpawnEnemy(GetBoombSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster));
+            SpawnEnemy(GetFireBallSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster));
+            //int fireCount = GetFireBallSpawnCount(stage);
+            //for (int i = 0; i < fireCount; i++)
+            //{
+            //    enemyList.Add(4);
+            //}
+            //StartCoroutine(SpawnSpecialEnemy(stage, fireCount, EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster)));
+            //enemyList.RemoveAt(0);
         }
 
         while (enemyCntA + enemyCntB + enemyCntC + enemyCntD + boombEnemyCnt + fireBallMonsterCnt > 0)

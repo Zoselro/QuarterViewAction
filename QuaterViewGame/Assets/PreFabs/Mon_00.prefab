@@ -10334,7 +10334,7 @@ MonoBehaviour:
   isChase: 0
   targetRange: 3
   targetRadius: 2
-  damage: 0
+  damage: 60
 --- !u!95 &1880430274218489427
 Animator:
   serializedVersion: 7

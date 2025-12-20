@@ -70,3 +70,22 @@ BossRock 객체는 GameManager 객체를 알고있다.
 3. 공격에 맞으면 damage모션을 시전한다.
 4. hp <= 0 이 되면 Die 모션을 시전한다.
 
+
+Albino Dragon Enemy 구현
+
+idle1
+1. 포효 (Scream)
+2. 가까이 갔을 때 물기 패턴 (Basic Attack)
+3. 가까이 갔을 때 할퀴기 패턴 (Claw Attack)
+4. 몸통 박치기(Horn Attack) - Player 밀리기
+idle2
+5. Sleep (자는 패턴) - 자고있을 때 깨면 전투 시작
+6. Player에게 피격 당했을 때 패턴 (Get Hit)
+7. 자기 방어패턴 (Defend) - Player에게 피격시 확률적으로 Defend 하기
+8. 걷는 패턴 (Walk)
+8-1. 왼쪽으로 걷는 패턴
+8-2. 오른쪽으로 걷는 패턴
+9. 뒤로 빠지는 패턴 (Walk Back)
+10. 뛰는 패턴 (Run)
+11. 점프 모션 (Jump)
+12. 죽는 모션 (Die)
