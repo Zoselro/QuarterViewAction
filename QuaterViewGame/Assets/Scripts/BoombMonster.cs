@@ -106,13 +106,25 @@ public class BoombMonster : Enemy
         yield return null;
     }
 
+    private void Explode()
+    {
+        RaycastHit[] raycastHits =
+              Physics.SphereCastAll(transform.position,
+              targetRadius, transform.forward, targetRange, LayerMask.GetMask("Player"));
+
+        foreach (RaycastHit hitObj in raycastHits)
+        {
+            StartCoroutine(hitObj.transform.gameObject.GetComponent<Player>().OnHitDamage(damage));
+        }
+    }
+
     protected override IEnumerator Attack()
     {
         isChase = false;
         isAttack = true;
         animator.SetBool("isAttack", true);
 
-        StartCoroutine(Explosion());
+        // StartCoroutine(Explosion());
         
         if (isDead)
         {
