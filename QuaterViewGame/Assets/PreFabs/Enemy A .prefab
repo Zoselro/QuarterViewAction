@@ -47,6 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   isMelee: 1
+  isCase: 0
+  isEnemyBullet: 0
 --- !u!65 &1702693940575679410
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -271,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 0
-  maxHealth: 50
+  maxHealth: 10
   curHealth: 0
   spawnTime: 2
   score: 100
@@ -283,6 +285,9 @@ MonoBehaviour:
   - {fileID: 5795305175494328753, guid: 11c80bbbfa0698a4481d835db100c952, type: 3}
   - {fileID: 5225982540270854888, guid: 9d0f5f365038db043899479c7c4b2c01, type: 3}
   - {fileID: 7897827402310005433, guid: 7361896cc227dd54e9d4622f30ac8ae9, type: 3}
+  manager: {fileID: 0}
+  isChase: 0
+  isDestroy: 0
 --- !u!54 &1756427409012566596
 Rigidbody:
   m_ObjectHideFlags: 0

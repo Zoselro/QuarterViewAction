@@ -44,13 +44,17 @@ public class EnemyObjectPool : MonoBehaviour
             actionOnGet: (b) =>
             {
                 b.transform.SetParent(Instance.transform);
+                b.SetIsBulletDestroy();
                 b.gameObject.SetActive(true);
                 if (b is BoombMonster boombMonster)
                 {
                     boombMonster.ResetState();
                 }
                 else
+                {
+                    b.SetIsDestoryFalse();
                     b.ResetState();
+                }
 
                 if(b is Boss boss)
                 {

@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, MaterialColorChanage
 {
     public enum Type
     {
@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected GameObject[] coins;
     [SerializeField] protected GameManager manager;
 
-    protected MeshRenderer[] meshs;
+    protected Renderer[] meshs;
     protected BoxCollider boxCollider;
     protected Rigidbody rigid;
     protected NavMeshAgent nav;
@@ -36,6 +36,8 @@ public class Enemy : MonoBehaviour
     protected bool isTime;
     protected bool isDead;
     protected bool isHpBar;
+    private bool isDestroy = false;
+    private bool isBulletDestroy = false;
 
     protected int ranCoin;
     public int RanCoin => ranCoin;
@@ -209,12 +211,25 @@ public class Enemy : MonoBehaviour
             {
                 curHealth -= bullet.GetDamage();
                 Vector3 reactVector = transform.position - other.transform.position;
-                BulletObjectPool.ReturnBullet(bullet);
+                BulletDestroyAfter(bullet);
                 StartCoroutine(OnDamage(reactVector, false));
             }
 
         }
     }
+    public void BulletDestroyAfter(Bullet bullet)
+    {
+        if (isBulletDestroy == true)
+            return;
+        isBulletDestroy = true;
+        BulletObjectPool.ReturnBullet(bullet);
+    }
+
+    public void SetIsBulletDestroy()
+    {
+        isBulletDestroy = false;
+    }
+
 
     public void HitByGrenade(Vector3 explosionPos)
     {
@@ -247,9 +262,11 @@ public class Enemy : MonoBehaviour
             rigid.constraints = RigidbodyConstraints.FreezeRotationX |
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
-            
-            foreach (MeshRenderer mesh in meshs)
-                mesh.material.color = Color.gray;
+
+            ColorChange(meshs);
+            //foreach (MeshRenderer mesh in meshs)
+            //    mesh.material.color = Color.gray;
+
 
             curHealth = 0;
             gameObject.layer = 12;
@@ -308,13 +325,15 @@ public class Enemy : MonoBehaviour
                 rigid.AddForce(reactVector * 5, ForceMode.Impulse);
             }
             rigid.freezeRotation = false;
-
             Invoke("DieAfterTime", 4f);
         }
     }
 
     private void DieAfterTime()
     {
+        if (isDestroy == true)
+            return;
+        isDestroy = true;
         EnemyObjectPool.Instance.ReturnEnemy(this);
     }
 
@@ -356,5 +375,16 @@ public class Enemy : MonoBehaviour
 
         if (enemyType != Type.D)
             Invoke("ChaseStart", spawnTime);
-    }   
+    }
+
+    public virtual void ColorChange(Renderer[] renderer)
+    {
+        foreach (MeshRenderer mesh in renderer)
+            mesh.material.color = Color.gray;
+    }
+
+    public void SetIsDestoryFalse()
+    {
+        isDestroy = false;
+    }
 }

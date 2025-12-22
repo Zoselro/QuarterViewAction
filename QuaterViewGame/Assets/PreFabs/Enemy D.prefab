@@ -69,6 +69,7 @@ MonoBehaviour:
   damage: 25
   isMelee: 1
   isCase: 0
+  isEnemyBullet: 0
 --- !u!1 &3169284315974583014
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,7 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 3
-  maxHealth: 100
+  maxHealth: 10
   curHealth: 0
   spawnTime: 4
   score: 2000
@@ -134,10 +135,11 @@ MonoBehaviour:
   - {fileID: 5225982540270854888, guid: 9d0f5f365038db043899479c7c4b2c01, type: 3}
   - {fileID: 7897827402310005433, guid: 7361896cc227dd54e9d4622f30ac8ae9, type: 3}
   manager: {fileID: 0}
+  isChase: 0
+  isDestroy: 0
   missile: {fileID: 557206736643155993, guid: 9de1ff92eb7d9ec42b45e7680bbff610, type: 3}
   missilePortA: {fileID: 4573220621093287608}
   missilePortB: {fileID: 7977958927529244792}
-  bossRock: {fileID: 3308417562539966946, guid: 0c3d288e88c6fb1468da8a4c3ef9dec3, type: 3}
   isLook: 1
 --- !u!54 &8688510505913418986
 Rigidbody:

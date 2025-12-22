@@ -26,7 +26,7 @@ public class BulletObjectPool : MonoBehaviour
             actionOnGet: (b) =>
             {
                 b.transform.SetParent(Instance.transform);
-
+                b.SetIsBulletDestroyFalse();
                 var trail = b.GetComponent<TrailRenderer>();
                 trail.Clear();
 

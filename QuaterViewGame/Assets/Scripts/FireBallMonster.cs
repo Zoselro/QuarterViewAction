@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -13,7 +11,7 @@ public class FireBallMonster : BoombMonster
         rigid = GetComponent<Rigidbody>();
         nav = rigid.GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-        SkinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+        meshs = GetComponentsInChildren<SkinnedMeshRenderer>();
 
         if (enemyType != Type.D)
             Invoke("ChaseStart", spawnTime);
@@ -25,12 +23,6 @@ public class FireBallMonster : BoombMonster
         transform.localScale = new Vector3(3f, 3f, 3f);
         mainColider.enabled = false;
         curHealth = maxHealth;
-
-        Debug.Log($"AttackTime : {attackTime}");
-        Debug.Log($"damageHitTime : {damageHitTime}");
-        Debug.Log($"idleTime : {idleTime}");
-        Debug.Log($"walkTime : {walkTime}");
-        Debug.Log($"dieTime : {dieTime}");
     }
     private void FixedUpdate()
     {
@@ -87,7 +79,7 @@ public class FireBallMonster : BoombMonster
     protected override IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
     {
         // 피격을 당했을 때 색변하기
-        foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
+        foreach (SkinnedMeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.red;
         }
@@ -98,7 +90,7 @@ public class FireBallMonster : BoombMonster
 
         if (curHealth > 0)
         {
-            foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
+            foreach (SkinnedMeshRenderer mesh in meshs)
                 mesh.material.color = Color.white;
         }
         else if (curHealth <= 0)
@@ -109,7 +101,7 @@ public class FireBallMonster : BoombMonster
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
 
-            foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
+            foreach (SkinnedMeshRenderer mesh in meshs)
                 mesh.material.color = Color.gray;
 
             curHealth = 0;

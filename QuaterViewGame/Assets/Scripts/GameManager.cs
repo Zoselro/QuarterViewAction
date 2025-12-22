@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform[] enemyZones;
     [SerializeField] private GameObject[] enemies;
     [SerializeField] private List<int> enemyList;
+    [SerializeField] private List<int> speacialEnemyList;
 
     [Header("■ GameObject")]
     [SerializeField] private GameObject menuPanel;
@@ -182,6 +184,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+    private IEnumerator SpawnEnemy(int cnt, Enemy enemy)
+    {
+        if(enemy.GetEnemyType() == Enemy.Type.BoombMonster)
+        {
+            cnt = GetBoombSpawnCount(stage);
+            if (cnt == 0) yield break;
+        }
+        
+        if(enemy.GetEnemyType() == Enemy.Type.FireBallMonster)
+        {
+            cnt = GetFireBallSpawnCount(stage);
+            if (cnt == 0) yield break;
+        }
+
+        for (int i = 0; i < cnt; i++)
+        {
+            speacialEnemyList.Add(4);
+        }
+        StartCoroutine(SpawnSpecialEnemy(stage, cnt, enemy));
+        speacialEnemyList.RemoveAt(0);
+        yield return new WaitForSeconds(4f);
+    }
+
     // BoombEnemy 스폰 규칙
     private int GetBoombSpawnCount(int stage)
     {
@@ -193,19 +219,7 @@ public class GameManager : MonoBehaviour
         return 4; // 그 이후도 4마리 유지
     }
 
-    private void SpawnEnemy(int cnt, Enemy enemy)
-    {
-        cnt = GetFireBallSpawnCount(stage);
-        for (int i = 0; i < cnt; i++)
-        {
-            enemyList.Add(4);
-        }
-        StartCoroutine(SpawnSpecialEnemy(stage, cnt, enemy));
-        enemyList.RemoveAt(0);
-    }
-
     // FireBallEnemy 스폰 규칙
-
     private int GetFireBallSpawnCount(int stage)
     {
         // FireBallEnemy는 3,6,9 스테이지에서는 1마리씩
@@ -288,29 +302,31 @@ public class GameManager : MonoBehaviour
                 yield return new WaitForSeconds(4f);
             }
 
-            //int boombCount = GetBoombSpawnCount(stage);
-            //for (int i = 0; i < boombCount; i++)
-            //{
-            //    enemyList.Add(3);
-            //}
-            //StartCoroutine(SpawnSpecialEnemy(stage, boombCount, EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster)));
-            //enemyList.RemoveAt(0);
+            int boombCount = GetBoombSpawnCount(stage);
+            for (int i = 0; i < boombCount; i++)
+            {
+                speacialEnemyList.Add(3);
+            }
+            StartCoroutine(SpawnSpecialEnemy(stage, boombCount, EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster)));
+            yield return new WaitForSeconds(4f);
+            //speacialEnemyList.RemoveAt(0);
 
-            SpawnEnemy(GetBoombSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster));
-            SpawnEnemy(GetFireBallSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster));
-            //int fireCount = GetFireBallSpawnCount(stage);
-            //for (int i = 0; i < fireCount; i++)
-            //{
-            //    enemyList.Add(4);
-            //}
-            //StartCoroutine(SpawnSpecialEnemy(stage, fireCount, EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster)));
-            //enemyList.RemoveAt(0);
+            //SpawnEnemy(GetBoombSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster));
+            //SpawnEnemy(GetFireBallSpawnCount(stage), EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster));
+
+            int fireCount = GetFireBallSpawnCount(stage);
+            for (int i = 0; i < fireCount; i++)
+            {
+                speacialEnemyList.Add(4);
+            }
+            StartCoroutine(SpawnSpecialEnemy(stage, fireCount, EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster)));
+            //speacialEnemyList.RemoveAt(0);
         }
 
         while (enemyCntA + enemyCntB + enemyCntC + enemyCntD + boombEnemyCnt + fireBallMonsterCnt > 0)
         {
             yield return null;
-         }
+        }
 
         yield return new WaitForSeconds(4f);
         StageEnd();

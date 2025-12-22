@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -8,18 +9,12 @@ public class Bullet : MonoBehaviour
     [SerializeField] private bool isEnemyBullet;
 
     protected bool isRock;
-    private bool _released;
+    private bool isBulletDestroy = false;
+    private bool isBulletCaseDestroy = false;
 
-    private void OnEnable()
-    {
-        _released = false;
-    }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (_released)
-            return;
-
         if (!isRock && collision.gameObject.tag == "Floor")
         {
             Invoke("ReleaseToPool", 3f);
@@ -28,7 +23,6 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_released) return;
         if (!isMelee)
         {
             if (other.CompareTag("Wall") || other.CompareTag("Floor"))
@@ -45,19 +39,37 @@ public class Bullet : MonoBehaviour
     {
         return damage;
     }
+
     private void ReleaseToPool()
     {
-        if (_released) return;
-        _released = true;
-
         if (isCase)
         {
-            BulletObjectPool.ReturnBulletCase(this);
+            BulletCaseDestroyAfter(this);
         }
         else
         {
-            BulletObjectPool.ReturnBullet(this);
+            BulletDestroyAfter(this);
         }
+    }
 
+    public void BulletCaseDestroyAfter(Bullet bullet)
+    {
+        if (isBulletCaseDestroy == true)
+            return;
+        isBulletCaseDestroy = true;
+        BulletObjectPool.ReturnBulletCase(bullet);
+    }
+
+    public void BulletDestroyAfter(Bullet bullet)
+    {
+        if (isBulletDestroy == true)
+            return;
+        isBulletDestroy = true;
+        BulletObjectPool.ReturnBullet(bullet);
+    }
+
+    public void SetIsBulletDestroyFalse()
+    {
+        isBulletDestroy = false;
     }
 }

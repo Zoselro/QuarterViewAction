@@ -9,8 +9,6 @@ public class BoombMonster : Enemy
     [SerializeField] private float targetRadius;
     [SerializeField] protected int damage;
 
-    protected SkinnedMeshRenderer[] SkinnedMeshRenderers;
-
     protected float attackTime;
     protected float damageHitTime;
     protected float idleTime;
@@ -23,10 +21,10 @@ public class BoombMonster : Enemy
         boxCollider = GetComponent<BoxCollider>();
         nav = rigid.GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-        SkinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+        meshs = GetComponentsInChildren<SkinnedMeshRenderer>();
         if (enemyType != Type.D)
             Invoke("ChaseStart", spawnTime);
-
+        
         AnimationGetTime(animator.runtimeAnimatorController.animationClips);
     }
 
@@ -154,6 +152,9 @@ public class BoombMonster : Enemy
 
     protected override IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
     {
+        // 피격을 당했을 때 색변하기
+        ColorChange(meshs);
+
         yield return new WaitForSeconds(0.1f);
 
         if (curHealth > 0)
@@ -215,8 +216,10 @@ public class BoombMonster : Enemy
         time = 0;
         curHealth = maxHealth;
 
-        foreach (SkinnedMeshRenderer mesh in SkinnedMeshRenderers)
-            mesh.material.color = Color.white;
+        //foreach (SkinnedMeshRenderer mesh in meshs)
+        //    mesh.material.color = Color.white;
+        ColorChange(meshs);
+
 
         gameObject.layer = 11;
 
@@ -231,6 +234,14 @@ public class BoombMonster : Enemy
         mainColider.enabled = false;
         if (enemyType != Type.D)
             Invoke("ChaseStart", spawnTime);
+    }
+
+    public override void ColorChange(Renderer[] renderer)
+    {
+        foreach (SkinnedMeshRenderer mesh in renderer)
+        {
+            mesh.material.color = Color.red;
+        }
     }
 }
 
