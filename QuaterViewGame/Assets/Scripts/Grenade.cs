@@ -7,7 +7,7 @@ public class Grenade : MonoBehaviour
     [SerializeField] GameObject effectObj;
     [SerializeField] Rigidbody rigid;
     [SerializeField] private float explosionTime;
-
+    [SerializeField] private int damage;
     public void ReSetState()
     {
         StopAllCoroutines();
@@ -40,7 +40,7 @@ public class Grenade : MonoBehaviour
 
         foreach (RaycastHit hitObj in raycastHits)
         {
-            hitObj.transform.GetComponent<Enemy>().HitByGrenade(transform.position);
+            hitObj.transform.GetComponent<Enemy>().HitByGrenade(transform.position, damage);
         }
 
         yield return new WaitForSeconds(5f);

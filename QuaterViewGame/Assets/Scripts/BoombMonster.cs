@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,7 +14,7 @@ public class BoombMonster : Enemy
     protected float walkTime;
     protected float dieTime;
 
-    private void Awake()
+    protected override void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         boxCollider = GetComponent<BoxCollider>();
@@ -150,10 +149,14 @@ public class BoombMonster : Enemy
         //base.Targetting();
     }
 
-    protected override IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
+    protected override IEnumerator OnDamage(Vector3 reactVector, bool isGrenade, int damage)
     {
         // 피격을 당했을 때 색변하기
         ColorChange(meshs);
+
+        DamageText damageText = manager.GetDamageText().GetComponent<DamageText>();
+        damageText.SetTarget(this.transform);
+        damageText.print(damage.ToString());
 
         yield return new WaitForSeconds(0.1f);
 

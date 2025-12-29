@@ -303,6 +303,7 @@ MonoBehaviour:
   effectObj: {fileID: 7984646549931935493}
   rigid: {fileID: 735070067697113072}
   explosionTime: 3
+  damage: 100
 --- !u!1001 &8718618168386233156
 PrefabInstance:
   m_ObjectHideFlags: 0

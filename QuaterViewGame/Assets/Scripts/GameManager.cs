@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -41,6 +40,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject gamePanel;
     [SerializeField] private GameObject overPanel;
+    [SerializeField] private GameObject damagePanel;
+    [SerializeField] private TextMeshProUGUI damageText;
     [SerializeField] private TextMeshProUGUI maxScoreText;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI stageText;
@@ -103,7 +104,7 @@ public class GameManager : MonoBehaviour
         weaponShop.SetActive(false);
         startZone.SetActive(false);
 
-        foreach(Transform zone in enemyZones)
+        foreach (Transform zone in enemyZones)
         {
             zone.gameObject.SetActive(true);
         }
@@ -187,13 +188,13 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator SpawnEnemy(int cnt, Enemy enemy)
     {
-        if(enemy.GetEnemyType() == Enemy.Type.BoombMonster)
+        if (enemy.GetEnemyType() == Enemy.Type.BoombMonster)
         {
             cnt = GetBoombSpawnCount(stage);
             if (cnt == 0) yield break;
         }
-        
-        if(enemy.GetEnemyType() == Enemy.Type.FireBallMonster)
+
+        if (enemy.GetEnemyType() == Enemy.Type.FireBallMonster)
         {
             cnt = GetFireBallSpawnCount(stage);
             if (cnt == 0) yield break;
@@ -243,12 +244,12 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator InBattle()
     {
-        if(stage % 5 == 0)
+        if (stage % 5 == 0)
         {
             enemyCntD++;
             int ranzone = Random.Range(0, 4);
             Enemy instantEnemy = EnemyObjectPool.Instance.GetEnemy(Enemy.Type.D);
-            
+
             instantEnemy.transform.position = enemyZones[ranzone].position;
             instantEnemy.transform.rotation = enemyZones[ranzone].rotation;
             Enemy target = instantEnemy.GetComponent<Enemy>();
@@ -445,13 +446,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private Coroutine rockCamCo;
+
+    public void StopRockFlow()
+    {
+        if (rockCamCo != null) StopCoroutine(rockCamCo);
+        rockCamCo = null;
+    }
+
     public void StartRockFlow()
     {
-        StartCoroutine(RotateCameraXSmooth());
+        if (rockCamCo != null) StopCoroutine(rockCamCo);
+        rockCamCo = StartCoroutine(RotateCameraXSmooth());
+        //StartCoroutine(RotateCameraXSmooth());
     }
 
     public void SetCameraX()
     {
+        if(boss.GetIsDead())
+            StopRockFlow();
+        
         Transform cam = Camera.main.transform;
         Vector3 rot = cam.eulerAngles;
         rot.x = 60f;
@@ -465,21 +479,21 @@ public class GameManager : MonoBehaviour
         float endX = 45f;
 
         float elapsed = 0f;
+       
+            while (elapsed < bossRockDuration)
+            {
+                elapsed += Time.deltaTime;
 
-        while (elapsed < bossRockDuration)
-        {
-            elapsed += Time.deltaTime;
+                float t = elapsed / bossRockDuration;
 
-            float t = elapsed / bossRockDuration;
+                float currentX = Mathf.Lerp(startX, endX, t);
 
-            float currentX = Mathf.Lerp(startX, endX, t);
+                Vector3 rot = cam.eulerAngles;
+                rot.x = currentX;
+                cam.eulerAngles = rot;
 
-            Vector3 rot = cam.eulerAngles;
-            rot.x = currentX;
-            cam.eulerAngles = rot;
-
-            yield return null;
-        }
+                yield return null;
+            }
 
         // 마지막 값 정확하게 고정
         Vector3 finalRot = cam.eulerAngles;
@@ -501,5 +515,11 @@ public class GameManager : MonoBehaviour
     public Player GetPlayer()
     {
         return player;
+    }
+
+    public TextMeshProUGUI GetDamageText()
+    {
+        TextMeshProUGUI target = Instantiate(damageText, damagePanel.transform);
+        return target;
     }
 }

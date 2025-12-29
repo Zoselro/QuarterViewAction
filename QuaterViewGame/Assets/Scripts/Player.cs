@@ -416,7 +416,6 @@ public class Player : MonoBehaviour
             {
                 animator.SetTrigger("DoReload");
                 isReload = true;
-                Debug.Log("장전");
                 Invoke("ReLoadOut", 3f);
             }
         }
@@ -642,6 +641,8 @@ public class Player : MonoBehaviour
         {
             mesh.material.color = Color.yellow;
         }
+
+        
 
         if (isBossAtk)
         {

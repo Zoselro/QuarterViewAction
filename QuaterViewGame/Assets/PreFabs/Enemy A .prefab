@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 0
-  maxHealth: 10
+  maxHealth: 100
   curHealth: 0
   spawnTime: 2
   score: 100
@@ -287,7 +287,6 @@ MonoBehaviour:
   - {fileID: 7897827402310005433, guid: 7361896cc227dd54e9d4622f30ac8ae9, type: 3}
   manager: {fileID: 0}
   isChase: 0
-  isDestroy: 0
 --- !u!54 &1756427409012566596
 Rigidbody:
   m_ObjectHideFlags: 0

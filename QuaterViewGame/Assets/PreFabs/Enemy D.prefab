@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 3
-  maxHealth: 10
+  maxHealth: 1
   curHealth: 0
   spawnTime: 4
   score: 2000
@@ -136,7 +136,6 @@ MonoBehaviour:
   - {fileID: 7897827402310005433, guid: 7361896cc227dd54e9d4622f30ac8ae9, type: 3}
   manager: {fileID: 0}
   isChase: 0
-  isDestroy: 0
   missile: {fileID: 557206736643155993, guid: 9de1ff92eb7d9ec42b45e7680bbff610, type: 3}
   missilePortA: {fileID: 4573220621093287608}
   missilePortB: {fileID: 7977958927529244792}

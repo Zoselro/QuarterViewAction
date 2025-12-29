@@ -46,15 +46,15 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
     public int MaxHealth => maxHealth;
     public bool IsHpBar => isHpBar;
     public GameManager Manager => manager;
-    private void Awake()
+
+    protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         boxCollider = GetComponent<BoxCollider>();
         nav = rigid.GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
         meshs = GetComponentsInChildren<MeshRenderer>();
-
-        if(enemyType != Type.D)
+        if (enemyType != Type.D)
             Invoke("ChaseStart", spawnTime);
     }
 
@@ -201,7 +201,7 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
             curHealth -= weapon.GetDamage();
             // 피격시 반동하기 위한 벡터
             Vector3 reactVector = transform.position - other.transform.position;
-            StartCoroutine(OnDamage(reactVector, false));
+            StartCoroutine(OnDamage(reactVector, false, weapon.GetDamage()));
         }
         else if (other.tag == "Bullet")
         {
@@ -212,7 +212,7 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
                 curHealth -= bullet.GetDamage();
                 Vector3 reactVector = transform.position - other.transform.position;
                 BulletDestroyAfter(bullet);
-                StartCoroutine(OnDamage(reactVector, false));
+                StartCoroutine(OnDamage(reactVector, false, bullet.GetDamage()));
             }
 
         }
@@ -231,22 +231,26 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
     }
 
 
-    public void HitByGrenade(Vector3 explosionPos)
+    public void HitByGrenade(Vector3 explosionPos, int damage)
     {
-        curHealth -= 100;
+        curHealth -= damage;
         Vector3 reactVec = transform.position - explosionPos;
-        StartCoroutine(OnDamage(reactVec, true));
+        StartCoroutine(OnDamage(reactVec, true, damage));
     }
 
 
     // 피격시 이벤트 함수
-    protected virtual IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
+    protected virtual IEnumerator OnDamage(Vector3 reactVector, bool isGrenade, int damage)
     {
         // 피격을 당했을 때 색변하기
         foreach(MeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.red;
         }
+
+        DamageText damageText = manager.GetDamageText().GetComponent<DamageText>();
+        damageText.SetTarget(this.transform);
+        damageText.print(damage.ToString());
 
         yield return new WaitForSeconds(0.1f);
 
@@ -258,16 +262,12 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
         else if(curHealth <= 0)
         {
             isDead = true;
-            manager.SetCameraX();
             rigid.constraints = RigidbodyConstraints.FreezeRotationX |
                                 RigidbodyConstraints.FreezeRotationY |
                                 RigidbodyConstraints.FreezeRotationZ;
 
             ColorChange(meshs);
-            //foreach (MeshRenderer mesh in meshs)
-            //    mesh.material.color = Color.gray;
-
-
+                
             curHealth = 0;
             gameObject.layer = 12;
             isChase = false;
@@ -386,5 +386,10 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
     public void SetIsDestoryFalse()
     {
         isDestroy = false;
+    }
+
+    public bool GetIsDead()
+    {
+        return isDead;
     }
 }

@@ -138,9 +138,7 @@ public class BossRock : Bullet
     {
         if (other.CompareTag("Floor"))
         {
-            Debug.Log("½ÇÇà BossRock");
             EnemyBulletObejctPool.Instance.ReturnBossRockPool(gameObject.GetComponent<BossRock>());
-            //ReturnToPoolOnce();
         }
     }
 

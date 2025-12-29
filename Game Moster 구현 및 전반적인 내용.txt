@@ -70,6 +70,21 @@ BossRock 객체는 GameManager 객체를 알고있다.
 3. 공격에 맞으면 damage모션을 시전한다.
 4. hp <= 0 이 되면 Die 모션을 시전한다.
 
+- Damage 출력 구현
+
+데미지 적용방법
+
+Enemy가 피해를 입으면, 그에 해당하는 데미지가 출력이 된다.
+
+Enemy가 피해를 입는곳 : OnDamage() 함수
+
+OnDamage()가 호출 될 때, Intantiate로 damageText Prefab을 생성.
+
+
+GameManager.SetDamageText(Transform.position)를 통해서
+DamageText가 Update()를 통해 Target을계속 추적
+
+
 
 Albino Dragon Enemy 구현
 

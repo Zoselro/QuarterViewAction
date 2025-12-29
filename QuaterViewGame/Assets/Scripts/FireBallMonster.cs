@@ -5,18 +5,18 @@ using Random = UnityEngine.Random;
 
 public class FireBallMonster : BoombMonster
 {
-    private void Awake()
-    {
-        mainColider = GetComponentInChildren<SphereCollider>();
-        rigid = GetComponent<Rigidbody>();
-        nav = rigid.GetComponent<NavMeshAgent>();
-        animator = GetComponentInChildren<Animator>();
-        meshs = GetComponentsInChildren<SkinnedMeshRenderer>();
+    //private void Awake()
+    //{
+    //    mainColider = GetComponentInChildren<SphereCollider>();
+    //    rigid = GetComponent<Rigidbody>();
+    //    nav = rigid.GetComponent<NavMeshAgent>();
+    //    animator = GetComponentInChildren<Animator>();
+    //    meshs = GetComponentsInChildren<SkinnedMeshRenderer>();
 
-        if (enemyType != Type.D)
-            Invoke("ChaseStart", spawnTime);
-        AnimationGetTime(animator.runtimeAnimatorController.animationClips);
-    }
+    //    if (enemyType != Type.D)
+    //        Invoke("ChaseStart", spawnTime);
+    //    AnimationGetTime(animator.runtimeAnimatorController.animationClips);
+    //}
 
     private void Start()
     {
@@ -76,13 +76,17 @@ public class FireBallMonster : BoombMonster
         }
     }
 
-    protected override IEnumerator OnDamage(Vector3 reactVector, bool isGrenade)
+    protected override IEnumerator OnDamage(Vector3 reactVector, bool isGrenade, int damage)
     {
         // 피격을 당했을 때 색변하기
         foreach (SkinnedMeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.red;
         }
+
+        DamageText damageText = manager.GetDamageText().GetComponent<DamageText>();
+        damageText.SetTarget(this.transform);
+        damageText.print(damage.ToString());
 
         animator.SetTrigger("doDamage");
 
