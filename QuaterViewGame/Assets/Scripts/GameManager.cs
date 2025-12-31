@@ -71,6 +71,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI curScoreText;
     [SerializeField] private TextMeshProUGUI bestScoreText;
 
+    private Coroutine rockCamCo;
+
     public int EnemyCntA => enemyCntA;
     public int EnemyCntB => enemyCntB;
     public int EnemyCntC => enemyCntC;
@@ -413,7 +415,14 @@ public class GameManager : MonoBehaviour
         else if (boss.IsHpBar == true)
         {
             bossHealthGroup.gameObject.SetActive(true);
-            bossHealthBar.localScale = new Vector3((float)boss.CurHealth / boss.MaxHealth, 1, 1);
+            float bossHp = (float)boss.CurHealth / boss.MaxHealth;
+            bossHealthBar.localScale = new Vector3(bossHp, 1, 1);
+            if(bossHp <= 0)
+            {
+                StopRockFlow();
+                SetCameraX();
+            }
+
         }
         else
         {
@@ -446,8 +455,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private Coroutine rockCamCo;
-
     public void StopRockFlow()
     {
         if (rockCamCo != null) StopCoroutine(rockCamCo);
@@ -463,8 +470,8 @@ public class GameManager : MonoBehaviour
 
     public void SetCameraX()
     {
-        if(boss.GetIsDead())
-            StopRockFlow();
+        //if(boss.GetIsDead())
+        //    StopRockFlow();
         
         Transform cam = Camera.main.transform;
         Vector3 rot = cam.eulerAngles;

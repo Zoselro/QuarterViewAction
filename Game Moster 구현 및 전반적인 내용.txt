@@ -80,11 +80,8 @@ Enemy가 피해를 입는곳 : OnDamage() 함수
 
 OnDamage()가 호출 될 때, Intantiate로 damageText Prefab을 생성.
 
-
 GameManager.SetDamageText(Transform.position)를 통해서
-DamageText가 Update()를 통해 Target을계속 추적
-
-
+DamageText가 Update()를 통해 Target을계속 추적하도록.
 
 Albino Dragon Enemy 구현
 

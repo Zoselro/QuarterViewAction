@@ -29,12 +29,6 @@ public class BossRock : Bullet
 
     public GameManager Gm => gm;
     public float TarGetY => targetY;
-
-    private void OnEnable()
-    {
-        //_returned = false;
-        //Debug.Log("_returned : " + _returned);
-    }
     public void ReturnToPoolOnce()
     {
         if (_returned) return;
@@ -120,13 +114,13 @@ public class BossRock : Bullet
         realSpawnTime += Time.deltaTime;
 
         // 5초 시점에 카메라 회전 알림
-        if (realSpawnTime >= bossRockFallDelay - 2f)
-        {
-            if (gm != null)
-            {
-                gm.SetCameraX(); // GameManager에서 Player 카메라를 45도로 바로 변경
-            }
-        }
+        //if (realSpawnTime >= bossRockFallDelay - 2f)
+        //{
+        //    if (gm != null)
+        //    {
+        //        gm.SetCameraX(); // GameManager에서 Player 카메라를 45도로 바로 변경
+        //    }
+        //}
 
         if (realSpawnTime >= bossRockFallDelay)
         {
