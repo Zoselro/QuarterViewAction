@@ -60,6 +60,11 @@ public class Bullet : MonoBehaviour
         BulletObjectPool.ReturnBulletCase(bullet);
     }
 
+    public void SetBulletCaseDestroyFalse()
+    {
+        isBulletCaseDestroy = false;
+    }
+
     public void BulletDestroyAfter(Bullet bullet)
     {
         if (isBulletDestroy == true)

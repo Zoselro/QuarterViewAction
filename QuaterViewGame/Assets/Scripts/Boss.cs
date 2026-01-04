@@ -116,20 +116,20 @@ public class Boss : Enemy
         // 1.Missile 3번 발사 후 taunt 패턴 1회 발동
         // 2.Missile 6번 발사 후 Boss Rock 패턴 1회 발동
         // 이후 Missile 6번 발사 한 횟수 초기화.
-        
- 
-        Invoke("RockShotTest", 1f);
 
-        //if (cntMissile == 3 || cntMissile == 6 || cntMissile == 9)
-        //    StartCoroutine(Taunt());
-        //else if (cntMissile == 12)
-        //{
-        //    StartCoroutine(RockShot());
-        //    cntMissile = -1;
-        //}
-        //else
-        //    StartCoroutine(MissileShot());
-        //cntMissile++;
+
+        //Invoke("RockShotTest", 1f);
+
+        if (cntMissile == 3 || cntMissile == 6 || cntMissile == 9)
+            StartCoroutine(Taunt());
+        else if (cntMissile == 12)
+        {
+            StartCoroutine(RockShot());
+            cntMissile = -1;
+        }
+        else
+            StartCoroutine(MissileShot());
+        cntMissile++;
     }
 
     public void DoActionTime()
@@ -193,6 +193,7 @@ public class Boss : Enemy
         //obj.transform.position = transform.position;
         //obj.transform.rotation = transform.rotation;
         yield return new WaitForSeconds(doBigShotTime);
+        manager.SetCameraX();
         isLook = true;
         StartCoroutine(Think());
     }

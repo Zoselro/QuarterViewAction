@@ -526,7 +526,8 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI GetDamageText()
     {
-        TextMeshProUGUI target = Instantiate(damageText, damagePanel.transform);
+        //TextMeshProUGUI target = Instantiate(damageText, damagePanel.transform);
+        TextMeshProUGUI target = DamageTextObejctPool.GetDamageText();
         return target;
     }
 }

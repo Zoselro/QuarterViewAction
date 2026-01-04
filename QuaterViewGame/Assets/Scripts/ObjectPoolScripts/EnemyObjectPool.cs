@@ -44,7 +44,7 @@ public class EnemyObjectPool : MonoBehaviour
             actionOnGet: (b) =>
             {
                 b.transform.SetParent(Instance.transform);
-                b.SetIsBulletDestroy();
+                //b.SetIsBulletDestroy();
                 b.gameObject.SetActive(true);
                 if (b is BoombMonster boombMonster)
                 {

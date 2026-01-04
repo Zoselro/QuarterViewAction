@@ -52,6 +52,7 @@ public class BulletObjectPool : MonoBehaviour
             actionOnGet: (b) =>
             {
                 b.transform.SetParent(Instance.transform);
+                b.SetBulletCaseDestroyFalse();
                 b.gameObject.SetActive(true);
             },
 

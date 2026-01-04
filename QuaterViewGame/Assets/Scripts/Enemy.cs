@@ -211,24 +211,25 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
             {
                 curHealth -= bullet.GetDamage();
                 Vector3 reactVector = transform.position - other.transform.position;
-                BulletDestroyAfter(bullet);
+                bullet.BulletDestroyAfter(bullet);
                 StartCoroutine(OnDamage(reactVector, false, bullet.GetDamage()));
             }
 
         }
     }
-    public void BulletDestroyAfter(Bullet bullet)
-    {
-        if (isBulletDestroy == true)
-            return;
-        isBulletDestroy = true;
-        BulletObjectPool.ReturnBullet(bullet);
-    }
+    //public void BulletDestroyAfter(Bullet bullet)
+    //{
+    //    if (isBulletDestroy == true)
+    //        return;
+    //    isBulletDestroy = true;
+    //    BulletObjectPool.ReturnBullet(bullet);
+    //}
 
-    public void SetIsBulletDestroy()
-    {
-        isBulletDestroy = false;
-    }
+    //public void SetIsBulletDestroy()
+    //{
+    //    Debug.Log("isBulletDestroy : " + isBulletDestroy);
+    //    isBulletDestroy = false;
+    //}
 
 
     public void HitByGrenade(Vector3 explosionPos, int damage)

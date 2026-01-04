@@ -596,7 +596,6 @@ public class Player : MonoBehaviour
                         EnemyBulletObejctPool.Instance.ReturnEnemyCBulletPool(other.gameObject.GetComponent<Bullet>());
                         break;
                     case "BossRock":
-                        Debug.Log("실행 Player");
                         EnemyBulletObejctPool.Instance.ReturnBossRockPool(other.gameObject.GetComponent<BossRock>());
                         break;
                     case "BossMissile":
@@ -614,7 +613,8 @@ public class Player : MonoBehaviour
         isDamage = true;
         foreach (MeshRenderer mesh in meshs)
         {
-            mesh.material.color = Color.yellow;
+            if (!mesh.CompareTag("Invisible"))
+                mesh.material.color = Color.yellow;
         }
 
         health -= damage;
@@ -629,7 +629,8 @@ public class Player : MonoBehaviour
 
         foreach (MeshRenderer mesh in meshs)
         {
-            mesh.material.color = Color.white;
+            if (!mesh.CompareTag("Invisible"))
+                mesh.material.color = Color.white;
         }
         isDamage = false;
     }
@@ -639,7 +640,8 @@ public class Player : MonoBehaviour
         isDamage = true;
         foreach (MeshRenderer mesh in meshs)
         {
-            mesh.material.color = Color.yellow;
+            if(!mesh.CompareTag("Invisible"))
+                mesh.material.color = Color.yellow;
         }
 
         
@@ -664,7 +666,8 @@ public class Player : MonoBehaviour
 
         foreach (MeshRenderer mesh in meshs)
         {
-            mesh.material.color = Color.white;
+            if (!mesh.CompareTag("Invisible"))
+                mesh.material.color = Color.white;
         }
         isDamage = false;
 

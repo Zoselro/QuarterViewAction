@@ -4685,6 +4685,7 @@ Transform:
   - {fileID: 1910217790}
   - {fileID: 171626596}
   - {fileID: 333899524}
+  - {fileID: 1285208883}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &230471714
@@ -48398,7 +48399,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 35959
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 5efbd8cacdefc9f44b3db4f12debdd51, type: 2}
   m_TargetDisplay: 0
@@ -67545,6 +67546,38 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1 &1285208882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1285208883}
+  m_Layer: 0
+  m_Name: DamageTextObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1285208883
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285208882}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1465247275}
+  m_Father: {fileID: 230440519}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1285219669
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80147,6 +80180,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1465247275}
+  - component: {fileID: 1465247276}
   - component: {fileID: 1465247274}
   - component: {fileID: 1465247273}
   - component: {fileID: 1465247272}
@@ -80232,13 +80266,27 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1285208883}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1465247276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465247271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12428919f7ddb8d469a17355aa945e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageTextPrefab: {fileID: 8791395111479088235, guid: 1c27dd355feb24248bc630feafbd07ae, type: 3}
+  tarGetCanvas: {fileID: 1465247274}
 --- !u!1 &1467402645
 GameObject:
   m_ObjectHideFlags: 0
@@ -98564,4 +98612,3 @@ SceneRoots:
   - {fileID: 1734885176}
   - {fileID: 1783754759}
   - {fileID: 767165129}
-  - {fileID: 1465247275}
