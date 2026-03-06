@@ -167,11 +167,13 @@ public class GameManager : MonoBehaviour
     }
 
     // BoombEnemy ½ºÆù
-    private IEnumerator SpawnSpecialEnemy(int stage, int count, Enemy enemy)
+    private IEnumerator SpawnSpecialEnemy(int stage, int count, Enemy.Type type)
     {
         for (int i = 0; i < count; i++)
         {
             int ranZone = Random.Range(0, 4);
+
+            Enemy enemy = EnemyObjectPool.Instance.GetEnemy(type);
 
             enemy.transform.position = enemyZones[ranZone].position;
             enemy.transform.rotation = enemyZones[ranZone].rotation;
@@ -206,7 +208,7 @@ public class GameManager : MonoBehaviour
         {
             speacialEnemyList.Add(4);
         }
-        StartCoroutine(SpawnSpecialEnemy(stage, cnt, enemy));
+        //(SpawnSpecialEnemy(stage, cnt, Enemy.Type));
         speacialEnemyList.RemoveAt(0);
         yield return new WaitForSeconds(4f);
     }
@@ -279,7 +281,7 @@ public class GameManager : MonoBehaviour
                         break;
                 }
             }
-
+            
             while (enemyList.Count > 0)
             {
                 int ranZone = Random.Range(0, 4);
@@ -310,7 +312,7 @@ public class GameManager : MonoBehaviour
             {
                 speacialEnemyList.Add(3);
             }
-            StartCoroutine(SpawnSpecialEnemy(stage, boombCount, EnemyObjectPool.Instance.GetEnemy(Enemy.Type.BoombMonster)));
+            StartCoroutine(SpawnSpecialEnemy(stage, boombCount, Enemy.Type.BoombMonster));
             yield return new WaitForSeconds(4f);
             //speacialEnemyList.RemoveAt(0);
 
@@ -322,7 +324,7 @@ public class GameManager : MonoBehaviour
             {
                 speacialEnemyList.Add(4);
             }
-            StartCoroutine(SpawnSpecialEnemy(stage, fireCount, EnemyObjectPool.Instance.GetEnemy(Enemy.Type.FireBallMonster)));
+            StartCoroutine(SpawnSpecialEnemy(stage, fireCount, Enemy.Type.FireBallMonster));
             //speacialEnemyList.RemoveAt(0);
         }
 

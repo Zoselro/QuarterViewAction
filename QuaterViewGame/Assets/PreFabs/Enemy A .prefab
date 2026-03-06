@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 0
-  maxHealth: 100
+  maxHealth: 1
   curHealth: 0
   spawnTime: 2
   score: 100

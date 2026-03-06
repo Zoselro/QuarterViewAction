@@ -408,10 +408,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 5
-  maxHealth: 50
+  maxHealth: 1
   curHealth: 0
   spawnTime: 3
-  score: 0
+  score: 200
   meleeArea: {fileID: 1266158237382098802}
   mainColider: {fileID: 3839297393629221306}
   bullet: {fileID: 0}

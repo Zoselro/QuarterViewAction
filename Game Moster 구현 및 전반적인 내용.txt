@@ -83,6 +83,13 @@ OnDamage()가 호출 될 때, Intantiate로 damageText Prefab을 생성.
 GameManager.SetDamageText(Transform.position)를 통해서
 DamageText가 Update()를 통해 Target을계속 추적하도록.
 
+게임 첫 시작 후 키 조작, 어떻게 몬스터가 나오는지에 대한 튜토리얼 
+기능 구현
+
+
+
+
+
 Albino Dragon Enemy 구현
 
 idle1
@@ -101,3 +108,4 @@ idle2
 10. 뛰는 패턴 (Run)
 11. 점프 모션 (Jump)
 12. 죽는 모션 (Die)
+

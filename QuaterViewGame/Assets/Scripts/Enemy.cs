@@ -246,7 +246,8 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
         // 피격을 당했을 때 색변하기
         foreach(MeshRenderer mesh in meshs)
         {
-            mesh.material.color = Color.red;
+            if(!mesh.CompareTag("Invisible"))
+                mesh.material.color = Color.red;
         }
 
         DamageText damageText = manager.GetDamageText().GetComponent<DamageText>();
@@ -258,7 +259,10 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
         if(curHealth > 0)
         {
             foreach(MeshRenderer mesh in meshs)
-                mesh.material.color = Color.white;
+            {
+                if (!mesh.CompareTag("Invisible"))
+                    mesh.material.color = Color.white;
+            }
         }
         else if(curHealth <= 0)
         {
@@ -360,7 +364,10 @@ public class Enemy : MonoBehaviour, MaterialColorChanage
         curHealth = maxHealth;
 
         foreach (MeshRenderer mesh in meshs)
-            mesh.material.color = Color.white;
+        {
+            if(!mesh.CompareTag("Invisible"))
+                mesh.material.color = Color.white;
+        }
         
         gameObject.layer = 11;
         
